@@ -1,14 +1,15 @@
-// const DB = process.env.DATABASE.replace(
-//   '<PASSWORD>',
-//   process.env.DATABASE_PASSWORD,
-// );
-mongoose
-  .connect(process.env.DB_URI, {
-    // useNewUrlParser: true,
-    // useCreateIndex: true,
-    // useFindAndModify: false,
-  })
-  .then(() => console.log('DB connection successful!'))
-  .catch((err) => {
-    console.log('not connected');
-  });
+
+const mongoose = require('mongoose');
+
+const dbConnection = () => {
+    mongoose.connect(process.env.DB_URI).then((conn) => {
+        console.log(`Database connected:${conn.connection.host}`);
+
+    })
+    // .catch((err) => {
+    //     console.error(`Database Error:${err}`);
+    //     process.exit(1);
+
+    // });
+};
+module.exports = dbConnection;
