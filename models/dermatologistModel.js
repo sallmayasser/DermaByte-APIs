@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 ///1)create schema
-const PatientsSchema = new mongoose.Schema({
+const dermatologistsSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: [true, 'Name required'],
@@ -13,16 +13,14 @@ const PatientsSchema = new mongoose.Schema({
         minlenth: [2, 'too short  name'],
         maxlength: [32, 'too long  name']
     },
-    age: {
-        type: Number,
-        required: [true, 'agerequired'],
-        min: [1, 'age  must be above or equal 1'],
-        max: [2, "age must be below or equal 99"],
-    },
     mobile: {
         type: Number,
         min: [11, 'incorrect mobile number'],
         max: [11, "incorrect mobile number "],
+    },
+    location: {
+        type: String
+
     },
     city: {
         type: String,
@@ -31,6 +29,14 @@ const PatientsSchema = new mongoose.Schema({
     country: {
         type: String,
         required: [true, "country is required"]
+    },
+    specialization: {
+        type: String,
+        default: "dermatologist"
+    },
+    license: {
+        type: String,
+        required: [true, "license is required"]
     },
     email: {
         type: String,
@@ -55,8 +61,32 @@ const PatientsSchema = new mongoose.Schema({
             message: 'Passwords are not the same!'
         }
     },
-    
+    profilePic: {
+        type: String,
+    },
+    sessionCost:{
+        type:Number,
+        required: [true, "Session cost is required"]
+    },
 
-} , { timestamps: true })
+    state: {
+        type: Boolean,
+        default: false
+    },
+    doctorReservation: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "DoctorReservation",
+
+    },],
+    doctorSchedule: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "DoctorSchedule",
+
+    },],
+
+   
+
+
+}, { timestamps: true })
 ///2)create model
-module.exports = mongoose.model("Patient", PatientsSchema);
+module.exports = mongoose.model("Dermatologist", dermatologistsSchema);

@@ -1,28 +1,21 @@
 const mongoose = require('mongoose');
 ///1)create schema
-const PatientsSchema = new mongoose.Schema({
-    firstName: {
+const labsSchema = new mongoose.Schema({
+    Name: {
         type: String,
         required: [true, 'Name required'],
         minlenth: [2, 'too short  name'],
         maxlength: [32, 'too long  name']
     },
-    lastName: {
-        type: String,
-        required: [true, 'Name required'],
-        minlenth: [2, 'too short  name'],
-        maxlength: [32, 'too long  name']
-    },
-    age: {
-        type: Number,
-        required: [true, 'agerequired'],
-        min: [1, 'age  must be above or equal 1'],
-        max: [2, "age must be below or equal 99"],
-    },
+   
     mobile: {
         type: Number,
         min: [11, 'incorrect mobile number'],
         max: [11, "incorrect mobile number "],
+    },
+    location: {
+        type: String
+
     },
     city: {
         type: String,
@@ -32,6 +25,16 @@ const PatientsSchema = new mongoose.Schema({
         type: String,
         required: [true, "country is required"]
     },
+    license: {
+        type: String,
+        required: [true, "license is required"]
+    },
+    testServices:
+       [{
+            name:String,
+            cost:Number,
+       }] ,
+
     email: {
         type: String,
         required: [true, 'Please provide your email'],
@@ -55,8 +58,13 @@ const PatientsSchema = new mongoose.Schema({
             message: 'Passwords are not the same!'
         }
     },
+    state: {
+        type: Boolean,
+        default: false
+    },
+
     
 
-} , { timestamps: true })
+}, { timestamps: true })
 ///2)create model
-module.exports = mongoose.model("Patient", PatientsSchema);
+module.exports = mongoose.model("Lab", labsSchema);
