@@ -7,7 +7,7 @@ const labsSchema = new mongoose.Schema({
         minlenth: [2, 'too short  name'],
         maxlength: [32, 'too long  name']
     },
-   
+
     mobile: {
         type: Number,
         min: [11, 'incorrect mobile number'],
@@ -30,10 +30,10 @@ const labsSchema = new mongoose.Schema({
         required: [true, "license is required"]
     },
     testServices:
-       [{
-            name:String,
-            cost:Number,
-       }] ,
+        [{
+            name: String,
+            cost: Number,
+        }],
 
     email: {
         type: String,
@@ -63,8 +63,19 @@ const labsSchema = new mongoose.Schema({
         default: false
     },
 
-    
 
 }, { timestamps: true })
+
+labsSchema.virtual('patients', {
+    ref: 'LabReservation',
+    localField: '_id',
+    foreignField: 'lab',
+});
+labsSchema.virtual('tests', {
+    ref: 'LabTest',
+    localField: '_id',
+    foreignField: 'lab',
+});
+
 ///2)create model
 module.exports = mongoose.model("Lab", labsSchema);

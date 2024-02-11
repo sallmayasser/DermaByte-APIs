@@ -20,7 +20,7 @@ const doctorReservationsSchema = new mongoose.Schema({
         ref: "Dermatologist",
 
     },
-
+    
 }, { timestamps: true })
 ///2)create model
 module.exports = mongoose.model("DoctorReservation", doctorReservationsSchema);

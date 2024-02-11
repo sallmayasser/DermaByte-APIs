@@ -16,8 +16,12 @@ const doctorScheduleSchema = new mongoose.Schema({
     reserved:{
         type:Boolean,
         default:false
-    }
-    
+    },
+    dermatologist :{
+        type: mongoose.Schema.ObjectId,
+        ref: "Dermatologist",
+
+    },
 
 
 
