@@ -10,7 +10,7 @@ const labTestSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Lab',
     },
-    cost: { typr: Number, required: [true, 'test cost is requied'] },
+    cost: { type: Number, required: [true, 'test cost is requied'] },
   },
   
   { timestamps: true },
