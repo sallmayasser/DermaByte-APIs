@@ -5,9 +5,7 @@ const testServiceSchema = new mongoose.Schema({
         type:String,
         required:[true,"test name is requied"]
     },
-    cost:{typr:Number,
-    required:[true,"test cost is requied"]
-    },
+ 
 
 }, { timestamps: true })
 
