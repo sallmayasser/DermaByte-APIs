@@ -14,7 +14,7 @@ const dermatologistsSchema = new mongoose.Schema({
         maxlength: [32, 'too long  name']
     },
     mobile: {
-        type: Number,
+        type: String,
         min: [11, 'incorrect mobile number'],
         max: [11, "incorrect mobile number "],
     },
@@ -32,7 +32,7 @@ const dermatologistsSchema = new mongoose.Schema({
     },
     specialization: {
         type: String,
-        default: "dermatologist"
+        default: "dermatology"
     },
     license: {
         type: String,
