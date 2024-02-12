@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 ///1)create schema
 const labsSchema = new mongoose.Schema({
-    Name: {
+    name: {
         type: String,
         required: [true, 'Name required'],
         minlenth: [2, 'too short  name'],
@@ -9,9 +9,9 @@ const labsSchema = new mongoose.Schema({
     },
 
     mobile: {
-        type: Number,
+        type: String,
         min: [11, 'incorrect mobile number'],
-        max: [11, "incorrect mobile number "],
+        
     },
     location: {
         type: String
@@ -29,12 +29,7 @@ const labsSchema = new mongoose.Schema({
         type: String,
         required: [true, "license is required"]
     },
-    testServices:
-        [{
-            name: String,
-            cost: Number,
-        }],
-
+    
     email: {
         type: String,
         required: [true, 'Please provide your email'],
