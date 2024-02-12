@@ -10,7 +10,7 @@ const dermatologistsSchema = new mongoose.Schema({
     lastName: {
         type: String,
         required: [true, 'Name required'],
-        minlenth: [2, 'too short  name'],
+        minlength: [2, 'too short  name'],
         maxlength: [32, 'too long  name']
     },
     mobile: {

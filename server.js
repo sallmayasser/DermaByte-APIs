@@ -1,16 +1,16 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-// const mongoose = require('mongoose');
-dotenv.config({ path: 'config.env' });
 const ApiError = require("./utils/apiError");
 const globalError = require("./middleware/errorMiddleware");
 const dbConnection = require('./Configs/Database');
+
+dotenv.config({ path: 'config.env' });
+
+
 //routes
-// const categoryRoute = require('./routes/categoryRoute');
-// const subCategoryRoute = require('./routes/subCategoryRoute');
-// const brandRoute=require('./routes/brandRoute');
-// const productRoute=require('./routes/productRoute');
+const patientRoute = require('./Routes/patientRoutes');
+
 
 // connect with db 
 dbConnection();
@@ -26,14 +26,12 @@ if (process.env.Node_ENV === 'development') {
 }
 
 ////Mount Routes
-// app.use('/api/v1/categories', categoryRoute)
-// app.use('/api/v1/subcategories', subCategoryRoute)
-// app.use('/api/v1/brands', brandRoute)
-// app.use('/api/v1/products', productRoute)
-// app.all("*", (req, res, next) => {
+app.use('/api/v1/patients', patientRoute)
 
-//     next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
-// });
+
+app.all("*", (req, res, next) => {
+    next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
+});
 
 //global error handling middelware for express
 app.use(globalError);
