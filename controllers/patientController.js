@@ -9,8 +9,8 @@ const Patient = require('../models/patientModel');
 
 exports.getAllPatients = handlers.getAll(Patient);
 
-exports.getPatient = handlers.getOne(Patient
-    // ,"dermatologists"
+exports.getPatient = handlers.getOne(Patient // ,"dermatologists"
+    
     );
 
 exports.updatePatient = handlers.updateOne(Patient);

@@ -3,8 +3,7 @@ const factory = require('./handlersFactory');
 
 
 exports.getDermatologists = factory.getAll(Dermatologist);
-exports.getDermatologist = factory.getOne(Dermatologist 
-    // ,"patients"
+exports.getDermatologist = factory.getOne(Dermatologist // ,"patients"
     );
 exports.createDermatologist = factory.createOne(Dermatologist);
 exports.updateDermatologist = factory.updateOne(Dermatologist);

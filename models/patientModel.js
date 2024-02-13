@@ -61,7 +61,6 @@ const PatientsSchema = new mongoose.Schema(
     },
     {  timestamps: true },
 );
-
 PatientsSchema.virtual('dermatologists', {
     ref: 'DoctorReservation',
     localField: '_id',
