@@ -42,6 +42,7 @@ const labsSchema = new mongoose.Schema({
         minlength: 8,
         select: false
     },
+
     passwordConfirm: {
         type: String,
         required: [true, 'Please confirm your password'],

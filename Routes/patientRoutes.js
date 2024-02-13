@@ -7,7 +7,9 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(functions.getAllPatients)
+  .get(
+    // functions.createFilterObj
+    functions.getAllPatients)
   .post(functions.createPatient, validators.createPatientValidator);
 
 router
