@@ -9,8 +9,8 @@ const doctorReservationsSchema = new mongoose.Schema({
     uploadedTest: {
         type: String,
         default: null,
-    },
-    patient: {
+    },patient
+    : {
         type: mongoose.Schema.ObjectId,
         ref: "Patient",
 

@@ -11,6 +11,7 @@ dotenv.config({ path: 'config.env' });
 const dermatologistRoute = require('./Routes/dermatologistRoute');
 const labRoute = require('./Routes/labRoute');
 const patientRoute = require('./Routes/patientRoutes');
+const doctorReservationRoute = require('./Routes/doctorReservationRoutes');
 // connect with db
 dbConnection();
 
@@ -29,6 +30,7 @@ if (process.env.Node_ENV === 'development') {
 app.use('/api/v1/dermatologists', dermatologistRoute);
 app.use('/api/v1/labs', labRoute);
 app.use('/api/v1/patients', patientRoute);
+app.use('/api/v1/Dermatologist-reservation', doctorReservationRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });
@@ -45,7 +47,7 @@ process.on('unhandleRejection', (err) => {
   });
 });
 
-const PORT = process.env.PORT;
+const {PORT} = process.env;
 const server = app.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
 });
