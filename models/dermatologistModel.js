@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// const doctorRervation =require("./doctorReservationModel")
 ///1)create schema
 const dermatologistsSchema = new mongoose.Schema({
     firstName: {
@@ -76,11 +77,14 @@ const dermatologistsSchema = new mongoose.Schema({
     
     
 
-}, { timestamps: true })
+}, {  timestamps: true ,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
+})
 dermatologistsSchema.virtual('patients', {
-    ref: 'DoctorReservation',
+    ref: 'DoctorRervation',
     localField: '_id',
-    foreignField: 'doctor',
+    foreignField: 'dermatologist',
   });
 ///2)create model
 module.exports = mongoose.model("Dermatologist", dermatologistsSchema);

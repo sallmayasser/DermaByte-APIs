@@ -2,11 +2,15 @@ const express = require('express');
 const functions = require('../controllers/patientController');
 const validators = require('../utils/validators/patientValidator');
 
-const router = express.Router();
+const router = express.Router(
+  // {mergeParams:true}
+  );
 
 router
   .route('/')
-  .get(functions.getAllPatients)
+  .get(
+    // functions.createFilterObj
+    functions.getAllPatients)
   .post(functions.createPatient, validators.createPatientValidator);
 
 router
