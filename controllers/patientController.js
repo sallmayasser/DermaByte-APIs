@@ -3,7 +3,7 @@ const Patient = require('../models/patientModel');
 
 exports.getAllPatients = handlers.getAll(Patient);
 
-exports.getPatient = handlers.getOne(Patient ,{ path: 'reservations', select: 'dermatologist -patient -_id' } );
+exports.getPatient = handlers.getOne(Patient );
 
 exports.updatePatient = handlers.updateOne(Patient);
 
