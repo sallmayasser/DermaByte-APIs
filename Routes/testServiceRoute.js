@@ -1,12 +1,12 @@
 const express = require('express');
 const { getTestServiceValidator, createTestServiceValidator, updateTestServiceValidator, deleteTestServiceValidator } = require("../utils/validators/testServiceValidator")
 
-const { getTestServices ,createTestService, getTestService, updateTestService, deleteTestService } = require("../controllers/testServiceController");
+const { getTestServices ,createFilterObj,setLabIdToBody,createTestService, getTestService, updateTestService, deleteTestService } = require("../controllers/testServiceController");
 
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 
-router.route('/').get(getTestServices)
-    .post( createTestServiceValidator, createTestService);
+router.route('/').get(createFilterObj,getTestServices)
+    .post(setLabIdToBody, createTestServiceValidator, createTestService);
 
 router.route('/:id')
     //getTestServiceValidator validation layer  rule call validator 

@@ -58,10 +58,15 @@ const PatientsSchema = new mongoose.Schema(
                 message: 'Passwords are not the same!',
             },
         },
+       
     },
-    {  timestamps: true },
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    },
 );
-PatientsSchema.virtual('dermatologists', {
+PatientsSchema.virtual('reservations', {
     ref: 'DoctorReservation',
     localField: '_id',
     foreignField: 'patient',

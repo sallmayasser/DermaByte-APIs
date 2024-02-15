@@ -22,5 +22,19 @@ const doctorReservationsSchema = new mongoose.Schema({
     },
     
 }, { timestamps: true })
+doctorReservationsSchema.pre(/^find/, function (next){
+    this.populate({
+        path: 'patient',
+        select: "firstName lastName ",
+    })
+    next()
+});
+doctorReservationsSchema.pre(/^find/, function (next){
+    this.populate({
+        path: 'dermatologist',
+        select: "firstName lastName ",
+    })
+    next()
+});
 ///2)create model
 module.exports = mongoose.model("DoctorReservation", doctorReservationsSchema);

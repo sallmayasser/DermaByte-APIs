@@ -3,7 +3,7 @@ const factory = require('./handlersFactory');
 
 
 exports.getLabs = factory.getAll(Lab);
-exports.getLab = factory.getOne(Lab);
+exports.getLab = factory.getOne(Lab,"tests");
 exports.createLab = factory.createOne(Lab);
 exports.updateLab = factory.updateOne(Lab);
 exports.deleteLab = factory.deleteOne(Lab);

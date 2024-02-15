@@ -75,17 +75,18 @@ const dermatologistsSchema = new mongoose.Schema({
         default: false
     },
     
-    
 
 }, {  timestamps: true ,
     
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
 })
-dermatologistsSchema.virtual('patients', {
-    ref: 'DoctorRervation',
+
+dermatologistsSchema.virtual('reservations', {
+    ref: 'DoctorReservation',
     localField: '_id',
     foreignField: 'dermatologist',
   });
+  
 ///2)create model
 module.exports = mongoose.model("Dermatologist", dermatologistsSchema);

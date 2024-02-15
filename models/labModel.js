@@ -60,7 +60,9 @@ const labsSchema = new mongoose.Schema({
     },
 
 
-}, { timestamps: true })
+}, { timestamps: true,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true} })
 
 labsSchema.virtual('patients', {
     ref: 'LabReservation',
@@ -68,7 +70,7 @@ labsSchema.virtual('patients', {
     foreignField: 'lab',
 });
 labsSchema.virtual('tests', {
-    ref: 'LabTest',
+    ref: 'TestService',
     localField: '_id',
     foreignField: 'lab',
 });
