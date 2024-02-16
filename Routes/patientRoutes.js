@@ -1,7 +1,10 @@
 const express = require('express');
 const functions = require('../controllers/patientController');
 const validators = require('../utils/validators/patientValidator');
-const DrReservation = require("./doctorReservationRoutes");
+const {
+  getAllReservations,
+} = require('../controllers/labReservationController');
+const { createFilterObj } = require('../controllers/handlersFactory');
 
 const router = express.Router({ mergeParams: true });
 
@@ -16,5 +19,11 @@ router
   .put(validators.updatePatientValidator, functions.updatePatient)
   .delete(validators.deletePatientValidator, functions.deletePatient);
 
-router.use('/:id/Dermatologist-reservation', DrReservation);
+router.route('/:id/Dermatologist-reservation').get((req, res, next) => {
+  createFilterObj(req, res, next, 'patient');
+}, getAllReservations);
+
+router.route('/:id/laboratory-reservation').get((req, res, next) => {
+  createFilterObj(req, res, next, 'patient');
+}, getAllReservations);
 module.exports = router;
