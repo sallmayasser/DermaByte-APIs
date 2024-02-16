@@ -6,6 +6,14 @@ const testServiceSchema = new mongoose.Schema(
       type: String,
       required: [true, 'test name is requied'],
     },
+    lab: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Lab',
+    },
+    cost: {
+      type: Number,
+      required: [true, 'test cost is requied'],
+    },
   },
   { timestamps: true },
 );

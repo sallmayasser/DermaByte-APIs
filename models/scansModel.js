@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 ///1)create schema
 const scansSchema = new mongoose.Schema({
     scanDate:{Date,
-    default:Date.now()+7*24*60*60*1000,
+    default:Date.now(),
     },
     diseasePhoto:{
         type:String,
