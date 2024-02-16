@@ -1,5 +1,5 @@
 const handlers = require('./handlersFactory');
-const Reservation = require('../models/doctorReservationModel');
+const Reservation = require('../models/labReservationModel');
 
 exports.getAllReservations = handlers.getAll(Reservation);
 
@@ -10,7 +10,6 @@ exports.updateReservation = handlers.updateOne(Reservation);
 exports.deleteReservation = handlers.deleteOne(Reservation);
 
 exports.createReservation = handlers.createOne(Reservation);
-
 
 exports.setPatientIdToBody = (req, res, next) => {
   // Nested route (Create)

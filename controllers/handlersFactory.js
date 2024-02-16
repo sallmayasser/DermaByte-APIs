@@ -63,6 +63,7 @@ exports.getAll = (Model, modelName = '') =>
     if (req.filterObj) {
       filter = req.filterObj;
     }
+    
     // Build query
     const documentsCounts = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
@@ -80,3 +81,18 @@ exports.getAll = (Model, modelName = '') =>
       .status(200)
       .json({ results: documents.length, paginationResult, data: documents });
   });
+
+  exports.createFilterObj = (req, res, next, filterType) => {
+    let filterObject = {};
+
+    if (filterType === 'patient') {
+      filterObject = { patient: req.params.id };
+    } else if (filterType === 'dermatologist') {
+      filterObject = { dermatologist: req.params.id };
+    } else if (filterType === 'lab') {
+      filterObject = { lab: req.params.id };
+    }
+    req.filterObj = filterObject;
+    console.log(filterObject);
+    next();
+  };

@@ -12,8 +12,8 @@ const dermatologistRoute = require('./Routes/dermatologistRoute');
 const labRoute = require('./Routes/labRoute');
 const patientRoute = require('./Routes/patientRoutes');
 const doctorReservationRoute = require('./Routes/doctorReservationRoutes');
-
-const testServiceRoute=require('./Routes/testServiceRoute');
+const labReservationRoute = require('./Routes/labReservationRoutes');
+const testServiceRoute = require('./Routes/testServiceRoute');
 // connect with db
 dbConnection();
 
@@ -33,7 +33,7 @@ app.use('/api/v1/dermatologists', dermatologistRoute);
 app.use('/api/v1/labs', labRoute);
 app.use('/api/v1/patients', patientRoute);
 app.use('/api/v1/Dermatologist-reservation', doctorReservationRoute);
-
+app.use('/api/v1/laboratories-reservations', labReservationRoute);
 app.use('/api/v1/testServices', testServiceRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
@@ -51,7 +51,7 @@ process.on('unhandleRejection', (err) => {
   });
 });
 
-const {PORT} = process.env;
+const { PORT } = process.env;
 const server = app.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
 });
