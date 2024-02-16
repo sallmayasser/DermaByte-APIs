@@ -14,6 +14,8 @@ const patientRoute = require('./Routes/patientRoutes');
 const doctorReservationRoute = require('./Routes/doctorReservationRoutes');
 const labReservationRoute = require('./Routes/labReservationRoutes');
 const testServiceRoute = require('./Routes/testServiceRoute');
+const scanRoute = require('./Routes/scansRoutes');
+
 // connect with db
 dbConnection();
 
@@ -35,6 +37,8 @@ app.use('/api/v1/patients', patientRoute);
 app.use('/api/v1/Dermatologist-reservation', doctorReservationRoute);
 app.use('/api/v1/laboratories-reservations', labReservationRoute);
 app.use('/api/v1/testServices', testServiceRoute);
+app.use('/api/v1/scans', scanRoute);
+
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });
