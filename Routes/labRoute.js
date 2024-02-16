@@ -1,12 +1,10 @@
 const express = require('express');
 const { getLabValidator, createLabValidator ,updateLabValidator, deleteLabValidator } = require("../utils/validators/labValidator")
-
 const { getLabs ,createLab, getLab, updateLab, deleteLab } = require("../controllers/labController");
 const testServiceRoute =require("./testServiceRoute");
 const { createFilterObj } = require('../controllers/handlersFactory');
-const {
-  getAllReservations,
-} = require('../controllers/labReservationController');
+const result = require('../controllers/resultController');
+const {getAllReservations} = require('../controllers/labReservationController');
 
 const router = express.Router();
 
@@ -24,4 +22,8 @@ router.route('/:id')
     router.route('/:id/laboratory-reservation').get((req, res, next) => {
       createFilterObj(req, res, next, 'lab');
     }, getAllReservations);
+    router.route('/:id/results').get((req, res, next) => {
+        createFilterObj(req, res, next, 'lab');
+      }, result.getResults);
+      
 module.exports = router;

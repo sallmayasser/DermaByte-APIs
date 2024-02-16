@@ -14,6 +14,8 @@ const patientRoute = require('./Routes/patientRoutes');
 const doctorReservationRoute = require('./Routes/doctorReservationRoutes');
 const labReservationRoute = require('./Routes/labReservationRoutes');
 const testServiceRoute = require('./Routes/testServiceRoute');
+const reportRoute = require('./Routes/reportRoute');
+const resultRoute = require('./Routes/resultRoute');
 const scanRoute = require('./Routes/scansRoutes');
 
 // connect with db
@@ -37,6 +39,8 @@ app.use('/api/v1/patients', patientRoute);
 app.use('/api/v1/Dermatologist-reservation', doctorReservationRoute);
 app.use('/api/v1/laboratories-reservations', labReservationRoute);
 app.use('/api/v1/testServices', testServiceRoute);
+app.use('/api/v1/reports', reportRoute);
+app.use('/api/v1/results', resultRoute);
 app.use('/api/v1/scans', scanRoute);
 
 app.all('*', (req, res, next) => {

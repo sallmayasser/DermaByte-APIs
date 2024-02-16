@@ -2,19 +2,31 @@ const mongoose = require('mongoose');
 ///1)create schema
 const resultsSchema = new mongoose.Schema(
   {
-    TestName: {
+    testName: {
       type: String,
+      required: [true, "test name is required"]
     },
-    TestResult: {
+    testResult: {
       type: String,
+      required: [true, "test result is required"]
     },
-    TestDate: {
+    testDate: {
       type: String,
       default: Date.now(),
     },
-    labReservation: {
+    // labReservation: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: 'LabReservation',
+    //   required: [true,"test result must belong to lab result"]
+    // },
+    patient:
+    {
       type: mongoose.Schema.ObjectId,
-      ref: 'LabReservation',
+      ref: 'Patient',
+    },
+    lab: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Lab',
     },
   },
   { timestamps: true },

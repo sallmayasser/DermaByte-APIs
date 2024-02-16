@@ -1,12 +1,13 @@
 const express = require('express');
 const functions = require('../controllers/patientController');
 const validators = require('../utils/validators/patientValidator');
-const {
-  getAllReservations,
-} = require('../controllers/labReservationController');
+const {getAllReservations,} = require('../controllers/labReservationController');
 const DReservation = require('../controllers/doctorReservationController');
 const Scans = require('../controllers/scansController');
+const report = require('../controllers/reportController');
+const result = require('../controllers/resultController');
 const { createFilterObj } = require('../controllers/handlersFactory');
+
 
 const router = express.Router({ mergeParams: true });
 
@@ -32,4 +33,14 @@ router.route('/:id/laboratory-reservation').get((req, res, next) => {
 router.route('/:id/Scans').get((req, res, next) => {
   createFilterObj(req, res, next, 'patient');
 }, Scans.getScans);
+
+
+router.route('/:id/reports').get((req, res, next) => {
+  createFilterObj(req, res, next, 'patient');
+}, report.getReports);
+
+
+router.route('/:id/results').get((req, res, next) => {
+  createFilterObj(req, res, next, 'patient');
+}, result.getResults);
 module.exports = router;
