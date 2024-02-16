@@ -11,7 +11,7 @@ const resultsSchema = new mongoose.Schema({
     },
     TestDate:{
         type:String,
-        default:Date.now()+7*24*60*60*1000
+        default:Date.now()
     },
 
     labReservation: {

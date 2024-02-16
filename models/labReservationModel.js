@@ -1,22 +1,23 @@
 const mongoose = require('mongoose');
 ///1)create schema
-const labReservationsSchema = new mongoose.Schema({
+const labReservationsSchema = new mongoose.Schema(
+  {
     date: {
-        type: Date,
-        required: [true,"reservation date is required"]
+      type: Date,
+      default: Date.now(),
     },
-    patient: [{
+    patient: [
+      {
         type: mongoose.Schema.ObjectId,
-        ref: "Patient",
-
-    },],
+        ref: 'Patient',
+      },
+    ],
     lab: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Lab",
-
+      type: mongoose.Schema.ObjectId,
+      ref: 'Lab',
     },
-
-
-}, { timestamps: true })
+  },
+  { timestamps: true },
+);
 ///2)create model
 module.exports = mongoose.model("LabReservation", labReservationsSchema);
