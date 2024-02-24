@@ -6,10 +6,7 @@ const validatorMiddleware = require('../../middleware/validatorMiddleware');
 exports.createReportValidator = [
     check('scan')
         .notEmpty()
-        .withMessage('scan is required'),
-    check('medicine')
-        .notEmpty()
-        .withMessage('medicine is required'),
+        .withMessage('scan is required'),      
     check('requestedTest')
         .optional()
         .isArray()

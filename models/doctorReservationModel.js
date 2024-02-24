@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 ///1)create schema
 const doctorReservationsSchema = new mongoose.Schema(
@@ -26,19 +25,19 @@ const doctorReservationsSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-doctorReservationsSchema.pre(/^find/, function (next){
-    this.populate({
-        path: 'patient',
-        select: "firstName lastName ",
-    })
-    next()
+doctorReservationsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'patient',
+    select: 'firstName lastName ',
+  });
+  next();
 });
-doctorReservationsSchema.pre(/^find/, function (next){
-    this.populate({
-        path: 'dermatologist',
-        select: "firstName lastName ",
-    })
-    next()
+doctorReservationsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'dermatologist',
+    select: 'firstName lastName ',
+  });
+  next();
 });
 
 doctorReservationsSchema.pre(/^find/, function (next) {
@@ -49,4 +48,4 @@ doctorReservationsSchema.pre(/^find/, function (next) {
   next();
 });
 ///2)create model
-module.exports = mongoose.model("DoctorReservation", doctorReservationsSchema);
+module.exports = mongoose.model('DoctorReservation', doctorReservationsSchema);
