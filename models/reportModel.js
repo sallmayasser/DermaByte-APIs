@@ -7,7 +7,6 @@ const reportsSchema = new mongoose.Schema({
     },
     medicine:{
         type:String,
-        required:[true, "medication is required "]
     },
     requestedTest:[{
         type:String,
