@@ -16,10 +16,6 @@ const scansSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',
     },
-    report: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Report',
-    },
   },
   { timestamps: true },
 );
