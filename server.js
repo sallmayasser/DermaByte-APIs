@@ -1,6 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const cors = require('cors');
+
 const ApiError = require('./utils/apiError');
 const globalError = require('./middleware/errorMiddleware');
 const dbConnection = require('./Configs/Database');
@@ -24,6 +26,7 @@ dbConnection();
 ///express app
 const app = express();
 
+
 /////middleware
 app.use(express.json());
 if (process.env.Node_ENV === 'development') {
@@ -32,6 +35,7 @@ if (process.env.Node_ENV === 'development') {
 }
 
 ////Mount Routes
+app.options('*', cors());
 
 app.use('/api/v1/dermatologists', dermatologistRoute);
 app.use('/api/v1/labs', labRoute);
