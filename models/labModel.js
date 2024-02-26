@@ -45,13 +45,13 @@ const labsSchema = new mongoose.Schema(
     passwordConfirm: {
       type: String,
       required: [true, 'Please confirm your password'],
-      validate: {
-        // This only works on CREATE and SAVE!!!
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: 'Passwords are not the same!',
-      },
+      // validate: {
+      //   // This only works on CREATE and SAVE!!!
+      //   validator: function (el) {
+      //     return el === this.password;
+      //   },
+      //   message: 'Passwords are not the same!',
+      // },
     },
     state: {
       type: Boolean,
@@ -68,11 +68,11 @@ labsSchema.virtual('patients', {
   localField: '_id',
   foreignField: 'lab',
 });
-labsSchema.virtual('tests', {
-  ref: 'TestService',
-  localField: '_id',
-  foreignField: 'lab',
-});
+// labsSchema.virtual('tests', {
+//   ref: 'TestService',
+//   localField: '_id',
+//   foreignField: 'lab',
+// });
 
 ///2)create model
 module.exports = mongoose.model('Lab', labsSchema);

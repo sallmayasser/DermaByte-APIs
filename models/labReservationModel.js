@@ -6,16 +6,15 @@ const labReservationsSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    patient: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Patient',
-      },
-    ],
-    lab: {
+    patient: {
       type: mongoose.Schema.ObjectId,
-      ref: 'Lab',
+      ref: 'Patient',
     },
+
+    // lab: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: 'Lab',
+    // },
     test: [
       {
         type: mongoose.Schema.ObjectId,
@@ -30,10 +29,17 @@ const labReservationsSchema = new mongoose.Schema(
 labReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'test',
-    select: 'name cost',
+    select: 'name cost -lab -_id',
   });
   next();
 });
 
+labReservationsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'patient',
+    select: 'firstName lastName  -_id',
+  });
+  next();
+});
 ///2)create model
 module.exports = mongoose.model('LabReservation', labReservationsSchema);

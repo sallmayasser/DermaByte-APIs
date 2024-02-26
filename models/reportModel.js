@@ -35,5 +35,20 @@ const reportsSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
+reportsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'result',
+    select: 'testName testResult  -_id',
+  });
+  next();
+});
+
+reportsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'dermatologist',
+    select: ' firstName lastName  -_id',
+  });
+  next();
+});
 ///2)create model
 module.exports = mongoose.model("Report", reportsSchema);

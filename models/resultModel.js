@@ -4,11 +4,11 @@ const resultsSchema = new mongoose.Schema(
   {
     testName: {
       type: String,
-      required: [true, "test name is required"]
+      required: [true, 'test name is required'],
     },
     testResult: {
       type: String,
-      required: [true, "test result is required"]
+      required: [true, 'test result is required'],
     },
     testDate: {
       type: String,
@@ -19,8 +19,7 @@ const resultsSchema = new mongoose.Schema(
     //   ref: 'LabReservation',
     //   required: [true,"test result must belong to lab result"]
     // },
-    patient:
-    {
+    patient: {
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',
     },
@@ -31,5 +30,20 @@ const resultsSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+resultsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'patient',
+    select: 'firstName lastName -_id',
+  });
+  next();
+});
+resultsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'lab',
+    select: 'name -_id',
+  });
+  next();
+});
+
 ///2)create model
 module.exports = mongoose.model('Result', resultsSchema);
