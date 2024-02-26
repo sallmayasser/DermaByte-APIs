@@ -17,5 +17,13 @@ const testServiceSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+testServiceSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'lab',
+    select: 'name -_id',
+  });
+  next();
+});
 ///2)create model
 module.exports = mongoose.model('TestService', testServiceSchema);
