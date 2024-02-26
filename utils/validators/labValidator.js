@@ -41,10 +41,7 @@ exports.createLabValidator = [
         .withMessage('Please confirm your password')
         .isLength({ min: 8 })
         .withMessage('must be at least 8 chars'),
-    check('state')
-        .isBoolean()
-        .withMessage("state must be boolean"),
-
+    
     validatorMiddleware,
 ];
 
