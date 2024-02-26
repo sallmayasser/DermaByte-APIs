@@ -19,7 +19,7 @@ exports.createPatientValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-  
+
   check('LastName')
     .notEmpty()
     .withMessage('Patient required')
@@ -31,13 +31,13 @@ exports.createPatientValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-  
+
   check('age')
     .notEmpty()
     .withMessage('Age is required')
     .isNumeric()
     .withMessage('age  must be a number')
-    .isLength({ max: 99})
+    .isLength({ max: 99 })
     .withMessage('age must be below or equal 99'),
 
   check('city')
@@ -47,7 +47,7 @@ exports.createPatientValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-  
+
   check('country')
     .notEmpty()
     .withMessage('country is required')
@@ -55,6 +55,18 @@ exports.createPatientValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+
+  check('password')
+    .notEmpty()
+    .withMessage('Please provide your password')
+    .isLength({ min: 8 })
+    .withMessage('must be at least 8 chars'),
+
+  check('passwordConfirm')
+    .notEmpty()
+    .withMessage('Please confirm your password')
+    .isLength({ min: 8 })
+    .withMessage('must be at least 8 chars'),
   validatorMiddleware,
 ];
 
