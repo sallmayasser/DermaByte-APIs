@@ -56,9 +56,7 @@ exports.createDermatologistValidator = [
         .withMessage("session price must not be empty")
         .isNumeric()
         .withMessage("cost must be numeric"),
-    check('state')
-        .isBoolean()
-        .withMessage("state must be boolean"),
+   
 
     validatorMiddleware,
 ];
