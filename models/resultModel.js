@@ -40,7 +40,7 @@ resultsSchema.pre(/^find/, function (next) {
 resultsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'lab',
-    select: 'name -_id',
+    select: 'photo name -_id',
   });
   next();
 });

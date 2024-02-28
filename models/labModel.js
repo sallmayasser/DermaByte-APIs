@@ -8,6 +8,9 @@ const labsSchema = new mongoose.Schema(
       minlenth: [2, 'too short  name'],
       maxlength: [32, 'too long  name'],
     },
+    photo: {
+      type: String,
+    },
 
     mobile: {
       type: String,

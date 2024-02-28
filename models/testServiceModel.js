@@ -21,7 +21,7 @@ const testServiceSchema = new mongoose.Schema(
 testServiceSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'lab',
-    select: 'name -_id',
+    select: ' photo name -_id',
   });
   next();
 });
