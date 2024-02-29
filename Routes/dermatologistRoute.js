@@ -4,6 +4,7 @@ const {getDermatologists,createDermatologist,getDermatologist,updateDermatologis
 const { getAllReservations} = require('../controllers/doctorReservationController');
 const { createFilterObj } = require('../controllers/handlersFactory');
 const report = require('../controllers/reportController');
+const { getRequestedTests } = require('../controllers/requestedTestController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -24,7 +25,12 @@ router.route('/:id/Dermatologist-reservation').get((req, res, next) => {
 
 router.route('/:id/reports').get((req, res, next) => {
     createFilterObj(req, res, next, 'dermatologist');
-  }, report.getReports);
+}, report.getReports);
+  
+
+router.route('/:id/requested-tests').get((req, res, next) => {
+  createFilterObj(req, res, next, 'dermatologist');
+}, getRequestedTests);
   module.exports = router;
   
 

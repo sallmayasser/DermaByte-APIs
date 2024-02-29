@@ -35,6 +35,27 @@ exports.updateOne = (Model) =>
     res.status(200).json({ data: document });
   });
 
+  exports.AppendOne = (Model) =>
+    asyncHandler(async (req, res, next) => {
+      const document = await Model.findByIdAndUpdate(
+        req.params.id,
+        { $push: req.body },
+        {
+          new: false,
+          returnOriginal: true,
+        },
+      );
+
+      if (!document) {
+        return next(
+          new ApiError(`No document for this id ${req.params.id}`, 404),
+        );
+      }
+      // Trigger "save" event when update document
+      document.save();
+      res.status(200).json({ data: document });
+    });
+    
 exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
     const newDoc = await Model.create(req.body);

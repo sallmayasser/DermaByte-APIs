@@ -11,7 +11,7 @@ const resultsSchema = new mongoose.Schema(
       required: [true, 'test result is required'],
     },
     testDate: {
-      type: String,
+      type: Date,
       default: Date.now(),
     },
     // labReservation: {
@@ -30,13 +30,7 @@ const resultsSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-resultsSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'patient',
-    select: 'firstName lastName -_id',
-  });
-  next();
-});
+
 resultsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'lab',

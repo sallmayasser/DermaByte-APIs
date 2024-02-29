@@ -21,13 +21,6 @@ exports.createFilterObj = (req, res, next) => {
   next();
 };
 
-// exports.createDermatologistFilter = (req, res, next) => {
-//   let filterObject = {};
-//   if (req.params.id) filterObject = { dermatologist: req.params.id };
-//   req.filterObj = filterObject;
-//   console.log(filterObject);
-//   next();
-// };
 
 exports.setPatientIdToBody = (req, res, next) => {
   // Nested route (Create)

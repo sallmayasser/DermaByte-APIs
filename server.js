@@ -19,7 +19,7 @@ const testServiceRoute = require('./Routes/testServiceRoute');
 const reportRoute = require('./Routes/reportRoute');
 const resultRoute = require('./Routes/resultRoute');
 const scanRoute = require('./Routes/scansRoutes');
-
+const requestedTestsRoute = require('./Routes/requestedTestRoutes');
 // connect with db
 dbConnection();
 
@@ -46,7 +46,7 @@ app.use('/api/v1/testServices', testServiceRoute);
 app.use('/api/v1/reports', reportRoute);
 app.use('/api/v1/results', resultRoute);
 app.use('/api/v1/scans', scanRoute);
-
+app.use('/api/v1/requested-tests', requestedTestsRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });

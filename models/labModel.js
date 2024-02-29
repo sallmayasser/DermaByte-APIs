@@ -71,11 +71,11 @@ labsSchema.virtual('patients', {
   localField: '_id',
   foreignField: 'lab',
 });
-// labsSchema.virtual('tests', {
-//   ref: 'TestService',
-//   localField: '_id',
-//   foreignField: 'lab',
-// });
+labsSchema.virtual('tests', {
+  ref: 'TestService',
+  localField: '_id',
+  foreignField: 'lab',
+});
 
 ///2)create model
 module.exports = mongoose.model('Lab', labsSchema);
