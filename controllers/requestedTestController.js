@@ -2,7 +2,7 @@ const RequestedTest = require('../models/requestedTestModel');
 const factory = require('./handlersFactory');
 
 exports.getRequestedTests = factory.getAll(RequestedTest);
-exports.getRequestedTest = factory.getOne(RequestedTest);
+exports.getRequestedTest = factory.getOne(RequestedTest,);
 exports.createRequestedTest = factory.createOne(RequestedTest);
 exports.updateRequestedTest = factory.updateOne(RequestedTest);
 exports.deleteRequestedTest = factory.deleteOne(RequestedTest);

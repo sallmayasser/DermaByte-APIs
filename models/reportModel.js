@@ -18,11 +18,6 @@ const reportsSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    // doctorReservation: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: "DoctorReservation",
-    //     required:[true, "report must belong to reservtion "]
-    // },
     patient: {
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',
@@ -31,23 +26,25 @@ const reportsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Dermatologist',
     },
-    tests: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'RequestedTest',
-      },
-    ],
+    tests:
+      [{
+      testName: { type: String },
+      requestedAt: {
+          type: Date,
+          default:Date.now() }
+      },],
+    
   },
   { timestamps: true },
 );
 
-reportsSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'tests',
-    select: ' testName createdAt updatedAt  -_id',
-  });
-  next();
-});
+// reportsSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'tests',
+//     select: ' testName createdAt updatedAt  -_id',
+//   });
+//   next();
+// });
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',
@@ -59,10 +56,19 @@ reportsSchema.pre(/^find/, function (next) {
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
-    select: ' firstName lastName  -_id',
+    select: ' firstName lastName age photo  ',
   });
   next();
 });
+
+
+reportsSchema.virtual('ReqTests', {
+  ref: 'RequestedTest',
+  localField: 'patientId',
+  foreignField: 'patient',
+  justOne: false,
+});
+
 
 ///2)create model
 module.exports = mongoose.model('Report', reportsSchema);

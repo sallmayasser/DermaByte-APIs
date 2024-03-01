@@ -71,7 +71,7 @@ labsSchema.virtual('patients', {
   localField: '_id',
   foreignField: 'lab',
 });
-labsSchema.virtual('tests', {
+labsSchema.virtual('Services', {
   ref: 'TestService',
   localField: '_id',
   foreignField: 'lab',

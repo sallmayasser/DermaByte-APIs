@@ -11,10 +11,10 @@ const labReservationsSchema = new mongoose.Schema(
       ref: 'Patient',
     },
 
-    // lab: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'Lab',
-    // },
+    lab: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Lab',
+    },
     test: [
       {
         type: mongoose.Schema.ObjectId,

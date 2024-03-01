@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 ///1)create schema
 const PatientsSchema = new mongoose.Schema(
     {
+        photo: {
+            type:String
+        },
         firstName: {
             type: String,
             required: [true, 'Name is required'],
@@ -75,6 +78,12 @@ PatientsSchema.virtual('labs', {
     ref: 'LabReservation',
     localField: '_id',
     foreignField: 'patient',
+});
+
+PatientsSchema.virtual('Tests', {
+  ref: 'RequestedTest',
+  localField: '_id',
+  foreignField: 'patient',
 });
 ///2)create model
 module.exports = mongoose.model("Patient", PatientsSchema);
