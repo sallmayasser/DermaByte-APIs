@@ -14,6 +14,10 @@ const testServiceSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'test cost is requied'],
     },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
   { timestamps: true },
 );

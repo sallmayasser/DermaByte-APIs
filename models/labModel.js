@@ -60,10 +60,16 @@ const labsSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
-  { timestamps: true,
-    toJSON:{virtuals:true},
-    toObject:{virtuals:true} },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 
 labsSchema.virtual('patients', {

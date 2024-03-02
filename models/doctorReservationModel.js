@@ -27,6 +27,10 @@ const doctorReservationsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Scans',
     },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
     // tests: [
     //   {
     //     type: mongoose.Schema.ObjectId,

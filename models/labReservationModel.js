@@ -21,6 +21,10 @@ const labReservationsSchema = new mongoose.Schema(
         ref: 'TestService',
       },
     ],
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
 
   { timestamps: true },

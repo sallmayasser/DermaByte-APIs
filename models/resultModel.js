@@ -27,6 +27,10 @@ const resultsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Lab',
     },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
   { timestamps: true },
 );

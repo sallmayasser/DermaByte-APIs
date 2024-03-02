@@ -15,6 +15,10 @@ const requestedTestsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Dermatologist',
     },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
   { timestamps: true },
 );

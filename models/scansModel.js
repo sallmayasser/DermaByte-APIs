@@ -16,6 +16,10 @@ const scansSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',
     },
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
   { timestamps: true },
 );

@@ -26,14 +26,19 @@ const reportsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Dermatologist',
     },
-    tests:
-      [{
-      testName: { type: String },
-      requestedAt: {
+    tests: [
+      {
+        testName: { type: String },
+        requestedAt: {
           type: Date,
-          default:Date.now() }
-      },],
-    
+          default: Date.now(),
+        },
+      },
+    ],
+    slug: {
+      type: String,
+      lowercase: true,
+    },
   },
   { timestamps: true },
 );
