@@ -8,7 +8,7 @@ class ApiFeatures {
 
     filter() {
         const queryStringObj = { ...this.queryString }
-        const excludesFields = ["page", "sort", "limit", "fields"]
+        const excludesFields = ["page", "sort", "limit", "fields","keyword"]
         excludesFields.forEach((field) => delete queryStringObj[field]);
         //Apply filteration using [gte,gt,lte,lt]
         let queryStr = JSON.stringify(queryStringObj)
@@ -22,7 +22,7 @@ class ApiFeatures {
             const sortBy = this.queryString.sort.split(',').join(' ')
             this.mongooseQuery = this.mongooseQuery.sort(sortBy);
         } else {
-            this.mongooseQuery = this.mongooseQuery.sort('-createAt');
+            this.mongooseQuery = this.mongooseQuery.sort('-createdAt');
         }
         return this;
     }
@@ -40,20 +40,20 @@ class ApiFeatures {
 
     search(modelName) {
         if (this.queryString.keyword) {
-          let query = {};
-          if (modelName ==='Products') {
-            query.$or = [
-              { title: { $regex: this.queryString.keyword, $options: 'i' } },
-              { description: { $regex: this.queryString.keyword, $options: 'i' } },
-            ];
-          } else  {
-            query = { name: { $regex: this.queryString.keyword, $options: 'i' } };
-          }
-    
-          this.mongooseQuery = this.mongooseQuery.find(query);
+            let query = {};
+            if (modelName === 'Lab' || modelName === 'TestService') {
+                query = { name: { $regex: this.queryString.keyword, $options: 'i' } };
+            } else {
+                query.$or = [
+                    { firstName: { $regex: this.queryString.keyword, $options: "i" } },
+                    { lastName: { $regex: this.queryString.keyword, $options: "i" } },
+                ];
+            }
+            this.mongooseQuery = this.mongooseQuery.find(query);
         }
         return this;
-      }
+        
+    }
 
     paginate(countDocuments) {
         const page = this.queryString.page * 1 || 1;
