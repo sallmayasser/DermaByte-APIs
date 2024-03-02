@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
+const { Query } = require('mongoose');
 const ApiError = require('../utils/apiError');
 const ApiFeatures = require('../utils/apiFeatures');
-const { Query } = require('mongoose');
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
@@ -79,7 +79,7 @@ exports.getOne = (Model, populationOpt) =>
     res.status(200).json({ data: document });
   });
 
-exports.getAll = (Model, modelName = '') =>
+exports.getAll = (Model, populationOpt,modelName = '') =>
   asyncHandler(async (req, res) => {
     let filter = {};
     if (req.filterObj) {
@@ -94,11 +94,13 @@ exports.getAll = (Model, modelName = '') =>
       .search(modelName)
       .limitFields()
       .sort();
-
+      if (populationOpt) {
+        apiFeatures.mongooseQuery = apiFeatures.mongooseQuery.populate(populationOpt);
+      }
     // Execute query
     const { mongooseQuery, paginationResult } = apiFeatures;
     const documents = await mongooseQuery;
-
+    
     res
       .status(200)
       .json({ results: documents.length, paginationResult, data: documents });
