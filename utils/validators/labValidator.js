@@ -1,5 +1,8 @@
-const { check } = require('express-validator');
+const slugify = require('slugify');
+const bcrypt = require('bcryptjs');
+const { check, body } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
+const Lab = require('../../models/labModel');
 
 exports.createLabValidator = [
   check('name')
@@ -8,33 +11,52 @@ exports.createLabValidator = [
     .isLength({ max: 32 })
     .withMessage('must be at least 2 chars')
     .notEmpty()
-    .withMessage('name is required'),
+    .withMessage('name is required')
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
 
-  check('mobile')
-    .optional()
-    .isLength({ min: 11 })
-    .withMessage('must be at least 11 chars')
-    .isLength({ max: 11 })
-    .withMessage('must be below 11 chars'),
   check('location').optional(),
   check('city').notEmpty().withMessage('city is required'),
   check('country').notEmpty().withMessage('city is required'),
   check('license').notEmpty(),
-  check('email').notEmpty().withMessage('Please provide your email'),
+  check('email')
+    .notEmpty()
+    .withMessage('Email required')
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Lab.findOne({ email: val }).then((lab) => {
+        if (lab) {
+          return Promise.reject(new Error('E-mail already in lab'));
+        }
+      }),
+    ),
+
   check('password')
     .notEmpty()
-    .withMessage('Please provide your password')
-    .isLength({ min: 8 })
-    .withMessage('must be at least 8 chars'),
+    .withMessage('Password required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters')
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error('Password Confirmation incorrect');
+      }
+      return true;
+    }),
+
   check('passwordConfirm')
     .notEmpty()
-    .withMessage('Please confirm your password')
-    .isLength({ min: 8 })
-    .withMessage('must be at least 8 chars'),
+    .withMessage('Password confirmation required'),
 
-  validatorMiddleware,
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
+
+  check('profilePic').optional(),
 ];
-
 exports.getLabValidator = [
   check('id').isMongoId().withMessage('Invalid ID formate'),
   validatorMiddleware,
@@ -42,11 +64,78 @@ exports.getLabValidator = [
 
 exports.updateLabValidator = [
   check('id').isMongoId().withMessage('Invalid ID formate'),
+  check('email')
+    .notEmpty()
+    .withMessage('Email required')
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Lab.findOne({ email: val }).then((lab) => {
+        if (lab) {
+          return Promise.reject(new Error('E-mail already in lab'));
+        }
+      }),
+    ),
+
+  check('password')
+    .notEmpty()
+    .withMessage('Password required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters')
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error('Password Confirmation incorrect');
+      }
+      return true;
+    }),
+
+  check('passwordConfirm')
+    .notEmpty()
+    .withMessage('Password confirmation required'),
+
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
   validatorMiddleware,
 ];
 
 exports.deleteLabValidator = [
   check('id').isMongoId().withMessage('Invalid ID formate'),
+  validatorMiddleware,
+];
+
+exports.changelabPasswordValidator = [
+  check('id').isMongoId().withMessage('Invalid lab id format'),
+  body('currentPassword')
+    .notEmpty()
+    .withMessage('You must enter your current password'),
+  body('passwordConfirm')
+    .notEmpty()
+    .withMessage('You must enter the password confirm'),
+  body('password')
+    .notEmpty()
+    .withMessage('You must enter new password')
+    .custom(async (val, { req }) => {
+      // 1) Verify current password
+      const lab = await Lab.findById(req.params.id);
+      if (!lab) {
+        throw new Error('There is no lab for this id');
+      }
+      const isCorrectPassword = await bcrypt.compare(
+        req.body.currentPassword,
+        lab.password,
+      );
+      if (!isCorrectPassword) {
+        throw new Error('Incorrect current password');
+      }
+
+      // 2) Verify password confirm
+      if (val !== req.body.passwordConfirm) {
+        throw new Error('Password Confirmation incorrect');
+      }
+      return true;
+    }),
   validatorMiddleware,
 ];

@@ -14,6 +14,6 @@ router.route('/:id')
     .put(updateReportValidator, updateReport)
     .delete (deleteReportValidator, deleteReport);
 router
-  .route('/:id/test')
+  .route('/test/:id')
   .put(updateReportValidator, appendReport)
 module.exports = router;

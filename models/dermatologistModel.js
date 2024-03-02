@@ -1,90 +1,86 @@
 const mongoose = require('mongoose');
-// const doctorRervation =require("./doctorReservationModel")
+const bcrypt = require('bcryptjs');
+
 ///1)create schema
-const dermatologistsSchema = new mongoose.Schema({
+const dermatologistsSchema = new mongoose.Schema(
+  {
     firstName: {
-        type: String,
-        required: [true, 'Name required'],
-        minlenth: [2, 'too short  name'],
-        maxlength: [32, 'too long  name']
+      type: String,
+      required: [true, 'Name required'],
+      minlenth: [2, 'too short  name'],
+      maxlength: [32, 'too long  name'],
     },
     lastName: {
-        type: String,
-        required: [true, 'Name required'],
-        minlength: [2, 'too short  name'],
-        maxlength: [32, 'too long  name']
+      type: String,
+      required: [true, 'Name required'],
+      minlength: [2, 'too short  name'],
+      maxlength: [32, 'too long  name'],
     },
     mobile: {
-        type: String,
-        min: [11, 'incorrect mobile number'],
-        max: [11, "incorrect mobile number "],
+      type: String,
+      min: [11, 'incorrect mobile number'],
+      max: [11, 'incorrect mobile number '],
     },
     location: {
-        type: String
-
+      type: String,
     },
     city: {
-        type: String,
-        required: [true, "city is required"]
+      type: String,
+      required: [true, 'city is required'],
     },
     country: {
-        type: String,
-        required: [true, "country is required"]
+      type: String,
+      required: [true, 'country is required'],
     },
     specialization: {
-        type: String,
-        default: "dermatology"
+      type: String,
+      default: 'dermatology',
     },
     license: {
-        type: String,
-        required: [true, "license is required"]
+      type: String,
+      required: [true, 'license is required'],
     },
     email: {
-        type: String,
-        required: [true, 'Please provide your email'],
-        unique: true,
-        lowercase: true,
+      type: String,
+      required: [true, 'Please provide your email'],
+      unique: true,
+      lowercase: true,
     },
     password: {
-        type: String,
-        required: [true, 'Please provide a password'],
-        minlength: 8,
-        select: false
-    },
-    passwordConfirm: {
-        type: String,
-        required: [true, 'Please confirm your password'],
-        // validate: {
-        //     // This only works on CREATE and SAVE!!!
-        //     validator: function (el) {
-        //         return el === this.password;
-        //     },
-        //     message: 'Passwords are not the same!'
-        // }
+      type: String,
+      required: [true, 'password required'],
+      minlength: [6, 'Too short password'],
     },
     profilePic: {
-        type: String,
+      type: String,
     },
-    sessionCost:{
-        type:Number,
-        required: [true, "Session cost is required"]
+    sessionCost: {
+      type: Number,
+      required: [true, 'Session cost is required'],
     },
 
     state: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-    slug:{
-        type: String,
-        lowercase:true
-    }
-    
+    slug: {
+      type: String,
+      lowercase: true,
+    },
+  },
+  {
+    timestamps: true,
 
-}, {  timestamps: true ,
-    
-    toJSON:{virtuals:true},
-    toObject:{virtuals:true}
-})
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
+);
+dermatologistsSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  // Hashing user password
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
 
 dermatologistsSchema.virtual('reservations', {
     ref: 'DoctorReservation',

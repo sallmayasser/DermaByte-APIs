@@ -1,6 +1,7 @@
 const slugify = require('slugify');
 const { check, body } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
+const Patient =require('../../models/patientModel')
 
 exports.getPatientValidator = [
   check('id').isMongoId().withMessage('Invalid Patient id format'),
@@ -56,18 +57,39 @@ exports.createPatientValidator = [
       return true;
     }),
 
+  check('email')
+    .notEmpty()
+    .withMessage('Email required')
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Patient.findOne({ email: val }).then((patient) => {
+        if (patient) {
+          return Promise.reject(new Error('E-mail already in patient'));
+        }
+      }),
+    ),
+
   check('password')
     .notEmpty()
-    .withMessage('Please provide your password')
-    .isLength({ min: 8 })
-    .withMessage('must be at least 8 chars'),
+    .withMessage('Password required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters')
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error('Password Confirmation incorrect');
+      }
+      return true;
+    }),
 
   check('passwordConfirm')
     .notEmpty()
-    .withMessage('Please confirm your password')
-    .isLength({ min: 8 })
-    .withMessage('must be at least 8 chars'),
-  validatorMiddleware,
+    .withMessage('Password confirmation required'),
+
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 ];
 
 exports.updatePatientValidator = [
@@ -78,6 +100,40 @@ exports.updatePatientValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+  check('email')
+    .notEmpty()
+    .withMessage('Email required')
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Patient.findOne({ email: val }).then((patient) => {
+        if (patient) {
+          return Promise.reject(new Error('E-mail already in patient'));
+        }
+      }),
+    ),
+
+  check('password')
+    .notEmpty()
+    .withMessage('Password required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters')
+    .custom((password, { req }) => {
+      if (password !== req.body.passwordConfirm) {
+        throw new Error('Password Confirmation incorrect');
+      }
+      return true;
+    }),
+
+  check('passwordConfirm')
+    .notEmpty()
+    .withMessage('Password confirmation required'),
+
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
+
   validatorMiddleware,
 ];
 

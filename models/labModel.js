@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 ///1)create schema
 const labsSchema = new mongoose.Schema(
   {
@@ -40,21 +41,8 @@ const labsSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Please provide a password'],
-      minlength: 8,
-      select: false,
-    },
-
-    passwordConfirm: {
-      type: String,
-      required: [true, 'Please confirm your password'],
-      // validate: {
-      //   // This only works on CREATE and SAVE!!!
-      //   validator: function (el) {
-      //     return el === this.password;
-      //   },
-      //   message: 'Passwords are not the same!',
-      // },
+      required: [true, 'password required'],
+      minlength: [6, 'Too short password'],
     },
     state: {
       type: Boolean,
@@ -81,6 +69,13 @@ labsSchema.virtual('Services', {
   ref: 'TestService',
   localField: '_id',
   foreignField: 'lab',
+});
+
+labsSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  // Hashing user password
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
 });
 
 ///2)create model
