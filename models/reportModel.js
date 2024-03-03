@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 const reportsSchema = new mongoose.Schema(
   {
     scan: {
-      type: String,
-      required: [true, 'scan is required '],
+      type: mongoose.Schema.ObjectId,
+      ref: 'Scans',
+      required:true,
     },
-    medicine: {
-      type: String,
-      default: null,
-    },
+    medicine: [
+      {
+        type: String,
+        default: null,
+      },
+    ],
     treatmentPlan: {
       type: String,
       default: null,
@@ -65,7 +68,13 @@ reportsSchema.pre(/^find/, function (next) {
   });
   next();
 });
-
+reportsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'scan',
+    select: ' scanDate diseaseName diseasePhoto ',
+  });
+  next();
+});
 
 reportsSchema.virtual('ReqTests', {
   ref: 'RequestedTest',
