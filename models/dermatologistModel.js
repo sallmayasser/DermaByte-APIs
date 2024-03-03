@@ -16,6 +16,11 @@ const dermatologistsSchema = new mongoose.Schema(
       minlength: [2, 'too short  name'],
       maxlength: [32, 'too long  name'],
     },
+    gender: {
+      type: String,
+      required: [true, 'gender required'],
+    },
+    
     mobile: {
       type: String,
       min: [11, 'incorrect mobile number'],

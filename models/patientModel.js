@@ -38,6 +38,10 @@ const PatientsSchema = new mongoose.Schema(
       type: String,
       required: [true, 'country is required'],
     },
+    gender: {
+      type: String,
+      required: [true, 'gender required'],
+    },
     email: {
       type: String,
       required: [true, 'Please provide your email'],

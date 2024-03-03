@@ -19,6 +19,7 @@ const labsSchema = new mongoose.Schema(
     },
     location: {
       type: String,
+      required: [true, 'address is required'],
     },
     city: {
       type: String,
