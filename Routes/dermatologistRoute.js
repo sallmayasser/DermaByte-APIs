@@ -1,6 +1,6 @@
 const express = require('express');
 const {getDermatologistValidator,createDermatologistValidator,updateDermatologistValidator,deleteDermatologistValidator, changedermatologistPasswordValidator,} = require('../utils/validators/dermatologistValidator');
-const {getDermatologists,createDermatologist,getDermatologist,updateDermatologist,deleteDermatologist,} = require('../controllers/dermatologistController');
+const {uploadDermatologistImage,resizeDermatologistImage,getDermatologists,createDermatologist,getDermatologist,updateDermatologist,deleteDermatologist,} = require('../controllers/dermatologistController');
 const { getAllReservations} = require('../controllers/doctorReservationController');
 const {
   createFilterObj,
@@ -13,7 +13,7 @@ const Dermatologist = require('../models/dermatologistModel');
 const router = express.Router({ mergeParams: true });
 
 router.route('/').get(getDermatologists)
-    .post( createDermatologistValidator,createDermatologist);
+    .post( uploadDermatologistImage,resizeDermatologistImage,createDermatologistValidator,createDermatologist);
 
 router
   .route('/:id')

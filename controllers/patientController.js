@@ -1,8 +1,33 @@
 const asyncHandler = require('express-async-handler');
+const sharp = require('sharp');
+const { v4: uuidv4 } = require('uuid');
+
 const handlers = require('./handlersFactory');
 const Patient = require('../models/patientModel');
 const ApiError = require('../utils/apiError');
+const{uploadSingleImage }=require('../middleware/uploadImageMiddleware');
 
+
+// Upload single image
+exports.uploadPatientImage =uploadSingleImage('profilePic');
+
+// Image processing
+exports.resizePatientImage = asyncHandler(async (req, res, next) => {
+  const filename = `patient-${uuidv4()}-${Date.now()}.jpeg`;
+if(req.file){
+  await sharp(req.file.buffer)
+    .resize(600, 600)
+    .toFormat('jpeg')
+    .jpeg({ quality: 95 })
+    .toFile(`uploads/patients/${filename}`);
+
+  // Save image into our db 
+  
+  //  req.body.license = filename;
+   req.body.profilePic= filename;
+}
+  next();
+});
 exports.getAllPatients = handlers.getAll(Patient);
 
 exports.getPatient = handlers.getOne(Patient);

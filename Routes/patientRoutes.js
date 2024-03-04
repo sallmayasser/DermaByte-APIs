@@ -15,7 +15,7 @@ const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .get(functions.getAllPatients)
-  .post(validators.createPatientValidator ,functions.createPatient);
+  .post(functions.uploadPatientImage ,functions.resizePatientImage,validators.createPatientValidator ,functions.createPatient);
 
 router
   .route('/:id')

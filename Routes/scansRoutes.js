@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(functions.setPatientIdToBody, functions.createScan)
+  .post(functions.uploadScanImage,functions.resizeScanImage,functions.setPatientIdToBody, functions.createScan)
   .get(functions.getScans);
 
 router

@@ -6,7 +6,8 @@ const {
   deleteLabValidator,
   changelabPasswordValidator,
 } = require('../utils/validators/labValidator');
-const {
+const { uploadLabImage,
+  resizeLabImage,
   getLabs,
   createLab,
   getLab,
@@ -28,7 +29,7 @@ const router = express.Router();
 
 router.use('/:labId/tests', testServiceRoute);
 
-router.route('/').get(getLabs).post(createLabValidator, createLab);
+router.route('/').get(getLabs).post(uploadLabImage,resizeLabImage,createLabValidator, createLab);
 
 router
   .route('/:id')

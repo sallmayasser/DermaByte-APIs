@@ -9,7 +9,7 @@ const labsSchema = new mongoose.Schema(
       minlenth: [2, 'too short  name'],
       maxlength: [32, 'too long  name'],
     },
-    photo: {
+    profilePic: {
       type: String,
     },
 
@@ -30,7 +30,7 @@ const labsSchema = new mongoose.Schema(
       required: [true, 'country is required'],
     },
     license: {
-      type: String,
+      type: [String],
       required: [true, 'license is required'],
     },
 
@@ -78,6 +78,27 @@ labsSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
-
+const setImageURL = (doc) => {
+  if (doc.profilePic) {
+    const imageUrl = `${process.env.BASE_URL}/labs/${doc.profilePic}`;
+    doc.profilePic = imageUrl;
+  }
+  if (doc.license) {
+    const imagesList = [];
+    doc.license.forEach((image) => {
+      const imageUrl = `${process.env.BASE_URL}/labs/${image}`;
+      imagesList.push(imageUrl);
+    });
+    doc.license = imagesList;
+  }
+};
+// findOne, findAll and update
+labsSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
+// create
+labsSchema.post('save', (doc) => {
+  setImageURL(doc);
+});
 ///2)create model
 module.exports = mongoose.model('Lab', labsSchema);

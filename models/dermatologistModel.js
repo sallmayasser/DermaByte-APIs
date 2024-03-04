@@ -42,7 +42,7 @@ const dermatologistsSchema = new mongoose.Schema(
       default: 'dermatology',
     },
     license: {
-      type: String,
+      type:[String],
       required: [true, 'license is required'],
     },
     email: {
@@ -92,6 +92,27 @@ dermatologistsSchema.virtual('reservations', {
     localField: '_id',
     foreignField: 'dermatologist',
   });
-  
+  const setImageURL = (doc) => {
+    if (doc.profilePic) {
+      const imageUrl = `${process.env.BASE_URL}/dermatologists/${doc.profilePic}`;
+      doc.profilePic = imageUrl;
+    }
+    if (doc.license) {
+      const imagesList = [];
+      doc.license.forEach((image) => {
+        const imageUrl = `${process.env.BASE_URL}/dermatologists/${image}`;
+        imagesList.push(imageUrl);
+      });
+      doc.license = imagesList;
+    }
+  };
+// findOne, findAll and update
+dermatologistsSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
+// create
+dermatologistsSchema.post('save', (doc) => {
+  setImageURL(doc);
+});
 ///2)create model
 module.exports = mongoose.model("Dermatologist", dermatologistsSchema);

@@ -1,14 +1,18 @@
 const express = require('express');
 const { getResultValidator, createResultValidator, updateResultValidator, deleteResultValidator } = require("../utils/validators/resultValidator")
 
-const { getResults, createResult, getResult, updateResult, deleteResult } = require("../controllers/resultController");
+const {
+    // uploadTestResultImages,resizeTestResultImages, 
+    getResults, createResult, getResult, updateResult, deleteResult } = require("../controllers/resultController");
 
 
 const router = express.Router();
 
 router.route('/')
     .get(getResults)
-    .post(createResultValidator, createResult);
+    .post(
+        // uploadTestResultImages,resizeTestResultImages,
+        createResultValidator, createResult);
 
 router.route('/:id')
     //getResultValidator validation layer  rule call validator 
