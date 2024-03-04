@@ -31,7 +31,7 @@ const reportsSchema = new mongoose.Schema(
     },
     tests: [
       {
-        testName: { type: String },
+        testName: [{ type: String }],
         requestedAt: {
           type: Date,
           default: Date.now(),
