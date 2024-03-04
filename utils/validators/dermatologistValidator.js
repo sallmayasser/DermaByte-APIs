@@ -51,7 +51,6 @@ exports.createDermatologistValidator = [
         }
       }),
     ),
-
   check('password')
     .notEmpty()
     .withMessage('Password required')
@@ -143,6 +142,9 @@ exports.changedermatologistPasswordValidator = [
       // 2) Verify password confirm
       if (val !== req.body.passwordConfirm) {
         throw new Error('Password Confirmation incorrect');
+      }
+      if (val === req.body.currentPassword) {
+        throw new Error('Please enter new password !');
       }
       return true;
     }),

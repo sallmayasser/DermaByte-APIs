@@ -38,7 +38,11 @@ const doctorReservationsSchema = new mongoose.Schema(
     //   },
     // ],
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
@@ -63,12 +67,4 @@ doctorReservationsSchema.pre(/^find/, function (next) {
   next();
 });
 
-// doctorReservationsSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'tests',
-//     select: 'requestedTest result ',
-//   });
-//   next();
-// });
-///2)create model
 module.exports = mongoose.model('DoctorReservation', doctorReservationsSchema);

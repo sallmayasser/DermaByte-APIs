@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+const bcrypt = require('bcryptjs');
 const ApiError = require('../utils/apiError');
 const ApiFeatures = require('../utils/apiFeatures');
 
@@ -20,10 +21,9 @@ exports.deleteOne = (Model) =>
     });
   });
 
-exports.updateOne = (Model) =>
+exports.updateOne = (Model,query) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findByIdAndUpdate(req.params.id, 
-      req.body, {
+    const document = await Model.findByIdAndUpdate(req.params.id, query, {
       new: true,
     });
 
@@ -120,4 +120,22 @@ exports.getAll = (Model, populationOpt,modelName = '') =>
     req.filterObj = filterObject;
     // console.log(filterObject);
     next();
-  };
+};
+  
+exports.changeUserPassword =(Model)=> asyncHandler(async (req, res, next) => {
+  const document = await Model.findByIdAndUpdate(
+    req.params.id,
+    {
+      password: await bcrypt.hash(req.body.password, 12),
+      passwordChangedAt: Date.now(),
+    },
+    {
+      new: true,
+    },
+  );
+
+  if (!document) {
+    return next(new ApiError(`No document for this id ${req.params.id}`, 404));
+  }
+  res.status(200).json({ data: document });
+});

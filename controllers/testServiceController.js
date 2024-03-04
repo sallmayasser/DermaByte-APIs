@@ -9,7 +9,7 @@ if(req.params.labId) filterObject={lab: req.params.labId};
 next();
 }
 
-exports.getTestServices = factory.getAll(TestService,"TestService");
+exports.getTestServices = factory.getAll(TestService);
 exports.getTestService = factory.getOne(TestService);
 exports.setLabIdToBody =(req,res,next)=>{
     //nested route {create}

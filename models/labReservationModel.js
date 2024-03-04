@@ -27,7 +27,11 @@ const labReservationsSchema = new mongoose.Schema(
     },
   },
 
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 
 labReservationsSchema.pre(/^find/, function (next) {

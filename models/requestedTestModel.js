@@ -20,7 +20,11 @@ const requestedTestsSchema = new mongoose.Schema(
       lowercase: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 ///2)create model
 module.exports = mongoose.model('RequestedTest', requestedTestsSchema);

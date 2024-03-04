@@ -56,7 +56,9 @@ exports.createLabValidator = [
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
   check('profilePic').optional(),
+  validatorMiddleware,
 ];
+
 exports.getLabValidator = [
   check('id').isMongoId().withMessage('Invalid ID formate'),
   validatorMiddleware,
@@ -76,22 +78,6 @@ exports.updateLabValidator = [
         }
       }),
     ),
-
-  check('password')
-    .notEmpty()
-    .withMessage('Password required')
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters')
-    .custom((password, { req }) => {
-      if (password !== req.body.passwordConfirm) {
-        throw new Error('Password Confirmation incorrect');
-      }
-      return true;
-    }),
-
-  check('passwordConfirm')
-    .notEmpty()
-    .withMessage('Password confirmation required'),
 
   check('phone')
     .optional()
@@ -135,6 +121,9 @@ exports.changelabPasswordValidator = [
       if (val !== req.body.passwordConfirm) {
         throw new Error('Password Confirmation incorrect');
       }
+        if (val === req.body.currentPassword) {
+          throw new Error('Please enter new password !');
+        }
       return true;
     }),
   validatorMiddleware,

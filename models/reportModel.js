@@ -5,7 +5,7 @@ const reportsSchema = new mongoose.Schema(
     scan: {
       type: mongoose.Schema.ObjectId,
       ref: 'Scans',
-      required:true,
+      required: true,
     },
     medicine: [
       {
@@ -43,16 +43,13 @@ const reportsSchema = new mongoose.Schema(
       lowercase: true,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 
-// reportsSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'tests',
-//     select: ' testName createdAt updatedAt  -_id',
-//   });
-//   next();
-// });
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',

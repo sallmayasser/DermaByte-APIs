@@ -1,10 +1,14 @@
 const express = require('express');
-const {getDermatologistValidator,createDermatologistValidator,updateDermatologistValidator,deleteDermatologistValidator,} = require('../utils/validators/dermatologistValidator');
+const {getDermatologistValidator,createDermatologistValidator,updateDermatologistValidator,deleteDermatologistValidator, changedermatologistPasswordValidator,} = require('../utils/validators/dermatologistValidator');
 const {getDermatologists,createDermatologist,getDermatologist,updateDermatologist,deleteDermatologist,} = require('../controllers/dermatologistController');
 const { getAllReservations} = require('../controllers/doctorReservationController');
-const { createFilterObj } = require('../controllers/handlersFactory');
+const {
+  createFilterObj,
+  changeUserPassword,
+} = require('../controllers/handlersFactory');
 const report = require('../controllers/reportController');
 const { getRequestedTests } = require('../controllers/requestedTestController');
+const Dermatologist = require('../models/dermatologistModel');
 
 const router = express.Router({ mergeParams: true });
 
@@ -33,5 +37,10 @@ router.route('/:id/requested-tests').get((req, res, next) => {
 }, getRequestedTests);
   module.exports = router;
   
+router.put(
+  '/changePassword/:id',
+  changedermatologistPasswordValidator,
+  changeUserPassword(Dermatologist),
+);
 
 
