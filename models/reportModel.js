@@ -53,7 +53,7 @@ const reportsSchema = new mongoose.Schema(
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',
-    select: ' firstName lastName  -_id',
+    select: ' firstName lastName ',
   });
   next();
 });
