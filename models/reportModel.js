@@ -38,6 +38,12 @@ const reportsSchema = new mongoose.Schema(
         },
       },
     ],
+    testResult: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Result',
+      },
+    ],
     slug: {
       type: String,
       lowercase: true,
@@ -57,7 +63,13 @@ reportsSchema.pre(/^find/, function (next) {
   });
   next();
 });
-
+reportsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'testResult',
+    select: ' testName testResult ',
+  });
+  next();
+});
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
