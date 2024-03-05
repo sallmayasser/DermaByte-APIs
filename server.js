@@ -3,6 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
+const compression = require('compression');
 
 const ApiError = require('./utils/apiError');
 const globalError = require('./middleware/errorMiddleware');
@@ -29,6 +30,8 @@ const app = express();
 
 
 /////middleware
+app.use(cors());
+app.use(compression());
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'uploads')));
 
