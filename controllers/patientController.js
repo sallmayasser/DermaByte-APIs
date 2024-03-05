@@ -46,7 +46,7 @@ exports.updatePatient =  asyncHandler(
         city: req.body.city,
         country: req.body.country,
         gender: req.body.gender,
-        photo: req.body.photo,
+        profilePic: req.body.profilePic,
       },
       {
         new: true,
