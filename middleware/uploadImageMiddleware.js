@@ -23,6 +23,6 @@ multerOptions().single(fieldName);
 
 exports.uploadMixOfImages = (arrayOfFields) =>
   multerOptions().fields(arrayOfFields);
-  
-//   exports.uploadArrayOfImages = (field,maxCount) => 
-// multerOptions().array(field,maxCount);
+
+  exports.uploadArrayOfImages = (field) =>
+  multerOptions().array(field);

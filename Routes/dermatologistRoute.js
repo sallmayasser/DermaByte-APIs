@@ -19,7 +19,7 @@ router
   .route('/:id')
   //getDermatologistValidator validation layer  rule call validator
   .get(getDermatologistValidator, getDermatologist)
-  .put(updateDermatologistValidator, updateDermatologist)
+  .put(uploadDermatologistImage,resizeDermatologistImage,updateDermatologistValidator, updateDermatologist)
   .delete(deleteDermatologistValidator, deleteDermatologist);
 
 router.route('/:id/Dermatologist-reservation').get((req, res, next) => {

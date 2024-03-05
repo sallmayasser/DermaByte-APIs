@@ -35,7 +35,7 @@ router
   .route('/:id')
   //getLabValidator validation layer  rule call validator
   .get(getLabValidator, getLab)
-  .put(updateLabValidator, updateLab)
+  .put(uploadLabImage,resizeLabImage,updateLabValidator, updateLab)
   .delete(deleteLabValidator, deleteLab);
 
 router.route('/:id/laboratory-reservation').get((req, res, next) => {

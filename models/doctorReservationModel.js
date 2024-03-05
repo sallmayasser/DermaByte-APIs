@@ -7,7 +7,7 @@ const doctorReservationsSchema = new mongoose.Schema(
       required: [true, 'reservation date is required'],
     },
     uploadedTest: {
-      type: String,
+      type: [String],
       default: null,
     },
     reviewed: {
@@ -66,5 +66,23 @@ doctorReservationsSchema.pre(/^find/, function (next) {
   });
   next();
 });
+const setImageURL = (doc) => {
+  if (doc.uploadedTest) {
+    const imagesList = [];
+    doc.uploadedTest.forEach((image) => {
+      const imageUrl = `${process.env.BASE_URL}/reservations/${image}`;
+      imagesList.push(imageUrl);
+    });
+    doc.uploadedTest = imagesList;
+  }
+};
+// findOne, findAll and update
+doctorReservationsSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
 
+// create
+doctorReservationsSchema.post('save', (doc) => {
+  setImageURL(doc);
+});
 module.exports = mongoose.model('DoctorReservation', doctorReservationsSchema);

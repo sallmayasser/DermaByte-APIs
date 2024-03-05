@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(
+  .post(functions.uploadUploadedTestImages,functions.resizeUploadedTestImages,
     functions.setPatientIdToBody,
     functions.createReservation,
     validators.createReservationValidator,
@@ -17,7 +17,7 @@ router
 router
   .route('/:id')
   .get(validators.getReservationValidator, functions.getReservation)
-  .put(validators.updateReservationValidator, functions.updateReservation)
+  .put(functions.uploadUploadedTestImages,functions.resizeUploadedTestImages,validators.updateReservationValidator, functions.updateReservation)
   .delete(
     validators.deleteReservationValidator,
     createFilterObj,

@@ -20,7 +20,7 @@ router
 router
   .route('/:id')
   .get(validators.getPatientValidator, functions.getPatient)
-  .put(validators.updatePatientValidator, functions.updatePatient)
+  .put(functions.uploadPatientImage ,functions.resizePatientImage,validators.updatePatientValidator, functions.updatePatient)
   .delete(validators.deletePatientValidator, functions.deletePatient);
 
 router.route('/:id/Patient-reservation').get((req, res, next) => {
