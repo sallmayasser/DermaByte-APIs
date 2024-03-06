@@ -27,8 +27,9 @@ exports.resizeTestResultImages = asyncHandler(async (req, res, next) => {
             req.body.testResult.push(imageName);
         })
         );
-        next();
+        
     }
+    next();
 });
 exports.getResults = factory.getAll(Result);
 exports.getResult = factory.getOne(Result);

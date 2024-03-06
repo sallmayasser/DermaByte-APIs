@@ -25,7 +25,7 @@ exports.resizeDermatologistImage = asyncHandler(async (req, res, next) => {
   if (req.files.profilePic) {
       const filename = `dermatologist-${uuidv4()}-${Date.now()}.jpeg`
       await sharp(req.files.profilePic[0].buffer)
-          .resize(600, 600)
+          .resize(320, 320)
           .toFormat("jpeg")
           .jpeg({ quality: 95 })
           .toFile(`uploads/dermatologists/${filename}`);
@@ -38,7 +38,7 @@ exports.resizeDermatologistImage = asyncHandler(async (req, res, next) => {
       await Promise.all(req.files.license.map(async (img, index) => {
           const filename = `dermatologist-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`
           await sharp(img.buffer)
-              .resize(600, 600)
+              .resize(500, 500)
               .toFormat("jpeg")
               .jpeg({ quality: 95 })
               .toFile(`uploads/dermatologists/${filename}`);
@@ -46,8 +46,9 @@ exports.resizeDermatologistImage = asyncHandler(async (req, res, next) => {
           req.body.license.push(filename);
       })
       );
-      next();
+     
   }
+  next();
 });
 
 exports.getDermatologists = factory.getAll(Dermatologist);

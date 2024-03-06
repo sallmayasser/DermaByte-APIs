@@ -12,6 +12,7 @@ exports.getPatientValidator = [
 ];
 
 exports.createPatientValidator = [
+  
   check('firstName')
     .notEmpty()
     .withMessage('Patient required')

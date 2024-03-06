@@ -24,7 +24,7 @@ exports.resizeLabImage = asyncHandler(async (req, res, next) => {
   if (req.files.profilePic) {
       const filename = `lab-${uuidv4()}-${Date.now()}.jpeg`
       await sharp(req.files.profilePic[0].buffer)
-          .resize(600, 600)
+          .resize(320, 320)
           .toFormat("jpeg")
           .jpeg({ quality: 95 })
           .toFile(`uploads/labs/${filename}`);
@@ -37,7 +37,7 @@ exports.resizeLabImage = asyncHandler(async (req, res, next) => {
       await Promise.all(req.files.license.map(async (img, index) => {
           const filename = `lab-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`
           await sharp(img.buffer)
-              .resize(600, 600)
+              .resize(500, 500)
               .toFormat("jpeg")
               .jpeg({ quality: 95 })
               .toFile(`uploads/labs/${filename}`);
@@ -45,8 +45,9 @@ exports.resizeLabImage = asyncHandler(async (req, res, next) => {
           req.body.license.push(filename);
       })
       );
-      next();
+      
   }
+  next();
 });
 
 exports.getLabs = factory.getAll(Lab, 'Services');
@@ -57,16 +58,16 @@ exports.updateLab = asyncHandler(async (req, res, next) => {
     req.params.id,
     {
       name: req.body.name,
-      lastName: req.body.lastName,
       slug: req.body.slug,
       mobile: req.body.mobile,
-      email: req.body.email,
-      license: req.body.license,
+      location: req.body.location,
       city: req.body.city,
       country: req.body.country,
+      email: req.body.email,
+      license: req.body.license,
       state: req.body.state,
-      photo: req.body.photo,
-      location: req.body.location,
+      profilePic: req.body.profilePic,
+     
     },
     {
       new: true,

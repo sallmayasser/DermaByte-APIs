@@ -42,7 +42,7 @@ exports.resizeUploadedTestImages = asyncHandler(async (req, res, next) => {
         await Promise.all(req.files.uploadedTest.map(async (img, index) => {
             const imageName = `reservation-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`
             await sharp(img.buffer)
-                .resize(600, 600)
+                .resize(500, 500)
                 .toFormat("jpeg")
                 .jpeg({ quality: 95 })
                 .toFile(`uploads/reservations/${imageName}`);
@@ -50,8 +50,8 @@ exports.resizeUploadedTestImages = asyncHandler(async (req, res, next) => {
             req.body.uploadedTest.push(imageName);
         })
         );
-        next();
     }
+    next();
 });
 exports.getAllReservations = handlers.getAll(Reservation);
 

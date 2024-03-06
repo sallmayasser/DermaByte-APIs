@@ -8,8 +8,8 @@ exports.createResultValidator = [
         .notEmpty()
         .withMessage('test name is required'),
     check('testResult')
-        .notEmpty()
-        .withMessage('test result is required'),
+        .optional(),
+        
     check('testDate')
         .optional(),
         check('patient')
