@@ -65,7 +65,7 @@ exports.updateLab = asyncHandler(async (req, res, next) => {
       city: req.body.city,
       country: req.body.country,
       state: req.body.state,
-      photo: req.body.photo,
+      profilePic: req.body.profilePic,
       location: req.body.location,
     },
     {

@@ -20,7 +20,7 @@ const dermatologistsSchema = new mongoose.Schema(
       type: String,
       required: [true, 'gender required'],
     },
-    
+
     mobile: {
       type: String,
       min: [11, 'incorrect mobile number'],
@@ -42,7 +42,7 @@ const dermatologistsSchema = new mongoose.Schema(
       default: 'dermatology',
     },
     license: {
-      type:[String],
+      type: [String],
       required: [true, 'license is required'],
     },
     email: {
@@ -71,6 +71,10 @@ const dermatologistsSchema = new mongoose.Schema(
     slug: {
       type: String,
       lowercase: true,
+    },
+    role: {
+      type: String,
+      default: "dermatologist",
     },
   },
   {

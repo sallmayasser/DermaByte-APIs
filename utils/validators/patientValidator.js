@@ -2,9 +2,7 @@ const slugify = require('slugify');
 const { check, body } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
-const Patient = require('../../models/patientModel')
-
-
+const Patient = require('../../models/patientModel');
 
 exports.getPatientValidator = [
   check('id').isMongoId().withMessage('Invalid Patient id format'),
@@ -93,7 +91,7 @@ exports.createPatientValidator = [
     .optional()
     .isMobilePhone(['ar-EG', 'ar-SA'])
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
-  
+
   validatorMiddleware,
 ];
 
@@ -106,8 +104,7 @@ exports.updatePatientValidator = [
       return true;
     }),
   check('email')
-    .notEmpty()
-    .withMessage('Email required')
+    .optional()
     .isEmail()
     .withMessage('Invalid email address')
     .custom((val) =>
@@ -139,8 +136,10 @@ exports.changePatientPasswordValidator = [
   body('passwordConfirm')
     .notEmpty()
     .withMessage('You must enter the password confirm'),
-  body('password').notEmpty().withMessage('You must enter new password')
- .custom(async (val, { req }) => {
+  body('password')
+    .notEmpty()
+    .withMessage('You must enter new password')
+    .custom(async (val, { req }) => {
       // 1) Verify current password
       const patient = await Patient.findById(req.params.id);
       if (!patient) {
@@ -157,11 +156,107 @@ exports.changePatientPasswordValidator = [
       // 2) Verify password confirm
       if (val !== req.body.passwordConfirm) {
         throw new Error('Password Confirmation incorrect');
-   }
-     if (val === req.body.currentPassword) {
-       throw new Error('Please enter new password !');
-     }
+      }
+      if (val === req.body.currentPassword) {
+        throw new Error('Please enter new password !');
+      }
       return true;
     }),
   validatorMiddleware,
 ];
+
+// exports.createValidator = {
+//   check('role').custom((val, { req }) => {
+//     if (req.body.role === 'patient') {
+//       console.log(`before if ${req.body.role}`);
+//       check(req.body.firstName)
+//         .notEmpty()
+//         .withMessage('Patient required')
+//         .isLength({ min: 2 })
+//         .withMessage('Too short Patient name')
+//         .isLength({ max: 32 })
+//         .withMessage('Too long Patient name')
+//         .custom((val) => {
+//           console.log(`before if ${req.body.slug}`);
+//           req.body.slug = slugify(val);
+          
+//           return true;
+//         });
+
+//       check('lastName')
+//         .notEmpty()
+//         .withMessage('Patient required')
+//         .isLength({ min: 2 })
+//         .withMessage('Too short Patient name')
+//         .isLength({ max: 32 })
+//         .withMessage('Too long Patient name')
+//         .custom((val) => {
+//           req.body.slug = slugify(val);
+//           return true;
+//         });
+
+//       check('age')
+//         .notEmpty()
+//         .withMessage('Age is required')
+//         .isNumeric()
+//         .withMessage('age  must be a number')
+//         .isLength({ max: 99 })
+//         .withMessage('age must be below or equal 99');
+
+//       check('city')
+//         .notEmpty()
+//         .withMessage('city is required')
+//         .custom((val, { req }) => {
+//           req.body.slug = slugify(val);
+//           return true;
+//         });
+
+//       check('country')
+//         .notEmpty()
+//         .withMessage('country is required')
+//         .custom((val, { req }) => {
+//           req.body.slug = slugify(val);
+//           return true;
+//         });
+
+//       check('email')
+//         .notEmpty()
+//         .withMessage('Email required')
+//         .isEmail()
+//         .withMessage('Invalid email address')
+//         .custom((val) =>
+//           Patient.findOne({ email: val }).then((patient) => {
+//             if (patient) {
+//               return Promise.reject(new Error('E-mail already in patient'));
+//             }
+//           }),
+//         );
+
+//       check('password')
+//         .notEmpty()
+//         .withMessage('Password required')
+//         .isLength({ min: 6 })
+//         .withMessage('Password must be at least 6 characters')
+//         .custom((password, { req }) => {
+//           if (password !== req.body.passwordConfirm) {
+//             throw new Error('Password Confirmation incorrect');
+//           }
+//           return true;
+//         });
+
+//       check('passwordConfirm')
+//         .notEmpty()
+//         .withMessage('Password confirmation required');
+
+//       check('phone')
+//         .optional()
+//         .isMobilePhone(['ar-EG', 'ar-SA'])
+//         .withMessage(
+//           'Invalid phone number only accepted Egy and SA Phone numbers',
+//         );
+//     }
+//     console.log(req.body.role);
+//     return true;
+//   }),
+//   validatorMiddleware,
+// };
