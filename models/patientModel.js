@@ -20,7 +20,7 @@ const PatientsSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      required: [true, 'Product price is required'],
+      required: [true, 'age is required'],
       trim: true,
       min: [1, 'age  must be above or equal 1'],
       max: [99, 'age must be below or equal 99'],
@@ -53,7 +53,10 @@ const PatientsSchema = new mongoose.Schema(
       required: [true, 'password required'],
       minlength: [6, 'Too short password'],
     },
-
+    role: {
+      type: String,
+      default: 'patient',
+    },
     slug: {
       type: String,
       lowercase: true,

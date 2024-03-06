@@ -4,10 +4,10 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const compression = require('compression');
-
 const ApiError = require('./utils/apiError');
 const globalError = require('./middleware/errorMiddleware');
 const dbConnection = require('./Configs/Database');
+
 
 dotenv.config({ path: 'config.env' });
 
@@ -22,18 +22,20 @@ const reportRoute = require('./Routes/reportRoute');
 const resultRoute = require('./Routes/resultRoute');
 const scanRoute = require('./Routes/scansRoutes');
 const requestedTestsRoute = require('./Routes/requestedTestRoutes');
+const authRoute = require('./Routes/authRoute');
+
 // connect with db
 dbConnection();
 
 ///express app
 const app = express();
 
-
 /////middleware
 app.use(cors());
 app.use(compression());
 app.use(express.json());
-app.use(express.static(path.join(__dirname,'uploads')));
+// app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
 if (process.env.Node_ENV === 'development') {
   app.use(morgan('dev'));
@@ -53,6 +55,7 @@ app.use('/api/v1/reports', reportRoute);
 app.use('/api/v1/results', resultRoute);
 app.use('/api/v1/scans', scanRoute);
 app.use('/api/v1/requested-tests', requestedTestsRoute);
+app.use('/api/v1/auth', authRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });

@@ -21,11 +21,11 @@ exports.deleteOne = (Model) =>
     });
   });
 
-exports.updateOne = (Model,query) =>
+exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findByIdAndUpdate(req.params.id, query, {
-      new: true,
-    });
+     const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
+       new: true,
+     });
 
     if (!document) {
       return next(

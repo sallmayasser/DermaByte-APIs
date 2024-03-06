@@ -67,8 +67,7 @@ exports.getLabValidator = [
 exports.updateLabValidator = [
   check('id').isMongoId().withMessage('Invalid ID formate'),
   check('email')
-    .notEmpty()
-    .withMessage('Email required')
+    .optional()
     .isEmail()
     .withMessage('Invalid email address')
     .custom((val) =>

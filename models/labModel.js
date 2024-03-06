@@ -11,6 +11,7 @@ const labsSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
+      
     },
 
     mobile: {
@@ -48,6 +49,10 @@ const labsSchema = new mongoose.Schema(
     state: {
       type: Boolean,
       default: false,
+    },
+    role: {
+      type: String,
+      default: 'lab',
     },
     slug: {
       type: String,

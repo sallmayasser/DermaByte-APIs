@@ -11,7 +11,7 @@ exports.createDermatologistValidator = [
     .isLength({ max: 32 })
     .withMessage('must be at least 2 chars')
     .notEmpty()
-    .withMessage('name is required')
+    .withMessage('first name is required')
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
@@ -23,7 +23,7 @@ exports.createDermatologistValidator = [
     .isLength({ max: 32 })
     .withMessage('must be at least 2 chars')
     .notEmpty()
-    .withMessage('name is required')
+    .withMessage('last name is required')
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
@@ -90,8 +90,7 @@ exports.getDermatologistValidator = [
 exports.updateDermatologistValidator = [
   check('id').isMongoId().withMessage('Invalid ID formate'),
   check('email')
-    .notEmpty()
-    .withMessage('Email required')
+    .optional()
     .isEmail()
     .withMessage('Invalid email address')
     .custom((val) =>

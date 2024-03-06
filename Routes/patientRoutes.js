@@ -9,18 +9,20 @@ const report = require('../controllers/reportController');
 const result = require('../controllers/resultController');
 const {createFilterObj,changeUserPassword} = require('../controllers/handlersFactory');
 const patient = require('../models/patientModel');
+const { resizeImage } = require('../controllers/resizeImgController');
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
   .get(functions.getAllPatients)
-  .post(functions.uploadPatientImage ,functions.resizePatientImage,validators.createPatientValidator ,functions.createPatient);
+  .post(functions.uploadPatientImage,functions.resizePatientImage, validators.createPatientValidator, functions.createPatient);
+  // .post(functions.uploadPatientImage ,resizeImage ,validators.createPatientValidator ,functions.createPatient);
 
 router
   .route('/:id')
   .get(validators.getPatientValidator, functions.getPatient)
-  .put(functions.uploadPatientImage ,functions.resizePatientImage,validators.updatePatientValidator, functions.updatePatient)
+  .put(functions.uploadPatientImage ,resizeImage,validators.updatePatientValidator, functions.updatePatient)
   .delete(validators.deletePatientValidator, functions.deletePatient);
 
 router.route('/:id/Patient-reservation').get((req, res, next) => {

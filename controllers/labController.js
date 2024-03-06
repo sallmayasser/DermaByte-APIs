@@ -67,7 +67,7 @@ exports.updateLab = asyncHandler(async (req, res, next) => {
       license: req.body.license,
       state: req.body.state,
       profilePic: req.body.profilePic,
-     
+      location: req.body.location,
     },
     {
       new: true,
