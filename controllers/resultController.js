@@ -10,9 +10,6 @@ const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 exports.uploadTestResultImages = uploadMixOfImages([{ name: 'testResult', maxCount: 30 }]);
 
 exports.resizeTestResultImages = asyncHandler(async (req, res, next) => {
-    console.log('Request Body:', req.body);
-    console.log('Request Files:', req.files);
-
     //2)image processing for images
     if (req.files.testResult) {
         req.body.testResult = [];

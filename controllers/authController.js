@@ -27,47 +27,45 @@ const { resizeLabImage, uploadLabImage } = require('./labController');
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
 
-const signup = async (Model, req, res) => {
-  console.log('enter sign up');
-  // 1- Create user
-  const user = await Model.create(req.body);
-  // 2- Generate token
-  const token = createToken(user._id);
+// const signup = async (Model, req, res) => {
+//   // 1- Create user
+//   const user = await Model.create(req.body);
+//   // 2- Generate token
+//   const token = createToken(user._id);
 
-  res.status(201).json({ data: user, token });
-};
+//   res.status(201).json({ data: user, token });
+// };
 
-exports.checkRole = (req, res, next) => {
-  const query = req.body.role;
+// exports.checkRole = (req, res, next) => {
+//   const query = req.body.role;
 
-  try {
-    switch (query) {
-      case 'patient':
-        signup(Patients, req, res);
-        break;
-      case 'dermatolgist':
-        uploadDermatologistImage();
-        resizeDermatologistImage();
-        createDermatologistValidator();
-        this.signup(Dermatologists);
-        break;
-      case 'lab':
-        uploadLabImage();
-        resizeLabImage();
-        createLabValidator();
-        signup(Labs);
-        break;
-      default:
-        break;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+//   try {
+//     switch (query) {
+//       case 'patient':
+//         signup(Patients, req, res);
+//         break;
+//       case 'dermatolgist':
+//         uploadDermatologistImage();
+//         resizeDermatologistImage();
+//         createDermatologistValidator();
+//         this.signup(Dermatologists);
+//         break;
+//       case 'lab':
+//         uploadLabImage();
+//         resizeLabImage();
+//         createLabValidator();
+//         signup(Labs);
+//         break;
+//       default:
+//         break;
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 exports.signup = (Model) =>
   asyncHandler(async (req, res) => {
-    console.log(req.body)
     // 1- Create user
     const user = await Model.create(req.body);
     // 2- Generate token

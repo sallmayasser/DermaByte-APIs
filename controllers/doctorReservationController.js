@@ -33,9 +33,6 @@ const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 exports.uploadUploadedTestImages = uploadMixOfImages([{ name: 'uploadedTest', maxCount: 30 }]);
 
 exports.resizeUploadedTestImages = asyncHandler(async (req, res, next) => {
-    console.log('Request Body:', req.body);
-    console.log('Request Files:', req.files);
-
     //2)image processing for images
     if (req.files.uploadedTest) {
         req.body.uploadedTest = [];
@@ -69,7 +66,6 @@ exports.createFilterObj = (req, res, next) => {
   let filterObject = {};
   if (req.params.id) filterObject = { patient: req.params.id };
   req.filterObj = filterObject;
-  console.log(filterObject);
   next();
 };
 

@@ -33,7 +33,6 @@ if(req.file){
 
     //  req.body.license = filename;
     req.body.profilePic = filename;
-    console.log(filename);
   }
 
   next();

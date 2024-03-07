@@ -1,7 +1,19 @@
 const asyncHandler = require('express-async-handler');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
+const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 
+
+exports.uploadImage = uploadMixOfImages([
+  {
+    name: 'profilePic',
+    maxCount: 1,
+  },
+  {
+    name: 'license',
+    maxCount: 20,
+  },
+]);
 
 exports.resizeImage = asyncHandler(async (req, res, next) => {
   ///1)image processing for profile Name
