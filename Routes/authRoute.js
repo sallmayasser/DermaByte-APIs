@@ -83,7 +83,7 @@ router.post(
 
 router.post('/login', loginValidator, login);
 
-// router.post('/forgotPassword', forgotPassword);
+router.post('/forgotPassword', forgotPassword);
 // router.post('/verifyResetCode', verifyPassResetCode);
 // router.put('/resetPassword', resetPassword);
 

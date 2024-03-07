@@ -9,18 +9,19 @@ const {
 const report = require('../controllers/reportController');
 const { getRequestedTests } = require('../controllers/requestedTestController');
 const Dermatologist = require('../models/dermatologistModel');
+const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
 router.route('/').get(getDermatologists)
-    .post( uploadDermatologistImage,resizeDermatologistImage,createDermatologistValidator,createDermatologist);
+    .post( authController.protect,authController.allowedTo("dermatologist"),uploadDermatologistImage,resizeDermatologistImage,createDermatologistValidator,createDermatologist);
 
 router
   .route('/:id')
   //getDermatologistValidator validation layer  rule call validator
   .get(getDermatologistValidator, getDermatologist)
-  .put(uploadDermatologistImage,resizeDermatologistImage,updateDermatologistValidator, updateDermatologist)
-  .delete(deleteDermatologistValidator, deleteDermatologist);
+  .put(authController.protect,authController.allowedTo("dermatologist"),uploadDermatologistImage,resizeDermatologistImage,updateDermatologistValidator, updateDermatologist)
+  .delete(authController.protect,authController.allowedTo("dermatologist"),deleteDermatologistValidator, deleteDermatologist);
 
 router.route('/:id/Dermatologist-reservation').get((req, res, next) => {
   createFilterObj(req, res, next, 'dermatologist');

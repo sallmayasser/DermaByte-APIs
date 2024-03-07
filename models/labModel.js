@@ -46,6 +46,10 @@ const labsSchema = new mongoose.Schema(
       required: [true, 'password required'],
       minlength: [6, 'Too short password'],
     },
+    passwordChangedAt:Date,
+    passwordResetCode: String,
+    passwordResetExpires:Date,
+    passwordResetVerified:Boolean,
     state: {
       type: Boolean,
       default: false,

@@ -2,12 +2,13 @@ const express = require('express');
 const functions = require('../controllers/scansController');
 const validators = require('../utils/validators/scanValidator');
 const { createFilterObj } = require('../controllers/handlersFactory');
+const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(functions.uploadScanImage,functions.resizeScanImage,functions.setPatientIdToBody, functions.createScan)
+  .post(authController.protect,authController.allowedTo("patient"),functions.uploadScanImage,functions.resizeScanImage,functions.setPatientIdToBody, functions.createScan)
   .get(functions.getScans);
 
 router
@@ -15,6 +16,7 @@ router
   .get(validators.getScanValidator, functions.getScan)
 
   .delete(
+    authController.protect,authController.allowedTo("patient"),
     validators.deleteScanValidator,
     createFilterObj,
     functions.deleteScan,

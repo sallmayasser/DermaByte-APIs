@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { boolean } = require('webidl-conversions');
 
 ///1)create schema
 const dermatologistsSchema = new mongoose.Schema(
@@ -56,6 +57,10 @@ const dermatologistsSchema = new mongoose.Schema(
       required: [true, 'password required'],
       minlength: [6, 'Too short password'],
     },
+    passwordChangedAt:Date,
+    passwordResetCode: String,
+    passwordResetExpires:Date,
+    passwordResetVerified:Boolean,
     profilePic: {
       type: String,
     },
