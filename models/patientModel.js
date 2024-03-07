@@ -53,6 +53,10 @@ const PatientsSchema = new mongoose.Schema(
       required: [true, 'password required'],
       minlength: [6, 'Too short password'],
     },
+    passwordChangedAt:Date,
+    passwordResetCode: String,
+    passwordResetExpires:Date,
+    passwordResetVerified:Boolean,
     role: {
       type: String,
       default: 'patient',
