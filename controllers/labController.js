@@ -19,7 +19,6 @@ exports.uploadLabImage = uploadMixOfImages([{
 ]);
 
 exports.resizeLabImage = asyncHandler(async (req, res, next) => {
-  console.log(req.files);
   ///1)image processing for profile Name
   if (req.files.profilePic) {
       const filename = `lab-${uuidv4()}-${Date.now()}.jpeg`

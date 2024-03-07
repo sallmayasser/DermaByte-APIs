@@ -22,7 +22,6 @@ exports.uploadPatientImage = uploadSingleImage('profilePic');
 // Image processing
 exports.resizePatientImage = asyncHandler(async (req, res, next) => {
   const filename = `patient-${uuidv4()}-${Date.now()}.jpeg`;
-  console.log(filename);
   if (req.file) {
     await sharp(req.file.buffer)
       .resize(600, 600)
@@ -34,7 +33,6 @@ exports.resizePatientImage = asyncHandler(async (req, res, next) => {
 
     //  req.body.license = filename;
     req.body.profilePic = filename;
-    console.log(filename);
   }
 
   next();

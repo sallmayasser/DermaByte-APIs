@@ -118,7 +118,7 @@ exports.getAll = (Model, populationOpt,modelName = '') =>
       filterObject = { lab: req.params.id };
     }
     req.filterObj = filterObject;
-    // console.log(filterObject);
+  
     next();
 };
   

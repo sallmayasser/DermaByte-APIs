@@ -20,7 +20,6 @@ exports.uploadDermatologistImage = uploadMixOfImages([{
 ]);
 
 exports.resizeDermatologistImage = asyncHandler(async (req, res, next) => {
-  console.log(req.files);
   ///1)image processing for profile Name
   if (req.files.profilePic) {
       const filename = `dermatologist-${uuidv4()}-${Date.now()}.jpeg`

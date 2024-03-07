@@ -5,7 +5,6 @@ exports.createFilterObj =(req,res,next) => {
     let filterObject ={};
 if(req.params.labId) filterObject={lab: req.params.labId};
     req.filterObj = filterObject;
-    console.log(filterObject)
 next();
 }
 
