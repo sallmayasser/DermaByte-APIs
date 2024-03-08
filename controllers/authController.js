@@ -135,15 +135,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   console.log(decoded);
 
   //3) Check if user exists
-  // const currentUser = await User.findById(decoded.userId);
-  // if (!currentUser) {
-  //   return next(
-  //     new ApiError(
-  //       'The user that belong to this token does no longer exist',
-  //       401
-  //     )
-  //   );
-  // }
+  let currentUser;
   const [currentPatient, currentDermatologist, currentLab] = await Promise.all([
     Patients.findById(decoded.userId),
     Dermatologists.findById(decoded.userId),
@@ -151,15 +143,14 @@ exports.protect = asyncHandler(async (req, res, next) => {
   ]);
 
   if (currentPatient) {
-    req.patient = currentPatient;
+    currentUser = currentPatient;
+  } else if (currentDermatologist) {
+    currentUser = currentDermatologist;
+  } else if (currentLab) {
+    currentUser = currentLab;
   }
-  else if (currentDermatologist) {
-    req.dermatologist = currentDermatologist;
-  }
-  else if (currentLab) {
-    req.lab = currentLab;
-  }
-  else {
+
+  if (!currentUser) {
     return next(
       new ApiError(
         'No valid user found for this token. Please log in again.',
@@ -167,81 +158,25 @@ exports.protect = asyncHandler(async (req, res, next) => {
       ),
     );
   }
-
   // 4) Check if user change his password after token created
-  // if (currentUser.passwordChangedAt) {
-  //   const passChangedTimestamp = parseInt(
-  //     currentUser.passwordChangedAt.getTime() / 1000,
-  //     10,
-  //   );
-  //   // Password changed after token created (Error)
-  //   if (passChangedTimestamp > decoded.iat) {
-  //     return next(
-  //       new ApiError(
-  //         'User recently changed his password. please login again..',
-  //         401,
-  //       ),
-  //     );
-  //   }
-  // }
-  // req.user = currentUser;
-  // next();
-  // });
-
-  if (currentPatient) {
-    if (currentPatient.passwordChangedAt) {
+  if (currentUser) {
+    if (currentUser.passwordChangedAt) {
       const passChangedTimestamp = parseInt(
-        currentPatient.passwordChangedAt.getTime() / 1000,
+        currentUser.passwordChangedAt.getTime() / 1000,
         10,
       );
       // Password changed after token created (Error)
       if (passChangedTimestamp > decoded.iat) {
         return next(
           new ApiError(
-            'Patient recently changed their password. Please log in again.',
+            'User recently changed their password. Please log in again.',
             401,
           ),
         );
       }
     }
+    req.user = currentUser;
 
-    req.user = currentPatient;
-  } else if (currentDermatologist) {
-    if (currentDermatologist.passwordChangedAt) {
-      const passChangedTimestamp = parseInt(
-        currentDermatologist.passwordChangedAt.getTime() / 1000,
-        10,
-      );
-      // Password changed after token created (Error)
-      if (passChangedTimestamp > decoded.iat) {
-        return next(
-          new ApiError(
-            'Dermatologist recently changed their password. Please log in again.',
-            401,
-          ),
-        );
-      }
-    }
-
-    req.user = currentDermatologist;
-  } else if (currentLab) {
-    if (currentLab.passwordChangedAt) {
-      const passChangedTimestamp = parseInt(
-        currentLab.passwordChangedAt.getTime() / 1000,
-        10,
-      );
-      // Password changed after token created (Error)
-      if (passChangedTimestamp > decoded.iat) {
-        return next(
-          new ApiError(
-            'Lab recently changed their password. Please log in again.',
-            401,
-          ),
-        );
-      }
-    }
-
-    req.user = currentLab;
   } else {
     return next(
       new ApiError(
@@ -250,9 +185,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
       ),
     );
   }
-
   next();
 });
+
 // // @desc    Authorization (User Permissions)
 // // ["admin", "manager"]
 exports.allowedTo = (...roles) => asyncHandler(async (req, res, next) => {
@@ -291,7 +226,6 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       new ApiError(`There is no user with that email ${req.body.email}`, 404),
     );
   }
-  
   
   //   // 2) If user exist, Generate hash reset random 6 digits and save it in db
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
