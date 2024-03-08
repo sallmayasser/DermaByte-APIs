@@ -30,24 +30,26 @@ const router = express.Router();
 
 router.use('/:labId/tests', testServiceRoute);
 
-router.route('/').get(getLabs).post(authController.protect,authController.allowedTo("lab"),uploadLabImage, resizeLabImage, createLabValidator, createLab);
+router.route('/').get(authController.protect,authController.allowedTo("admin"),getLabs)
+// .post(authController.protect,authController.allowedTo(""),uploadLabImage, resizeLabImage, createLabValidator, createLab);
 
 router
   .route('/:id')
   //getLabValidator validation layer  rule call validator
-  .get(getLabValidator, getLab)
+  .get(authController.protect,getLabValidator, getLab)
   .put(authController.protect,authController.allowedTo("lab"),uploadLabImage, resizeLabImage, updateLabValidator, updateLab)
-  .delete(authController.protect,authController.allowedTo("lab"),deleteLabValidator, deleteLab);
+  .delete(authController.protect,authController.allowedTo("admin"),deleteLabValidator, deleteLab);
 
 router.route('/:id/laboratory-reservation').get((req, res, next) => {
   createFilterObj(req, res, next, 'lab');
-}, getAllReservations);
+}, authController.protect,authController.allowedTo("lab"),getAllReservations);
 router.route('/:id/results').get((req, res, next) => {
   createFilterObj(req, res, next, 'lab');
-}, result.getResults);
+},  authController.protect,authController.allowedTo("lab"),result.getResults);
 
 router.put(
   '/changePassword/:id',
+  authController.protect,authController.allowedTo("lab"),
   changelabPasswordValidator,
   changeUserPassword(lab),
 );

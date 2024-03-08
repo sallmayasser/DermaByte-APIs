@@ -58,6 +58,10 @@ const labsSchema = new mongoose.Schema(
       type: String,
       default: 'lab',
     },
+    active:{
+      type: Boolean,
+      default: true,
+    },
     slug: {
       type: String,
       lowercase: true,

@@ -10,15 +10,15 @@ const {
 const router = express.Router();
 
 router.route('/')
-    .get(getResults)
-    .post(authController.protect,authController.allowedTo("lab"),
+    .get( authController.protect,authController.allowedTo("admin"),getResults)
+    .post(authController.protect,authController.allowedTo("lab"),authController.protect,authController.allowedTo("lab"),
         uploadTestResultImages,resizeTestResultImages,
         createResultValidator, createResult);
 
 router.route('/:id')
     //getResultValidator validation layer  rule call validator 
-    .get(getResultValidator, getResult)
-    .put(authController.protect,authController.allowedTo("lab"),uploadTestResultImages,resizeTestResultImages,updateResultValidator, updateResult)
+    .get(authController.protect,getResultValidator, getResult)
+    .put(authController.protect,authController.allowedTo("lab"),authController.protect,authController.allowedTo("lab"),uploadTestResultImages,resizeTestResultImages,updateResultValidator, updateResult)
     .delete(authController.protect,authController.allowedTo("lab"),deleteResultValidator, deleteResult);
 
 module.exports = router;

@@ -13,11 +13,11 @@ router
     functions.createReservation,
     validators.createReservationValidator,
   )
-  .get(functions.getAllReservations);
+  .get(authController.protect,authController.allowedTo("admin"),functions.getAllReservations);
 
 router
   .route('/:id')
-  .get(validators.getReservationValidator, functions.getReservation)
+  .get(authController.protect,authController.allowedTo("admin","patient","lab"),validators.getReservationValidator, functions.getReservation)
   .put(authController.protect,authController.allowedTo("patient"),validators.updateReservationValidator, functions.updateReservation)
   .delete(authController.protect,authController.allowedTo("patient"),
     validators.deleteReservationValidator,
