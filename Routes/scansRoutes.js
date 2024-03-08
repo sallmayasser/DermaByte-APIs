@@ -9,11 +9,11 @@ const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .post(authController.protect,authController.allowedTo("patient"),functions.uploadScanImage,functions.resizeScanImage,functions.setPatientIdToBody, functions.createScan)
-  .get(functions.getScans);
+  .get( authController.protect,authController.allowedTo("admin"),functions.getScans);
 
 router
   .route('/:id')
-  .get(validators.getScanValidator, functions.getScan)
+  .get(authController.protect,validators.getScanValidator, functions.getScan)
 
   .delete(
     authController.protect,authController.allowedTo("patient"),

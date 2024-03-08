@@ -16,42 +16,42 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(functions.getAllPatients)
-  .post(authController.protect,authController.allowedTo("patient"),functions.uploadPatientImage,functions.resizePatientImage, validators.createPatientValidator, functions.createPatient);
+  .get( authController.protect,authController.allowedTo("admin"),functions.getAllPatients)
+  // .post(authController.protect,authController.allowedTo("admin"),functions.uploadPatientImage,functions.resizePatientImage, validators.createPatientValidator, functions.createPatient);
   // .post(functions.uploadPatientImage ,resizeImage ,validators.createPatientValidator ,functions.createPatient);
 
 router
   .route('/:id')
-  .get(validators.getPatientValidator, functions.getPatient)
+  .get(authController.protect,validators.getPatientValidator, functions.getPatient)
   .put(authController.protect,authController.allowedTo("patient"),functions.uploadPatientImage ,resizeImage,validators.updatePatientValidator, functions.updatePatient)
-  .delete(authController.protect,authController.allowedTo("patient"),validators.deletePatientValidator, functions.deletePatient);
+  .delete(authController.protect,authController.allowedTo("admin"),validators.deletePatientValidator, functions.deletePatient);
 
 router.route('/:id/Patient-reservation').get((req, res, next) => {
   createFilterObj(req, res, next, 'patient');
-}, DReservation.getAllReservations);
+}, authController.protect,authController.allowedTo("patient") ,DReservation.getAllReservations);
 
 router.route('/:id/laboratory-reservation').get((req, res, next) => {
   createFilterObj(req, res, next, 'patient');
-}, getAllReservations);
+},  authController.protect,authController.allowedTo("patient") ,getAllReservations);
 
 router.route('/:id/Scans').get((req, res, next) => {
   createFilterObj(req, res, next, 'patient');
-}, Scans.getScans);
+}, authController.protect,authController.allowedTo("patient") , Scans.getScans);
 
 router.route('/:id/reports').get((req, res, next) => {
   createFilterObj(req, res, next, 'patient');
-}, report.getReports);
+}, authController.protect,authController.allowedTo("patient") , report.getReports);
 
 router.route('/:id/results').get((req, res, next) => {
   createFilterObj(req, res, next, 'patient');
-}, result.getResults);
+},  authController.protect,authController.allowedTo("patient") ,result.getResults);
 
-router.route('/:id/requested-tests').get((req, res, next) => {
-  createFilterObj(req, res, next, 'patient');
-}, getRequestedTests);
+// router.route('/:id/requested-tests').get((req, res, next) => {
+//   createFilterObj(req, res, next, 'patient');
+// }, getRequestedTests);
 
 router.put(
-  '/changePassword/:id',
+  '/changePassword/:id', authController.protect,authController.allowedTo("patient") ,
   validators.changePatientPasswordValidator,
   changeUserPassword(patient),
 );

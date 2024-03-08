@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { boolean } = require('webidl-conversions');
+
 
 ///1)create schema
 const dermatologistsSchema = new mongoose.Schema(
@@ -72,6 +72,10 @@ const dermatologistsSchema = new mongoose.Schema(
     state: {
       type: Boolean,
       default: false,
+    },
+    active:{
+      type: Boolean,
+      default: true,
     },
     slug: {
       type: String,

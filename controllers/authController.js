@@ -8,6 +8,7 @@ const createToken = require('../utils/createToken');
 const Patients = require('../models/patientModel');
 const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
+const Admins = require('../models/AdminModel')
 
 const {
   createPatientValidator,
@@ -82,20 +83,23 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
 
   // Search in Patients and Dermatologists models concurrently
-  const [patient, dermatologist, lab] = await Promise.all([
+  const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findOne({ email }).exec(),
     Dermatologists.findOne({ email }).exec(),
     Labs.findOne({ email }).exec(),
+    Admins.findOne({ email }).exec(),
   ]);
+  console.log(admin)
   // Check if either patient or dermatologist exists and password is correct
   if (
     (patient && (await bcrypt.compare(password, patient.password))) ||
     (dermatologist &&
       (await bcrypt.compare(password, dermatologist.password))) ||
-    (lab && (await bcrypt.compare(password, lab.password)))
+    (lab && (await bcrypt.compare(password, lab.password))) ||
+    (admin && (await bcrypt.compare(password, admin.password)))
   ) {
     // Login successful, generate token
-    const user = patient || dermatologist || lab;
+    const user = patient || dermatologist || lab || admin;
     const token = createToken(user._id);
 
     // Delete password from response
@@ -133,30 +137,24 @@ exports.protect = asyncHandler(async (req, res, next) => {
   console.log(decoded);
 
   //3) Check if user exists
-  let currentUser;
-  const [currentPatient, currentDermatologist, currentLab] = await Promise.all([
+  const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findById(decoded.userId),
     Dermatologists.findById(decoded.userId),
     Labs.findById(decoded.userId),
+    Admins.findById(decoded.userId),
+
   ]);
-
-  if (currentPatient) {
-    currentUser = currentPatient;
-  } else if (currentDermatologist) {
-    currentUser = currentDermatologist;
-  } else if (currentLab) {
-    currentUser = currentLab;
-  }
-
+  const currentUser = patient || dermatologist || lab || admin;
   if (!currentUser) {
     return next(
       new ApiError(
-        'No valid user found for this token. Please log in again.',
-        401,
-      ),
+        'The user that belongs to this token does no longer exist',
+        401
+      )
     );
   }
   // 4) Check if user change his password after token created
+
   if (currentUser) {
     if (currentUser.passwordChangedAt) {
       const passChangedTimestamp = parseInt(
@@ -167,14 +165,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
       if (passChangedTimestamp > decoded.iat) {
         return next(
           new ApiError(
-            'User recently changed their password. Please log in again.',
+            'user recently changed their password. Please log in again.',
             401,
           ),
         );
       }
     }
     req.user = currentUser;
-
   } else {
     return next(
       new ApiError(
@@ -187,11 +184,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 // // @desc    Authorization (User Permissions)
-// // ["admin", "manager"]
+// // [ "patient""dermatologist ,"lab"]
 exports.allowedTo = (...roles) => asyncHandler(async (req, res, next) => {
-  // 1) access roles
-  // 2) access registered user (req.user.role)
-  if (!roles.includes(req.user.role)) {
+  // Access roles
+  // Check if the user has the required role
+  const user = req.user;
+  if (!user || !roles.includes(user.role)) {
     return next(
       new ApiError('You are not allowed to access this route', 403),
     );
@@ -213,10 +211,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const [user] = await Promise.all([
     Dermatologists.findOne({ email: req.body.email }),
     Patients.findOne({ email: req.body.email }),
-    
+
     Labs.findOne({ email: req.body.email }),
   ]);
-  
+
   if (user) {
     // User found, handle accordingly...
   } else {
@@ -224,14 +222,14 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       new ApiError(`There is no user with that email ${req.body.email}`, 404),
     );
   }
-  
+
   //   // 2) If user exist, Generate hash reset random 6 digits and save it in db
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
   const hashedResetCode = crypto
     .createHash('sha256')
     .update(resetCode)
     .digest('hex');
-  
+
   // Save hashed password reset code into db
   user.passwordResetCode = hashedResetCode;
   // Add expiration time for password reset code (10 min)

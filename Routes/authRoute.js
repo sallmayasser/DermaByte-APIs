@@ -14,6 +14,8 @@ const {
 const patient = require('../models/patientModel');
 const dermatologist = require('../models/dermatologistModel');
 const lab = require('../models/labModel');
+const admin = require('../models/AdminModel');
+
 const {
   createPatientValidator, createValidator,
 } = require('../utils/validators/patientValidator');
@@ -65,6 +67,11 @@ router.post(
   signup(lab),
 );
 
+router.post(
+  '/signup/admin',
+
+  signup(admin),
+);
 // router.post(
 //   '/signup',
 //   (req, res, next) => {

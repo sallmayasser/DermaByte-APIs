@@ -13,35 +13,35 @@ const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
-router.route('/').get(getDermatologists)
-    .post( authController.protect,authController.allowedTo("dermatologist"),uploadDermatologistImage,resizeDermatologistImage,createDermatologistValidator,createDermatologist);
+router.route('/').get(authController.protect,authController.allowedTo("admin","patient"),getDermatologists)
+    // .post( authController.protect,authController.allowedTo("admin"),uploadDermatologistImage,resizeDermatologistImage,createDermatologistValidator,createDermatologist);
 
 router
   .route('/:id')
   //getDermatologistValidator validation layer  rule call validator
-  .get(getDermatologistValidator, getDermatologist)
+  .get(authController.protect,getDermatologistValidator, getDermatologist)
   .put(authController.protect,authController.allowedTo("dermatologist"),uploadDermatologistImage,resizeDermatologistImage,updateDermatologistValidator, updateDermatologist)
-  .delete(authController.protect,authController.allowedTo("dermatologist"),deleteDermatologistValidator, deleteDermatologist);
+  .delete(authController.protect,authController.allowedTo("admin"),deleteDermatologistValidator, deleteDermatologist);
 
 router.route('/:id/Dermatologist-reservation').get((req, res, next) => {
   createFilterObj(req, res, next, 'dermatologist');
-}, getAllReservations);
+},authController.protect,authController.allowedTo("dermatologist") ,getAllReservations);
 
 
 router.route('/:id/reports').get((req, res, next) => {
     createFilterObj(req, res, next, 'dermatologist');
-}, report.getReports);
+},authController.protect,authController.allowedTo("dermatologist"), report.getReports);
   
 
-router.route('/:id/requested-tests').get((req, res, next) => {
-  createFilterObj(req, res, next, 'dermatologist');
-}, getRequestedTests);
-  module.exports = router;
+// router.route('/:id/requested-tests').get((req, res, next) => {
+//   createFilterObj(req, res, next, 'dermatologist');
+// }, getRequestedTests);
+ 
   
 router.put(
-  '/changePassword/:id',
+  '/changePassword/:id',authController.protect,authController.allowedTo("dermatologist"),
   changedermatologistPasswordValidator,
   changeUserPassword(Dermatologist),
 );
 
-
+module.exports = router;
