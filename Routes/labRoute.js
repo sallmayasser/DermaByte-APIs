@@ -64,7 +64,7 @@ router.delete(
 );
 router
   .route('/')
-  .get(authController.protect, authController.allowedTo('admin',"lab"), getLabs);
+  .get(authController.protect, authController.allowedTo('admin',"patient"), getLabs);
 // .post(authController.protect,authController.allowedTo(""),uploadLabImage, resizeLabImage, createLabValidator, createLab);
 
 router
