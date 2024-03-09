@@ -127,3 +127,24 @@ exports.changelabPasswordValidator = [
     }),
   validatorMiddleware,
 ];
+
+exports.updateLoggedlabValidator = [
+  check('email')
+    .optional()
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Lab.findOne({ email: val }).then((lab) => {
+        if (lab) {
+          return Promise.reject(new Error('E-mail already in lab'));
+        }
+      }),
+    ),
+
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
+
+  validatorMiddleware,
+];

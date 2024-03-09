@@ -79,3 +79,29 @@ exports.updateLab = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: document });
 });
 exports.deleteLab = factory.deleteOne(Lab);
+
+
+// @desc    Update logged user data (without password, role)
+// @route   PUT /api/v1/users/updateMe
+// @access  Private/Protect
+exports.updateLoggedLabData = asyncHandler(async (req, res, next) => {
+  const updatedUser = await Lab.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      slug: req.body.slug,
+      mobile: req.body.mobile,
+      location: req.body.location,
+      city: req.body.city,
+      country: req.body.country,
+      email: req.body.email,
+      license: req.body.license,
+      state: req.body.state,
+      profilePic: req.body.profilePic,
+    },
+    { new: true },
+  );
+  console.log(updatedUser);
+
+  res.status(200).json({ data: updatedUser });
+});

@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const ApiError = require('../utils/apiError');
 const ApiFeatures = require('../utils/apiFeatures');
-
+const createToken = require('../utils/createToken');
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {
@@ -109,7 +109,7 @@ exports.getAll = (Model, populationOpt,modelName = '') =>
 
   exports.createFilterObj = (req, res, next, filterType) => {
     let filterObject = {};
-
+  
     if (filterType === 'patient') {
       filterObject = { patient: req.params.id };
     } else if (filterType === 'dermatologist') {
@@ -118,7 +118,7 @@ exports.getAll = (Model, populationOpt,modelName = '') =>
       filterObject = { lab: req.params.id };
     }
     req.filterObj = filterObject;
-  
+     console.log(filterObject)
     next();
 };
   
@@ -138,4 +138,45 @@ exports.changeUserPassword =(Model)=> asyncHandler(async (req, res, next) => {
     return next(new ApiError(`No document for this id ${req.params.id}`, 404));
   }
   res.status(200).json({ data: document });
+});
+// @desc    Get Logged user data
+// @route   GET /api/v1/users/getMe
+// @access  Private/Protect
+exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  console.log(req.user);
+  next();
+});
+
+// @desc    Update logged user password
+// @route   PUT /api/v1/users/updateMyPassword
+// @access  Private/Protect
+exports.updateLoggedUserPassword = (Model)=>asyncHandler(async (req, res, next) => {
+  // 1) Update user password based user payload (req.user._id)
+  const user = await Model.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.password, 12),
+      passwordChangedAt: Date.now(),
+    },
+    {
+      new: true,
+    },
+  );
+
+  // 2) Generate token
+  const token = createToken(user._id);
+
+  res.status(200).json({ data: user, token });
+});
+
+
+
+// @desc    Deactivate logged user
+// @route   DELETE /api/v1/users/deleteMe
+// @access  Private/Protect
+exports.deleteLoggedUserData =(Model) => asyncHandler(async (req, res, next) => {
+  await Model.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({ status: 'Success' });
 });

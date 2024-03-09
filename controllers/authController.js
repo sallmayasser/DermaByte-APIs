@@ -94,6 +94,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         new ApiError(' Waiting until Admin approve your account', 401),
       );
     }
+    
     // Login successful, generate token
     const user = patient || dermatologist || lab || admin;
     const token = createToken(user._id);

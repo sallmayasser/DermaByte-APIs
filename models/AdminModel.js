@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 ///1)create schema
 const adminSchema = new mongoose.Schema(
   {
-    firsttName: {
+    firstName: {
       type: String,
     },
     email: {
@@ -34,10 +34,10 @@ const adminSchema = new mongoose.Schema(
   },
 );
 adminSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
-    // Hashing user password
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
-  });
+  if (!this.isModified('password')) return next();
+  // Hashing user password
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
 ///2)create model
 module.exports = mongoose.model('Admin', adminSchema);

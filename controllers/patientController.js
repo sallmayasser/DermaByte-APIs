@@ -22,12 +22,12 @@ exports.uploadPatientImage = uploadSingleImage('profilePic');
 // Image processing
 exports.resizePatientImage = asyncHandler(async (req, res, next) => {
   const filename = `patient-${uuidv4()}-${Date.now()}.jpeg`;
-if(req.file){
-  await sharp(req.file.buffer)
-    .resize(320, 320)
-    .toFormat('jpeg')
-    .jpeg({ quality: 95 })
-    .toFile(`uploads/patients/${filename}`);
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(320, 320)
+      .toFormat('jpeg')
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/patients/${filename}`);
 
     // Save image into our db
 
@@ -70,3 +70,28 @@ exports.updatePatient = asyncHandler(async (req, res, next) => {
 exports.deletePatient = handlers.deleteOne(Patient);
 
 exports.createPatient = handlers.createOne(Patient);
+
+// @desc    Update logged user data (without password, role)
+// @route   PUT /api/v1/users/updateMe
+// @access  Private/Protect
+exports.updateLoggedPatientData = asyncHandler(async (req, res, next) => {
+  const updatedUser = await Patient.findByIdAndUpdate(
+    req.user._id,
+    {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      slug: req.body.slug,
+      mobile: req.body.mobile,
+      email: req.body.email,
+      age: req.body.age,
+      city: req.body.city,
+      country: req.body.country,
+      gender: req.body.gender,
+      profilePic: req.body.profilePic,
+    },
+    { new: true },
+  );
+  console.log(updatedUser);
+
+  res.status(200).json({ data: updatedUser });
+});

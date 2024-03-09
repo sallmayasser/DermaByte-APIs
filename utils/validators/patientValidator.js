@@ -165,3 +165,30 @@ exports.changePatientPasswordValidator = [
     }),
   validatorMiddleware,
 ];
+
+exports.updateLoggedPatientValidator = [
+  body('firstName')
+    .optional()
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  check('email')
+    .optional()
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Patient.findOne({ email: val }).then((patient) => {
+        if (patient) {
+          return Promise.reject(new Error('E-mail already in patient'));
+        }
+      }),
+    ),
+
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
+
+  validatorMiddleware,
+];

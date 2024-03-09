@@ -149,3 +149,23 @@ exports.changedermatologistPasswordValidator = [
     }),
   validatorMiddleware,
 ];
+exports.updateLoggedDermatologistValidator = [
+
+  check('email')
+    .optional()
+    .isEmail()
+    .withMessage('Invalid email address')
+    .custom((val) =>
+      Dermatologist.findOne({ email: val }).then((dermatologist) => {
+        if (dermatologist) {
+          return Promise.reject(new Error('E-mail already in dermatologist'));
+        }
+      }),
+    ),
+  check('phone')
+    .optional()
+    .isMobilePhone(['ar-EG', 'ar-SA'])
+    .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
+
+  validatorMiddleware,
+];

@@ -83,3 +83,29 @@ exports.updateDermatologist = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: document });
 });
 exports.deleteDermatologist = factory.deleteOne(Dermatologist);
+
+exports.updateLoggedDermatologistData = asyncHandler(async (req, res, next) => {
+  const updatedUser = await Dermatologist.findByIdAndUpdate(
+    req.user._id,
+    {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      slug: req.body.slug,
+      mobile: req.body.mobile,
+      email: req.body.email,
+      license: req.body.license,
+      city: req.body.city,
+      country: req.body.country,
+      state: req.body.state,
+      profilePic: req.body.profilePic,
+      gender: req.body.gender,
+      location: req.body.location,
+      sessionCost: req.body.sessionCost,
+      specialization: req.body.specialization,
+    },
+    { new: true },
+  );
+  console.log(updatedUser);
+
+  res.status(200).json({ data: updatedUser });
+});
