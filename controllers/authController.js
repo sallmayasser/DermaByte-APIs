@@ -8,7 +8,7 @@ const createToken = require('../utils/createToken');
 const Patients = require('../models/patientModel');
 const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
-const Admins = require('../models/AdminModel')
+const Admins = require('../models/AdminModel');
 
 const {
   createPatientValidator,
@@ -89,15 +89,25 @@ exports.login = asyncHandler(async (req, res, next) => {
     Labs.findOne({ email }).exec(),
     Admins.findOne({ email }).exec(),
   ]);
-  console.log(admin)
+
+  const isDoctor =
+    dermatologist && (await bcrypt.compare(password, dermatologist.password));
+  const isLab = lab && (await bcrypt.compare(password, lab.password));
   // Check if either patient or dermatologist exists and password is correct
   if (
     (patient && (await bcrypt.compare(password, patient.password))) ||
-    (dermatologist &&
-      (await bcrypt.compare(password, dermatologist.password))) ||
-    (lab && (await bcrypt.compare(password, lab.password))) ||
+    isDoctor ||
+    isLab ||
     (admin && (await bcrypt.compare(password, admin.password)))
   ) {
+    if (
+      (isDoctor && dermatologist.state === false) ||
+      (isLab && lab.state === false)
+    ) {
+      return next(
+        new ApiError(' Waiting until Admin approve your account', 401),
+      );
+    }
     // Login successful, generate token
     const user = patient || dermatologist || lab || admin;
     const token = createToken(user._id);
@@ -142,15 +152,14 @@ exports.protect = asyncHandler(async (req, res, next) => {
     Dermatologists.findById(decoded.userId),
     Labs.findById(decoded.userId),
     Admins.findById(decoded.userId),
-
   ]);
   const currentUser = patient || dermatologist || lab || admin;
   if (!currentUser) {
     return next(
       new ApiError(
         'The user that belongs to this token does no longer exist',
-        401
-      )
+        401,
+      ),
     );
   }
   // 4) Check if user change his password after token created
@@ -185,17 +194,18 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 // // @desc    Authorization (User Permissions)
 // // [ "patient""dermatologist ,"lab"]
-exports.allowedTo = (...roles) => asyncHandler(async (req, res, next) => {
-  // Access roles
-  // Check if the user has the required role
-  const user = req.user;
-  if (!user || !roles.includes(user.role)) {
-    return next(
-      new ApiError('You are not allowed to access this route', 403),
-    );
-  }
-  next();
-});
+exports.allowedTo = (...roles) =>
+  asyncHandler(async (req, res, next) => {
+    // Access roles
+    // Check if the user has the required role
+    const user = req.user;
+    if (!user || !roles.includes(user.role)) {
+      return next(
+        new ApiError('You are not allowed to access this route', 403),
+      );
+    }
+    next();
+  });
 
 // // @desc    Forgot password
 // // @route   POST /api/v1/auth/forgotPassword

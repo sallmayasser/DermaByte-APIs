@@ -8,7 +8,6 @@ const ApiError = require('./utils/apiError');
 const globalError = require('./middleware/errorMiddleware');
 const dbConnection = require('./Configs/Database');
 
-
 dotenv.config({ path: 'config.env' });
 
 //routes
@@ -23,6 +22,7 @@ const resultRoute = require('./Routes/resultRoute');
 const scanRoute = require('./Routes/scansRoutes');
 const requestedTestsRoute = require('./Routes/requestedTestRoutes');
 const authRoute = require('./Routes/authRoute');
+const adminRoute = require('./Routes/adminRoute');
 
 // connect with db
 dbConnection();
@@ -56,6 +56,8 @@ app.use('/api/v1/results', resultRoute);
 app.use('/api/v1/scans', scanRoute);
 app.use('/api/v1/requested-tests', requestedTestsRoute);
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/admin', adminRoute);
+
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });
