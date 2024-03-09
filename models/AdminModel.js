@@ -3,27 +3,29 @@ const bcrypt = require('bcryptjs');
 ///1)create schema
 const adminSchema = new mongoose.Schema(
   {
-    name: {
+    firsttName: {
       type: String,
-      
     },
-    email:{
-        type:String,
-        required:true,
+    email: {
+      type: String,
+      required: true,
     },
-    password:{
-        type:String,
-        required:true,
+    password: {
+      type: String,
+      required: true,
     },
-    role:{
-        type:String,
-        default:"admin"
+    passwordChangedAt: Date,
+    passwordResetCode: String,
+    passwordResetExpires: Date,
+    passwordResetVerified: Boolean,
+    role: {
+      type: String,
+      default: 'admin',
     },
-    active:{
-        type: Boolean,
-        default: true,
-      },
-    
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

@@ -3,26 +3,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
-// const sendEmail = require('../utils/sendEmail');
+const sendEmail = require('../utils/sendEmail');
 const createToken = require('../utils/createToken');
 const Patients = require('../models/patientModel');
 const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
 const Admins = require('../models/AdminModel');
-
-const {
-  createPatientValidator,
-} = require('../utils/validators/patientValidator');
-const {
-  createDermatologistValidator,
-} = require('../utils/validators/dermatologistValidator');
-const { createLabValidator } = require('../utils/validators/labValidator');
-const { uploadPatientImage, resizeImage } = require('./patientController');
-const {
-  uploadDermatologistImage,
-  resizeDermatologistImage,
-} = require('./dermatologistController');
-const { resizeLabImage, uploadLabImage } = require('./labController');
 
 // @desc    Signup
 // @route   GET /api/v1/auth/signup/{ModelName}
@@ -144,7 +130,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // 2) Verify token (no change happens, expired token)
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  console.log(decoded);
 
   //3) Check if user exists
   const [patient, dermatologist, lab, admin] = await Promise.all([
@@ -198,7 +183,7 @@ exports.allowedTo = (...roles) =>
   asyncHandler(async (req, res, next) => {
     // Access roles
     // Check if the user has the required role
-    const user = req.user;
+    const { user } = req;
     if (!user || !roles.includes(user.role)) {
       return next(
         new ApiError('You are not allowed to access this route', 403),
@@ -218,12 +203,14 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   //     new ApiError(`There is no user with that email ${req.body.email}`, 404),
   //   );
   // }
-  const [user] = await Promise.all([
-    Dermatologists.findOne({ email: req.body.email }),
+  const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findOne({ email: req.body.email }),
-
+    Dermatologists.findOne({ email: req.body.email }),
     Labs.findOne({ email: req.body.email }),
+    Admins.findOne({ email: req.body.email }),
   ]);
+
+  const user = patient || dermatologist || lab || admin;
 
   if (user) {
     // User found, handle accordingly...
@@ -249,79 +236,108 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   await user.save();
 
   //   // 3) Send the reset code via email
-  //   const message = `Hi ${user.name},\n We received a request to reset the password on your E-shop Account. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The E-shop Team`;
-  //   try {
-  //     await sendEmail({
-  //       email: user.email,
-  //       subject: 'Your password reset code (valid for 10 min)',
-  //       message,
-  //     });
-  //   } catch (err) {
-  //     user.passwordResetCode = undefined;
-  //     user.passwordResetExpires = undefined;
-  //     user.passwordResetVerified = undefined;
+  const message = `Hi ${user.firstName},
+      \n We received a request to reset the password on your DermaByte application Account.
+      \n ${resetCode} \n Enter this code to complete the reset. 
+      \n Thanks for helping us keep your account secure.
+      \n The DermaByte application Team❤️`;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your password reset code (valid for 10 min)',
+      message,
+    });
+  } catch (err) {
+    user.passwordResetCode = undefined;
+    user.passwordResetExpires = undefined;
+    user.passwordResetVerified = undefined;
 
-  //     await user.save();
-  //     return next(new ApiError('There is an error in sending email', 500));
-  //   }
+    await user.save();
+    return next(new ApiError('There is an error in sending email', 500));
+  }
 
-  //   res
-  //     .status(200)
-  //     .json({ status: 'Success', message: 'Reset code sent to email' });
+  res
+    .status(200)
+    .json({ status: 'Success', message: 'Reset code sent to email' });
 });
 
 // // @desc    Verify password reset code
 // // @route   POST /api/v1/auth/verifyResetCode
 // // @access  Public
-// exports.verifyPassResetCode = asyncHandler(async (req, res, next) => {
-//   // 1) Get user based on reset code
-//   const hashedResetCode = crypto
-//     .createHash('sha256')
-//     .update(req.body.resetCode)
-//     .digest('hex');
+exports.verifyPassResetCode = asyncHandler(async (req, res, next) => {
+  // 1) Get user based on reset code
+  const hashedResetCode = crypto
+    .createHash('sha256')
+    .update(req.body.resetCode)
+    .digest('hex');
 
-//   const user = await User.findOne({
-//     passwordResetCode: hashedResetCode,
-//     passwordResetExpires: { $gt: Date.now() },
-//   });
-//   if (!user) {
-//     return next(new ApiError('Reset code invalid or expired'));
-//   }
+  const [patient, dermatologist, lab, admin] = await Promise.all([
+    Patients.findOne({
+      passwordResetCode: hashedResetCode,
+      passwordResetExpires: { $gt: Date.now() },
+    }),
+    Dermatologists.findOne({
+      passwordResetCode: hashedResetCode,
+      passwordResetExpires: { $gt: Date.now() },
+    }),
+    Labs.findOne({
+      passwordResetCode: hashedResetCode,
+      passwordResetExpires: { $gt: Date.now() },
+    }),
+    Admins.findOne({
+      passwordResetCode: hashedResetCode,
+      passwordResetExpires: { $gt: Date.now() },
+    }),
+  ]);
 
-//   // 2) Reset code valid
-//   user.passwordResetVerified = true;
-//   await user.save();
+  const user = patient || dermatologist || lab || admin;
 
-//   res.status(200).json({
-//     status: 'Success',
-//   });
-// });
+  console.log(user);
+  if (!user) {
+    return next(new ApiError('Reset code invalid or expired'));
+  }
+
+  // 2) Reset code valid
+  user.passwordResetVerified = true;
+  await user.save();
+
+  res.status(200).json({
+    status: 'Success',
+  });
+});
 
 // // @desc    Reset password
 // // @route   POST /api/v1/auth/resetPassword
 // // @access  Public
-// exports.resetPassword = asyncHandler(async (req, res, next) => {
-//   // 1) Get user based on email
-//   const user = await User.findOne({ email: req.body.email });
-//   if (!user) {
-//     return next(
-//       new ApiError(`There is no user with email ${req.body.email}`, 404),
-//     );
-//   }
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  // 1) Get user based on email
+  const [patient, dermatologist, lab, admin] = await Promise.all([
+    Patients.findOne({ email: req.body.email }),
+    Dermatologists.findOne({ email: req.body.email }),
+    Labs.findOne({ email: req.body.email }),
+    Admins.findOne({ email: req.body.email }),
+  ]);
 
-//   // 2) Check if reset code verified
-//   if (!user.passwordResetVerified) {
-//     return next(new ApiError('Reset code not verified', 400));
-//   }
+  const user = patient || dermatologist || lab || admin;
+  if (!user) {
+    return next(
+      new ApiError(`There is no user with email ${req.body.email}`, 404),
+    );
+  }
 
-//   user.password = req.body.newPassword;
-//   user.passwordResetCode = undefined;
-//   user.passwordResetExpires = undefined;
-//   user.passwordResetVerified = undefined;
+  // 2) Check if reset code verified
+  if (!user.passwordResetVerified) {
+    return next(new ApiError('Reset code not verified', 400));
+  }
 
-//   await user.save();
+  user.password = req.body.newPassword;
+  user.passwordResetCode = undefined;
+  user.passwordResetExpires = undefined;
+  user.passwordResetVerified = undefined;
 
-//   // 3) if everything is ok, generate token
-//   const token = createToken(user._id);
-//   res.status(200).json({ token });
-// });
+  await user.save();
+
+  // 3) if everything is ok, generate token
+  const token = createToken(user._id);
+  res.status(200).json({ token });
+});

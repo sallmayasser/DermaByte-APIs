@@ -69,7 +69,6 @@ router.post(
 
 router.post(
   '/signup/admin',
-
   signup(admin),
 );
 // router.post(
@@ -91,7 +90,7 @@ router.post(
 router.post('/login', loginValidator, login);
 
 router.post('/forgotPassword', forgotPassword);
-// router.post('/verifyResetCode', verifyPassResetCode);
-// router.put('/resetPassword', resetPassword);
+router.post('/verifyResetCode', verifyPassResetCode);
+router.put('/resetPassword', resetPassword);
 
 module.exports = router;

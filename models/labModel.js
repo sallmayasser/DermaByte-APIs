@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 ///1)create schema
 const labsSchema = new mongoose.Schema(
   {
-    name: {
+    firsName: {
       type: String,
       required: [true, 'Name required'],
       minlenth: [2, 'too short  name'],
@@ -13,7 +13,6 @@ const labsSchema = new mongoose.Schema(
       type: String,
       
     },
-
     mobile: {
       type: String,
       min: [11, 'incorrect mobile number'],

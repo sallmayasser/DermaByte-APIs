@@ -5,7 +5,7 @@ const validatorMiddleware = require('../../middleware/validatorMiddleware');
 const Lab = require('../../models/labModel');
 
 exports.createLabValidator = [
-  check('name')
+  check('firstName')
     .isLength({ min: 2 })
     .withMessage('must be at least 2 chars')
     .isLength({ max: 32 })
@@ -120,9 +120,9 @@ exports.changelabPasswordValidator = [
       if (val !== req.body.passwordConfirm) {
         throw new Error('Password Confirmation incorrect');
       }
-        if (val === req.body.currentPassword) {
-          throw new Error('Please enter new password !');
-        }
+      if (val === req.body.currentPassword) {
+        throw new Error('Please enter new password !');
+      }
       return true;
     }),
   validatorMiddleware,
