@@ -1,18 +1,41 @@
 const express = require('express');
-const { getTestServiceValidator, createTestServiceValidator, updateTestServiceValidator, deleteTestServiceValidator } = require("../utils/validators/testServiceValidator")
+const {
+  getTestServiceValidator,
+  createTestServiceValidator,
+  updateTestServiceValidator,
+  deleteTestServiceValidator,
+} = require('../utils/validators/testServiceValidator');
 
-const { getTestServices ,createFilterObj,setLabIdToBody,createTestService, getTestService, updateTestService, deleteTestService } = require("../controllers/testServiceController");
+const {
+  getTestServices,
+  setLabIdToBody,
+  createTestService,
+  getTestService,
+  updateTestService,
+  deleteTestService,
+} = require('../controllers/testServiceController');
 const authController = require('../controllers/authController');
+const {
+  createFilterObj,
+  getLoggedUserData,
+} = require('../controllers/handlersFactory');
 
-const router = express.Router({mergeParams:true});
+const router = express.Router({ mergeParams: true });
 
-router.route('/').get(authController.protect,authController.allowedTo("admin"),createFilterObj,getTestServices)
-    .post(authController.protect,authController.allowedTo("lab"),setLabIdToBody, createTestServiceValidator, createTestService);
+router.use(authController.protect, authController.allowedTo('admin'));
 
-router.route('/:id')
-    //getTestServiceValidator validation layer  rule call validator 
-    .get(authController.protect,getTestServiceValidator, getTestService)
-    .put(authController.protect,authController.allowedTo("lab"),updateTestServiceValidator, updateTestService)
-    .delete (authController.protect,authController.allowedTo("admin"),deleteTestServiceValidator, deleteTestService);
+router.route('/').get((req, res, next) => {
+  createFilterObj(req, res, next, 'lab');
+}, getTestServices);
+router
+  .route('/:id')
+  //getTestServiceValidator validation layer  rule call validator
+  .get(getTestServiceValidator, getTestService)
+  .put(updateTestServiceValidator, updateTestService)
+  .delete(
+    authController.allowedTo('admin', 'lab'),
+    deleteTestServiceValidator,
+    deleteTestService,
+  );
 
 module.exports = router;

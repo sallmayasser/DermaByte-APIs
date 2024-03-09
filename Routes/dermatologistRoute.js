@@ -34,7 +34,9 @@ const authController = require('../controllers/authController');
 const { resizeImage } = require('../controllers/resizeImgController');
 
 const router = express.Router({ mergeParams: true });
+
 router.use(authController.protect);
+// dermatologist routes
 router.get(
   '/getMe',
   authController.allowedTo('dermatologist'),
@@ -59,6 +61,28 @@ router.delete(
   authController.allowedTo('dermatologist'),
   deleteLoggedUserData(Dermatologist),
 );
+
+// nested Route
+router.route('/Dermatologist-reservation').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'dermatologist');
+  },
+  authController.allowedTo('dermatologist'),
+  getAllReservations,
+);
+
+router.route('/reports').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'dermatologist');
+  },
+  authController.protect,
+  authController.allowedTo('dermatologist'),
+  report.getReports,
+);
+
+//  admin
 
 router
   .route('/')
@@ -88,26 +112,6 @@ router
     deleteDermatologist,
   );
 
-
-  // nested Route
-router.route('/:id/Dermatologist-reservation').get(
-  (req, res, next) => {
-    createFilterObj(req, res, next, 'dermatologist');
-  },
-  authController.protect,
-  authController.allowedTo('dermatologist'),
-  getAllReservations,
-);
-
-router.route('/:id/reports').get(
-  (req, res, next) => {
-    createFilterObj(req, res, next, 'dermatologist');
-  },
-  authController.protect,
-  authController.allowedTo('dermatologist'),
-  report.getReports,
-);
-
 // router.route('/:id/requested-tests').get((req, res, next) => {
 //   createFilterObj(req, res, next, 'dermatologist');
 // }, getRequestedTests);
@@ -115,7 +119,7 @@ router.route('/:id/reports').get(
 router.put(
   '/changePassword/:id',
   authController.protect,
-  authController.allowedTo('dermatologist'),
+  authController.allowedTo('admin'),
   changedermatologistPasswordValidator,
   changeUserPassword(Dermatologist),
 );

@@ -17,7 +17,6 @@ const {
   deleteLab,
   updateLoggedLabData,
 } = require('../controllers/labController');
-const testServiceRoute = require('./testServiceRoute');
 const {
   createFilterObj,
   changeUserPassword,
@@ -32,12 +31,21 @@ const {
 const lab = require('../models/labModel');
 const authController = require('../controllers/authController');
 const { resizeImage } = require('../controllers/resizeImgController');
+const {
+  getTestServices,
+  setLabIdToBody,
+  createTestService,
+  deleteTestService,
+} = require('../controllers/testServiceController');
+const {
+  createTestServiceValidator,
+  deleteTestServiceValidator,
+} = require('../utils/validators/testServiceValidator');
 
 const router = express.Router();
 
-router.use('/:labId/tests', testServiceRoute);
-
 router.use(authController.protect);
+
 router.get(
   '/getMe',
   authController.allowedTo('lab'),
@@ -62,9 +70,52 @@ router.delete(
   authController.allowedTo('lab'),
   deleteLoggedUserData(lab),
 );
+// nested Routes
+router.route('/laboratory-reservation').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'lab');
+  },
+  authController.allowedTo('lab'),
+  getAllReservations,
+);
+router.route('/results').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'lab');
+  },
+  authController.allowedTo('lab'),
+  result.getResults,
+);
+
+router
+  .route('/tests')
+  .get(
+    getLoggedUserData,
+    (req, res, next) => {
+      createFilterObj(req, res, next, 'lab');
+    },
+    authController.allowedTo('lab'),
+    getTestServices,
+  )
+  .post(
+
+    authController.allowedTo('lab'),
+    getLoggedUserData,
+    setLabIdToBody,
+    createTestServiceValidator,
+    createTestService,
+  )
+  
+
+// admin routes
 router
   .route('/')
-  .get(authController.protect, authController.allowedTo('admin',"patient"), getLabs);
+  .get(
+    authController.protect,
+    authController.allowedTo('admin', 'patient'),
+    getLabs,
+  );
 // .post(authController.protect,authController.allowedTo(""),uploadLabImage, resizeLabImage, createLabValidator, createLab);
 
 router
@@ -86,28 +137,10 @@ router
     deleteLab,
   );
 
-// nested Routes
-router.route('/:id/laboratory-reservation').get(
-  (req, res, next) => {
-    createFilterObj(req, res, next, 'lab');
-  },
-  authController.protect,
-  authController.allowedTo('lab'),
-  getAllReservations,
-);
-router.route('/:id/results').get(
-  (req, res, next) => {
-    createFilterObj(req, res, next, 'lab');
-  },
-  authController.protect,
-  authController.allowedTo('lab'),
-  result.getResults,
-);
-
 router.put(
   '/changePassword/:id',
   authController.protect,
-  authController.allowedTo('lab'),
+  authController.allowedTo('admin'),
   changelabPasswordValidator,
   changeUserPassword(lab),
 );

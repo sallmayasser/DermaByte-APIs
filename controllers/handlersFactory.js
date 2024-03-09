@@ -144,7 +144,6 @@ exports.changeUserPassword =(Model)=> asyncHandler(async (req, res, next) => {
 // @access  Private/Protect
 exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
   req.params.id = req.user._id;
-  console.log(req.user);
   next();
 });
 
