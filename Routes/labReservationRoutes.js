@@ -1,14 +1,15 @@
 const express = require('express');
 const functions = require('../controllers/labReservationController');
 const validators = require('../utils/validators/ReservationsValidator');
-const { createFilterObj } = require('../controllers/handlersFactory');
+const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
 const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(authController.protect,authController.allowedTo("patient"),
+  .post(authController.protect, authController.allowedTo("patient"),
+    getLoggedUserData,
     functions.setPatientIdToBody,
     functions.createReservation,
     validators.createReservationValidator,

@@ -13,6 +13,6 @@ exports.createReservation = handlers.createOne(Reservation);
 
 exports.setPatientIdToBody = (req, res, next) => {
   // Nested route (Create)
-  if (!req.body.patient) req.body.patient = req.params.patientId;
+  if (!req.body.patient) req.body.patient = req.params.id;
   next();
 };

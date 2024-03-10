@@ -11,7 +11,9 @@ exports.createTestServiceValidator = [
         .withMessage('must be at least 2 chars')
         .notEmpty()
         .withMessage(' test name is required'),
-    
+    check('cost')
+        .notEmpty()
+    .withMessage(' cost is required'),
     validatorMiddleware,
 ];
 

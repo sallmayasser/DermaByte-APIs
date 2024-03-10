@@ -9,7 +9,6 @@ exports.createResultValidator = [
         .withMessage('test name is required'),
     check('testResult')
         .optional(),
-        
     check('testDate')
         .optional(),
         check('patient')

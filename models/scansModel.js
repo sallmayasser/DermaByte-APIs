@@ -3,8 +3,17 @@ const mongoose = require('mongoose');
 const scansSchema = new mongoose.Schema(
   {
     scanDate: {
-      type: Date,
-      default: Date.now(),
+      type: String,
+      default: () =>
+        new Date().toLocaleString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+        }),
     },
     diseasePhoto: {
       type: String,

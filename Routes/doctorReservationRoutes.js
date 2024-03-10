@@ -2,7 +2,7 @@ const express = require('express');
 const functions = require('../controllers/doctorReservationController');
 const validators = require('../utils/validators/ReservationsValidator');
 
-const { createFilterObj } = require('../controllers/handlersFactory');
+const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
 const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
@@ -12,6 +12,7 @@ router
   .post(
     authController.protect,
     authController.allowedTo('patient'),
+    getLoggedUserData,
     functions.uploadUploadedTestImages,
     functions.resizeUploadedTestImages,
     functions.setPatientIdToBody,
