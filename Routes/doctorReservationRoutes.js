@@ -1,12 +1,9 @@
 const express = require('express');
 const functions = require('../controllers/doctorReservationController');
 const validators = require('../utils/validators/ReservationsValidator');
-const {
-  createReportValidator,
-} = require('../utils/validators/reportValidator');
+
 const { createFilterObj } = require('../controllers/handlersFactory');
 const authController = require('../controllers/authController');
-const { createReport } = require('../controllers/reportController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -18,8 +15,6 @@ router
     functions.uploadUploadedTestImages,
     functions.resizeUploadedTestImages,
     functions.setPatientIdToBody,
-    createReportValidator,
-    createReport,
     validators.createReservationValidator,
     functions.createReservation,
  
