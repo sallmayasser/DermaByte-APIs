@@ -34,16 +34,7 @@ const reportsSchema = new mongoose.Schema(
         testName: [{ type: String }],
         requestedAt: {
           type: Date,
-          default: () =>
-            new Date().toLocaleString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              second: 'numeric',
-            }),
+          default: Date.now() + 2 * 60 * 60 * 1000,
         },
       },
     ],

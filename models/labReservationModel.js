@@ -3,18 +3,22 @@ const mongoose = require('mongoose');
 const labReservationsSchema = new mongoose.Schema(
   {
     date: {
-      type: String,
-      default: () =>
-        new Date().toLocaleString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-        }),
+      type: Date,
+      default: Date.now() + 2 * 60 * 60 * 1000,
     },
+    // date: {
+    //   type: String,
+    //   default: () =>
+    //     new Date().toLocaleString('en-US', {
+    //       weekday: 'long',
+    //       year: 'numeric',
+    //       month: 'long',
+    //       day: 'numeric',
+    //       hour: 'numeric',
+    //       minute: 'numeric',
+    //       second: 'numeric',
+    //     }),
+    // },
     patient: {
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',

@@ -11,17 +11,19 @@ const resultsSchema = new mongoose.Schema(
       required: [true, 'test result is required'],
     },
     testDate: {
-      type: String,
-      default: () =>
-        new Date().toLocaleString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-        }),
+      type: Date,
+      default: Date.now() + 2 * 60 * 60 * 1000,
+      //  type: String,
+      // default: () =>
+      //   new Date().toLocaleString('en-US', {
+      //     weekday: 'long',
+      //     year: 'numeric',
+      //     month: 'long',
+      //     day: 'numeric',
+      //     hour: 'numeric',
+      //     minute: 'numeric',
+      //     second: 'numeric',
+      //   }),
     },
     // labReservation: {
     //   type: mongoose.Schema.ObjectId,

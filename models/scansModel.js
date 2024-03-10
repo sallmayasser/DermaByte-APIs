@@ -3,17 +3,8 @@ const mongoose = require('mongoose');
 const scansSchema = new mongoose.Schema(
   {
     scanDate: {
-      type: String,
-      default: () =>
-        new Date().toLocaleString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-        }),
+      type: Date,
+      default: Date.now()+ 2 * 60 * 60 * 1000,
     },
     diseasePhoto: {
       type: String,
@@ -50,5 +41,7 @@ scansSchema.post('init', (doc) => {
 scansSchema.post('save', (doc) => {
   setImageURL(doc);
 });
+
+
 ///2)create model
 module.exports = mongoose.model('Scans', scansSchema);
