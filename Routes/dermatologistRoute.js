@@ -1,7 +1,6 @@
 const express = require('express');
 const {
   getDermatologistValidator,
-  createDermatologistValidator,
   updateDermatologistValidator,
   deleteDermatologistValidator,
   changedermatologistPasswordValidator,
@@ -11,7 +10,6 @@ const {
   uploadDermatologistImage,
   resizeDermatologistImage,
   getDermatologists,
-  createDermatologist,
   getDermatologist,
   updateDermatologist,
   deleteDermatologist,
@@ -31,10 +29,8 @@ const {
   getLoggedUserData,
 } = require('../controllers/handlersFactory');
 const report = require('../controllers/reportController');
-const { getRequestedTests } = require('../controllers/requestedTestController');
 const Dermatologist = require('../models/dermatologistModel');
 const authController = require('../controllers/authController');
-const { resizeImage } = require('../controllers/resizeImgController');
 const { getSchedules } = require('../controllers/scheduleController');
 
 const router = express.Router({ mergeParams: true });

@@ -4,7 +4,6 @@ const validators = require('../utils/validators/patientValidator');
 const {
   getAllReservations,
 } = require('../controllers/labReservationController');
-const { getRequestedTests } = require('../controllers/requestedTestController');
 const DReservation = require('../controllers/doctorReservationController');
 const Scans = require('../controllers/scansController');
 const report = require('../controllers/reportController');
@@ -19,6 +18,7 @@ const {
 const patient = require('../models/patientModel');
 const { resizeImage } = require('../controllers/imageController');
 const authController = require('../controllers/authController');
+const { getReviews } = require('../controllers/reviewController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -98,6 +98,14 @@ router.get(
     createFilterObj(req, res, next, 'patient');
   },
   DReservation.getAllReservations,
+);
+router.route('/reviews').get(
+  authController.allowedTo('patient'),
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'patient');
+  },
+  getReviews,
 );
 
 // admin routes
