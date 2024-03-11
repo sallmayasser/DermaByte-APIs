@@ -17,7 +17,7 @@ const {
   getLoggedUserData,
 } = require('../controllers/handlersFactory');
 const patient = require('../models/patientModel');
-const { resizeImage } = require('../controllers/resizeImgController');
+const { resizeImage } = require('../controllers/imageController');
 const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });

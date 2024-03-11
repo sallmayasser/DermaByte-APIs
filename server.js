@@ -23,6 +23,7 @@ const scanRoute = require('./Routes/scansRoutes');
 const requestedTestsRoute = require('./Routes/requestedTestRoutes');
 const authRoute = require('./Routes/authRoute');
 const adminRoute = require('./Routes/adminRoute');
+const scheduleRoute = require('./Routes/scheduleRoute');
 const reviewRoute =require('./Routes/reviewRoute');
 // connect with db
 dbConnection();
@@ -57,6 +58,7 @@ app.use('/api/v1/scans', scanRoute);
 app.use('/api/v1/requested-tests', requestedTestsRoute);
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/admin', adminRoute);
+app.use('/api/v1/schedules', scheduleRoute);
 app.use('/api/v1/reviews', reviewRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));

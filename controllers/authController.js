@@ -9,57 +9,54 @@ const Patients = require('../models/patientModel');
 const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
 const Admins = require('../models/AdminModel');
+const AdminModel = require('../models/AdminModel');
 
 // @desc    Signup
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
 
-// const signup = async (Model, req, res) => {
-//   // 1- Create user
-//   const user = await Model.create(req.body);
-//   // 2- Generate token
-//   const token = createToken(user._id);
+const signup = async (Model, req, res) => {
+  // 1- Create user
+  console.log("sign up ")
+  const user = await Model.create(req.body);
+  // 2- Generate token
+  const token = createToken(user._id);
 
-//   res.status(201).json({ data: user, token });
-// };
+  res.status(201).json({ data: user, token });
+};
 
-// exports.checkRole = (req, res, next) => {
-//   const query = req.body.role;
+exports.checkRole = (req, res, next) => {
+  const query = req.body.role;
 
-//   try {
-//     switch (query) {
-//       case 'patient':
-//         signup(Patients, req, res);
-//         break;
-//       case 'dermatolgist':
-//         uploadDermatologistImage();
-//         resizeDermatologistImage();
-//         createDermatologistValidator();
-//         this.signup(Dermatologists);
-//         break;
-//       case 'lab':
-//         uploadLabImage();
-//         resizeLabImage();
-//         createLabValidator();
-//         signup(Labs);
-//         break;
-//       default:
-//         break;
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+  try {
+    switch (query) {
+      case 'patient':
+        signup(Patients, req, res);
+        break;
+      case 'dermatologist':
+        signup(Dermatologists, req, res);
+        break;
+      case 'lab':
+        signup(Labs, req, res);
+        break;
+      default:
+       return next(new ApiError('this role is incorrect ', 401));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-exports.signup = (Model) =>
-  asyncHandler(async (req, res) => {
-    // 1- Create user
-    const user = await Model.create(req.body);
-    // 2- Generate token
-    const token = createToken(user._id);
+// exports.signup = (Model) =>
+//   asyncHandler(async (req, res) => {
+//     console.log("sign up ")
+//     // 1- Create user
+//     const user = await Model.create(req.body);
+//     // 2- Generate token
+//     const token = createToken(user._id);
 
-    res.status(201).json({ data: user, token });
-  });
+//     res.status(201).json({ data: user, token });
+//   });
 
 // @desc    Login
 // @route   GET /api/v1/auth/login
@@ -94,7 +91,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         new ApiError(' Waiting until Admin approve your account', 401),
       );
     }
-    
+
     // Login successful, generate token
     const user = patient || dermatologist || lab || admin;
     const token = createToken(user._id);
@@ -105,7 +102,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     res.status(200).json({ data: user, token });
   } else {
     // Neither patient nor dermatologist found, or password incorrect
-    return next(new ApiError('Incorrect email or password 💥', 401));
+    return next(new ApiError('Incorrect email or password', 401));
   }
  
 });

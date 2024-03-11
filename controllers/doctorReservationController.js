@@ -1,10 +1,10 @@
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
-const asyncHandler = require('express-async-handler'); 
+const asyncHandler = require('express-async-handler');
 const handlers = require('./handlersFactory');
 const Reservation = require('../models/doctorReservationModel');
 const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
-
+const doctorScheduleModel = require('../models/doctorScheduleModel');
 
 // exports.uploadUploadedTestImages = uploadMixOfImages([{ name: 'uploadedTest', maxCount: 30 }]);
 
@@ -30,25 +30,28 @@ const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 //   }
 // });
 
-exports.uploadUploadedTestImages = uploadMixOfImages([{ name: 'uploadedTest', maxCount: 30 }]);
+exports.uploadUploadedTestImages = uploadMixOfImages([
+  { name: 'uploadedTest', maxCount: 30 },
+]);
 
 exports.resizeUploadedTestImages = asyncHandler(async (req, res, next) => {
-    //2)image processing for images
-    if (req.files.uploadedTest) {
-        req.body.uploadedTest = [];
-        await Promise.all(req.files.uploadedTest.map(async (img, index) => {
-            const imageName = `reservation-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`
-            await sharp(img.buffer)
-                .resize(500, 500)
-                .toFormat("jpeg")
-                .jpeg({ quality: 95 })
-                .toFile(`uploads/reservations/${imageName}`);
-            // save image into our database
-            req.body.uploadedTest.push(imageName);
-        })
-        );
-    }
-    next();
+  //2)image processing for images
+  if (req.files.uploadedTest) {
+    req.body.uploadedTest = [];
+    await Promise.all(
+      req.files.uploadedTest.map(async (img, index) => {
+        const imageName = `reservation-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+        await sharp(img.buffer)
+          .resize(500, 500)
+          .toFormat('jpeg')
+          .jpeg({ quality: 95 })
+          .toFile(`uploads/reservations/${imageName}`);
+        // save image into our database
+        req.body.uploadedTest.push(imageName);
+      }),
+    );
+  }
+  next();
 });
 exports.getAllReservations = handlers.getAll(Reservation);
 
@@ -69,9 +72,8 @@ exports.createFilterObj = (req, res, next) => {
   next();
 };
 
-
 exports.setPatientIdToBody = (req, res, next) => {
   // Nested route (Create)
-  if (!req.body.patient) req.body.patient = req.params.patientId;
+  if (!req.body.patient) req.body.patient = req.params.id;
   next();
 };

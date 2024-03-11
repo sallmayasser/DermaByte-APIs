@@ -1,12 +1,13 @@
 
 const { check } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
-
+const Report = require('../../models/reportModel')
 
 exports.createReportValidator = [
     check('scan')
         .notEmpty()
-        .withMessage('scan is required'),      
+        .withMessage('scan is required'),
+       
     check('requestedTest')
         .optional()
         .isArray()

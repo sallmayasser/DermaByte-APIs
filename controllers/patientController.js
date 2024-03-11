@@ -11,13 +11,13 @@ const {
 } = require('../middleware/uploadImageMiddleware');
 
 // Upload single image
-exports.uploadPatientImage = uploadSingleImage('profilePic');
-// exports.uploadPatientImage = uploadMixOfImages([
-//   {
-//     name: 'profilePic',
-//     maxCount: 1,
-//   },
-// ]);
+// exports.uploadPatientImage = uploadSingleImage('profilePic');
+exports.uploadPatientImage = uploadMixOfImages([
+  {
+    name: 'profilePic',
+    maxCount: 1,
+  },
+]);
 
 // Image processing
 exports.resizePatientImage = asyncHandler(async (req, res, next) => {

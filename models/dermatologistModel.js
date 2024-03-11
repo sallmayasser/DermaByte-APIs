@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-
 ///1)create schema
 const dermatologistsSchema = new mongoose.Schema(
   {
@@ -38,9 +37,13 @@ const dermatologistsSchema = new mongoose.Schema(
       type: String,
       required: [true, 'country is required'],
     },
-    specialization: {
+    about: {
       type: String,
-      default: 'dermatology',
+      default: 'dermatologist',
+    },
+    educationAndExperience: {
+      type: String,
+      default: 'No Experience',
     },
     license: {
       type: [String],
@@ -57,10 +60,10 @@ const dermatologistsSchema = new mongoose.Schema(
       required: [true, 'password required'],
       minlength: [6, 'Too short password'],
     },
-    passwordChangedAt:Date,
+    passwordChangedAt: Date,
     passwordResetCode: String,
-    passwordResetExpires:Date,
-    passwordResetVerified:Boolean,
+    passwordResetExpires: Date,
+    passwordResetVerified: Boolean,
     profilePic: {
       type: String,
     },
@@ -73,7 +76,7 @@ const dermatologistsSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    active:{
+    active: {
       type: Boolean,
       default: true,
     },
@@ -103,6 +106,7 @@ const dermatologistsSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
+
 dermatologistsSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   // Hashing user password
@@ -142,5 +146,17 @@ dermatologistsSchema.post('init', (doc) => {
 dermatologistsSchema.post('save', (doc) => {
   setImageURL(doc);
 });
+
+dermatologistsSchema.virtual('Schedules', {
+  ref: 'DoctorSchedule',
+  localField: '_id',
+  foreignField: 'dermatologist',
+});
+dermatologistsSchema.virtual('reservations', {
+  ref: 'DoctorReservation',
+  localField: '_id',
+  foreignField: 'dermatologist',
+});
+
 ///2)create model
-module.exports = mongoose.model("Dermatologist", dermatologistsSchema);
+module.exports = mongoose.model('Dermatologist', dermatologistsSchema);

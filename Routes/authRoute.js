@@ -35,57 +35,27 @@ const {
   resizeLabImage,
   uploadLabImage,
 } = require('../controllers/labController');
-const { resizeImage } = require('../controllers/resizeImgController');
+const { resizeImage, uploadImage } = require('../controllers/imageController');
 const {
   uploadSingleImage,
   uploadMixOfImages,
 } = require('../middleware/uploadImageMiddleware');
+const validateMiddleware = require('../middleware/newValidatorMiddleware');
 
 const router = express.Router();
 
-router.post(
-  '/signup/patient',
-  uploadPatientImage,
-  resizePatientImage,
-  createPatientValidator,
-  signup(patient),
-);
-
-router.post(
-  '/signup/dermatologist',
-  uploadDermatologistImage,
-  resizeDermatologistImage,
-  createDermatologistValidator,
-  signup(dermatologist),
-);
-
-router.post(
-  '/signup/lab',
-  uploadLabImage,
-  resizeLabImage,
-  createLabValidator,
-  signup(lab),
-);
-
-router.post(
-  '/signup/admin',
-  signup(admin),
-);
 // router.post(
-//   '/signup',
-//   (req, res, next) => {
-//     console.log(req.body);
-//     next();
-//   },
-//   uploadPatientImage,
-//   resizeImage,
-//   (req, res, next) => {
-//     console.log(req.body);
-//     next();
-//   },
-//   createValidator,
-//   checkRole,
+//   '/signup/admin',
+//   signup(admin),
 // );
+
+router.post(
+  '/signup',
+  uploadImage,
+  resizeImage,
+  validateMiddleware,
+  (req, res,next) => { checkRole(req , res, next)}
+);
 
 router.post('/login', loginValidator, login);
 
