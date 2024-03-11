@@ -50,7 +50,7 @@ exports.resizeLabImage = asyncHandler(async (req, res, next) => {
 });
 
 exports.getLabs = factory.getAll(Lab, 'Services');
-exports.getLab = factory.getOne(Lab, 'Services');
+exports.getLab = factory.getOne(Lab, 'Services reviews');
 exports.createLab = factory.createOne(Lab);
 exports.updateLab = asyncHandler(async (req, res, next) => {
   const document = await Lab.findByIdAndUpdate(

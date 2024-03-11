@@ -101,13 +101,13 @@ exports.login = asyncHandler(async (req, res, next) => {
 
     // Delete password from response
     delete user._doc.password;
-
     // Send response to client
     res.status(200).json({ data: user, token });
   } else {
     // Neither patient nor dermatologist found, or password incorrect
     return next(new ApiError('Incorrect email or password 💥', 401));
   }
+ 
 });
 
 // @desc   make sure the user is logged in
@@ -128,10 +128,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
       ),
     );
   }
-
+console.log(token);
   // 2) Verify token (no change happens, expired token)
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
+// console.log(decoded);
   //3) Check if user exists
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findById(decoded.userId),
@@ -167,6 +167,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
       }
     }
     req.user = currentUser;
+    
   } else {
     return next(
       new ApiError(
@@ -176,6 +177,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     );
   }
   next();
+  // console.log(req.user)
 });
 
 // // @desc    Authorization (User Permissions)

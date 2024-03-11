@@ -21,6 +21,9 @@ const {
   getAllReservations,
 } = require('../controllers/doctorReservationController');
 const {
+  getReviews,
+} = require('../controllers/reviewController');
+const {
   createFilterObj,
   changeUserPassword,
   updateLoggedUserPassword,
@@ -70,6 +73,14 @@ router.route('/Dermatologist-reservation').get(
   },
   authController.allowedTo('dermatologist'),
   getAllReservations,
+);
+router.route('/reviews').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'dermatologist');
+  },
+  authController.allowedTo('dermatologist'),
+  getReviews,
 );
 
 router.route('/reports').get(

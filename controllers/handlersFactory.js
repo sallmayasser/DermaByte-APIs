@@ -13,8 +13,8 @@ exports.deleteOne = (Model) =>
       return next(new ApiError(`No document for this id ${id}`, 404));
     }
 
-    // Trigger "remove" event when update document
-    // document.remove();
+   // Trigger "remove" event when update document
+    document.remove();
     res.status(204).json({
       status: 'success',
       data: null,

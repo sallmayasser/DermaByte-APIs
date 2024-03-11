@@ -79,6 +79,14 @@ router.route('/laboratory-reservation').get(
   authController.allowedTo('lab'),
   getAllReservations,
 );
+router.route('/reviews').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'lab');
+  },
+  authController.allowedTo('lab'),
+  getAllReservations,
+);
 router.route('/results').get(
   getLoggedUserData,
   (req, res, next) => {

@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 ///1)create schema
 const labsSchema = new mongoose.Schema(
   {
-    firsName: {
+    firstName: {
       type: String,
       required: [true, 'Name required'],
       minlenth: [2, 'too short  name'],
@@ -65,12 +65,23 @@ const labsSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
     },
+    // ratingsAverage: {
+    //   type: Number,
+    //   min: [1, 'Rating must be above or equal 1.0'],
+    //   max: [5, 'Rating must be below or equal 5.0'],
+    //   // set: (val) => Math.round(val * 10) / 10, // 3.3333 * 10 => 33.333 => 33 => 3.3
+    // },
+    // ratingsQuantity: {
+    //   type: Number,
+    //   default: 0,
+    // },
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   },
+  
 );
 
 labsSchema.virtual('patients', {
@@ -83,7 +94,11 @@ labsSchema.virtual('Services', {
   localField: '_id',
   foreignField: 'lab',
 });
-
+labsSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'lab',
+});
 labsSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   // Hashing user password
