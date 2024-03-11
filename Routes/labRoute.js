@@ -30,7 +30,7 @@ const {
 } = require('../controllers/labReservationController');
 const lab = require('../models/labModel');
 const authController = require('../controllers/authController');
-const { resizeImage } = require('../controllers/resizeImgController');
+const { resizeImage, uploadImage } = require('../controllers/imageController');
 const {
   getTestServices,
   setLabIdToBody,
@@ -60,7 +60,7 @@ router.put(
 router.put(
   '/updateMe',
   authController.allowedTo('lab'),
-  uploadLabImage,
+  uploadImage,
   resizeImage,
   updateLoggedlabValidator,
   updateLoggedLabData,
@@ -125,8 +125,8 @@ router
   .put(
     authController.protect,
     authController.allowedTo('admin'),
-    uploadLabImage,
-    resizeLabImage,
+    uploadImage,
+    resizeImage,
     updateLabValidator,
     updateLab,
   )

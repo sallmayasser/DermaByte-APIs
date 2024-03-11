@@ -79,7 +79,7 @@ exports.createDermatologistValidator = [
     .isNumeric()
     .withMessage('cost must be numeric'),
 
-  validatorMiddleware,
+  // validatorMiddleware,
 ];
 
 exports.getDermatologistValidator = [

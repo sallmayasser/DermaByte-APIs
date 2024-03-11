@@ -93,7 +93,7 @@ exports.createPatientValidator = [
     .isMobilePhone(['ar-EG', 'ar-SA'])
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
-  validatorMiddleware,
+  // validatorMiddleware,
 ];
 
 exports.updatePatientValidator = [

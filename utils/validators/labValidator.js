@@ -56,7 +56,7 @@ exports.createLabValidator = [
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
   check('profilePic').optional(),
-  validatorMiddleware,
+  // validatorMiddleware,
 ];
 
 exports.getLabValidator = [

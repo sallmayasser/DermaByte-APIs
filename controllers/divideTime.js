@@ -59,17 +59,15 @@ const moment = require('moment');
 //   return intervals;
 // };
 
-
-
 function daysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
 }
 
 exports.divideTimeRange = (reserved, schedule, month) => {
   const intervals = [];
-    const currentDate = moment(); // Represents the current date
-    const numDays = daysInMonth(currentDate.year(), currentDate.month())
-  for (let day = 1; day <= numDays; day+=1) {
+  const currentDate = moment(); // Represents the current date
+  const numDays = daysInMonth(currentDate.year(), currentDate.month());
+  for (let day = moment(Date.now()).date(); day <= numDays; day += 1) {
     const year = month.year();
     const monthIndex = month.month();
     const dayOfWeek = moment([year, monthIndex, day]).day();
