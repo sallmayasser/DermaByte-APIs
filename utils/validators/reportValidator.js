@@ -6,14 +6,8 @@ const Report = require('../../models/reportModel')
 exports.createReportValidator = [
     check('scan')
         .notEmpty()
-        .withMessage('scan is required')
-        .custom((val) =>
-      Report.findOne({ _id: val }).then((report) => {
-        if (report) {
-          return Promise.reject(new Error('You are already reserve with this Scan'));
-        }
-      }),
-    ),
+        .withMessage('scan is required'),
+       
     check('requestedTest')
         .optional()
         .isArray()
