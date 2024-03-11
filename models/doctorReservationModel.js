@@ -85,4 +85,19 @@ doctorReservationsSchema.post('init', (doc) => {
 doctorReservationsSchema.post('save', (doc) => {
   setImageURL(doc);
 });
+
+doctorReservationsSchema.pre('save', function (next) {
+  // Adjust the timestamps by adding 2 hours in milliseconds
+  // if (this.date) {
+  //   this.date = new Date(this.date.getTime() + 2 * 60 * 60 * 1000);
+  // }
+  if (this.createdAt) {
+    this.createdAt = new Date(this.createdAt.getTime() + 2 * 60 * 60 * 1000);
+  }
+  if (this.updatedAt) {
+    this.updatedAt = new Date(this.updatedAt.getTime() + 2 * 60 * 60 * 1000);
+  }
+  next();
+});
+
 module.exports = mongoose.model('DoctorReservation', doctorReservationsSchema);

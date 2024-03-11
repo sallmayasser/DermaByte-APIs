@@ -32,6 +32,7 @@ const { getRequestedTests } = require('../controllers/requestedTestController');
 const Dermatologist = require('../models/dermatologistModel');
 const authController = require('../controllers/authController');
 const { resizeImage } = require('../controllers/resizeImgController');
+const { getSchedules } = require('../controllers/scheduleController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -80,6 +81,15 @@ router.route('/reports').get(
   authController.protect,
   authController.allowedTo('dermatologist'),
   report.getReports,
+);
+router.route('/schedules').get(
+  getLoggedUserData,
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'dermatologist');
+  },
+  authController.protect,
+  authController.allowedTo('dermatologist'),
+  getSchedules
 );
 
 //  admin

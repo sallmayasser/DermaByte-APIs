@@ -1,12 +1,19 @@
 
 const { check } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
-
+const Report = require('../../models/reportModel')
 
 exports.createReportValidator = [
     check('scan')
         .notEmpty()
-        .withMessage('scan is required'),      
+        .withMessage('scan is required')
+        .custom((val) =>
+      Report.findOne({ _id: val }).then((report) => {
+        if (report) {
+          return Promise.reject(new Error('You are already reserve with this Scan'));
+        }
+      }),
+    ),
     check('requestedTest')
         .optional()
         .isArray()

@@ -50,8 +50,8 @@ exports.resizeDermatologistImage = asyncHandler(async (req, res, next) => {
   next();
 });
 
-exports.getDermatologists = factory.getAll(Dermatologist);
-exports.getDermatologist = factory.getOne(Dermatologist);
+exports.getDermatologists = factory.getAll(Dermatologist, 'Schedules');
+exports.getDermatologist = factory.getOne(Dermatologist, 'Schedules');
 exports.createDermatologist = factory.createOne(Dermatologist);
 exports.updateDermatologist = asyncHandler(async (req, res, next) => {
   const document = await Dermatologist.findByIdAndUpdate(

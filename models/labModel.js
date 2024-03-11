@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 ///1)create schema
 const labsSchema = new mongoose.Schema(
   {
-    firsName: {
+    firstName: {
       type: String,
       required: [true, 'Name required'],
       minlenth: [2, 'too short  name'],
