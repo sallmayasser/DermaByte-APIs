@@ -16,7 +16,7 @@ const {
   getLoggedUserData,
 } = require('../controllers/handlersFactory');
 const patient = require('../models/patientModel');
-const { resizeImage } = require('../controllers/imageController');
+const { resizeImage, uploadImage } = require('../controllers/imageController');
 const authController = require('../controllers/authController');
 const { getReviews } = require('../controllers/reviewController');
 
@@ -36,8 +36,8 @@ router.get(
 router.put(
   '/updateMe',
   authController.allowedTo('patient'),
-  functions.uploadPatientImage,
-  functions.resizePatientImage,
+  uploadImage,
+  resizeImage,
   validators.updateLoggedPatientValidator,
   functions.updateLoggedPatientData,
 );
@@ -120,7 +120,7 @@ router
   .get(validators.getPatientValidator, functions.getPatient)
   .put(
     authController.allowedTo('admin'),
-    functions.uploadPatientImage,
+    uploadImage,
     resizeImage,
     validators.updatePatientValidator,
     functions.updatePatient,

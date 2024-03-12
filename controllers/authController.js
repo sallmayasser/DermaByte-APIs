@@ -17,7 +17,6 @@ const AdminModel = require('../models/AdminModel');
 
 const signup = async (Model, req, res) => {
   // 1- Create user
-  console.log("sign up ")
   const user = await Model.create(req.body);
   // 2- Generate token
   const token = createToken(user._id);
