@@ -49,7 +49,7 @@ exports.resizeLabImage = asyncHandler(async (req, res, next) => {
   next();
 });
 
-exports.getLabs = factory.getAll(Lab, 'Services');
+exports.getLabs = factory.getAll(Lab, 'Services reviews');
 exports.getLab = factory.getOne(Lab, 'Services reviews');
 exports.createLab = factory.createOne(Lab);
 exports.updateLab = asyncHandler(async (req, res, next) => {

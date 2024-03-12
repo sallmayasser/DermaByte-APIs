@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Dermatologist = require('./dermatologistModel');
+const Lab = require('./labModel');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -37,18 +38,13 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
-reviewSchema.statics.calcAverageRatingsAndQuantity = async function (
-  dermatologistId
-) {
+// Generic function to calculate average ratings and quantity
+const calcAverageRatingsAndQuantity = async function (entityId, entityModel, field) {
   const result = await this.aggregate([
-    // Stage 1 : get all reviews in specific dermatologist
-    {
-      $match: { dermatologist: dermatologistId },
-    },
-    // Stage 2: Grouping reviews based on productID and calc avgRatings, ratingsQuantity
+    { $match: { [field]: entityId } },
     {
       $group: {
-        _id: 'dermatologist',
+        _id: field,
         avgRatings: { $avg: '$ratings' },
         ratingsQuantity: { $sum: 1 },
       },
@@ -57,25 +53,33 @@ reviewSchema.statics.calcAverageRatingsAndQuantity = async function (
 
   console.log(result);
 
-  if (result.length > 0) {
-    await Dermatologist.findByIdAndUpdate(dermatologistId, {
-      ratingsAverage: result[0].avgRatings,
-      ratingsQuantity: result[0].ratingsQuantity,
-    });
-  } else {
-    await Dermatologist.findByIdAndUpdate(dermatologistId, {
-      ratingsAverage: 0,
-      ratingsQuantity: 0,
-    });
-  }
+  const updateData = result.length > 0
+    ? { ratingsAverage: result[0].avgRatings, ratingsQuantity: result[0].ratingsQuantity }
+    : { ratingsAverage: 0, ratingsQuantity: 0 };
+
+  await entityModel.findByIdAndUpdate(entityId, updateData);
 };
 
+// Attach the generic function to the schema
+reviewSchema.statics.calcAverageRatingsAndQuantity = calcAverageRatingsAndQuantity;
+
+// Post-save and post-remove hooks for Dermatologist
 reviewSchema.post('save', async function () {
-  await this.constructor.calcAverageRatingsAndQuantity(this.dermatologist);
+  await this.constructor.calcAverageRatingsAndQuantity(this.dermatologist, Dermatologist, 'dermatologist');
 });
 
 reviewSchema.post('remove', async function () {
-  await this.constructor.calcAverageRatingsAndQuantity(this.dermatologist);
+  await this.constructor.calcAverageRatingsAndQuantity(this.dermatologist, Dermatologist, 'dermatologist');
 });
+
+// Post-save and post-remove hooks for Lab
+reviewSchema.post('save', async function () {
+  await this.constructor.calcAverageRatingsAndQuantity(this.lab, Lab, 'lab');
+});
+
+reviewSchema.post('remove', async function () {
+  await this.constructor.calcAverageRatingsAndQuantity(this.lab, Lab, 'lab');
+});
+
 
 module.exports = mongoose.model('Review', reviewSchema);
