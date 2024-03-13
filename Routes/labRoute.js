@@ -38,6 +38,9 @@ const {
   createTestServiceValidator,
 
 } = require('../utils/validators/testServiceValidator');
+const {
+  getReviews,
+} = require('../controllers/reviewController');
 
 const router = express.Router();
 
@@ -82,7 +85,7 @@ router.route('/reviews').get(
     createFilterObj(req, res, next, 'lab');
   },
   authController.allowedTo('lab'),
-  getAllReservations,
+  getReviews,
 );
 router.route('/results').get(
   getLoggedUserData,
