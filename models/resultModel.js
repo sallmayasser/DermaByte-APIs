@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 ///1)create schema
 const resultsSchema = new mongoose.Schema(
   {
-    testName: [{
-      type: String,
+    testName: {
+      type: [String],
       required: [true, 'test name is required'],
-    }],
+    },
     testResult: {
       type: [String],
       required: [true, 'test result is required'],
@@ -53,7 +53,7 @@ const resultsSchema = new mongoose.Schema(
 resultsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'lab',
-    select: 'profilePic firstName  location ',
+    select: 'photo name  location -_id',
   });
   next();
 });
