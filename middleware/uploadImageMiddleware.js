@@ -15,16 +15,7 @@ const multerOptions = () => {
 
   const upload = multer({
     storage: multerStorage,
-    fileFilter: multerFilter,
-    limits: {
-      fieldNameSize: 255,
-      fieldSize: 50 * 1024 * 1024, // Increase the limit for XFile objects
-      fields: 20, // Adjust the limits as needed
-      fileSize: 50 * 1024 * 1024, // Increase the limit for XFile objects
-      files: 1, // Adjust the limits as needed
-      parts: 20, // Adjust the limits as needed
-      headerPairs: 2000, // Adjust the limits as needed
-    },
+    fileFilter: multerFilter
   });
 
   return upload;

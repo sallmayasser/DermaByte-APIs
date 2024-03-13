@@ -15,13 +15,20 @@ const AdminModel = require('../models/AdminModel');
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
 
-const signup = async (Model, req, res) => {
+const signup = async (Model, req, res,populationOpt) => {
   // 1- Create user
-  const user = await Model.create(req.body);
+  let user = await Model.create(req.body);
+  if (populationOpt) {
+    // Populate the specified fields
+    user = await user.populate(populationOpt)
+  }
+
+  // Convert the document to JSON with virtuals
+  const responseData = user.toJSON({ virtuals: true });
   // 2- Generate token
   const token = createToken(user._id);
 
-  res.status(201).json({ data: user, token });
+  res.status(201).json({ data: responseData, token });
 };
 
 exports.checkRole = (req, res, next) => {
@@ -33,10 +40,10 @@ exports.checkRole = (req, res, next) => {
         signup(Patients, req, res);
         break;
       case 'dermatologist':
-        signup(Dermatologists, req, res);
+        signup(Dermatologists, req, res, 'Schedules reviews');
         break;
       case 'lab':
-        signup(Labs, req, res);
+        signup(Labs, req, res, 'Schedules reviews');
         break;
       default:
        return next(new ApiError('this role is incorrect ', 401));
@@ -67,8 +74,8 @@ exports.login = asyncHandler(async (req, res, next) => {
   // Search in Patients and Dermatologists models concurrently
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findOne({ email }).exec(),
-    Dermatologists.findOne({ email }).exec(),
-    Labs.findOne({ email }).exec(),
+    Dermatologists.findOne({ email }).populate('Schedules reviews').exec(),
+    Labs.findOne({ email }).populate('reviews').exec(),
     Admins.findOne({ email }).exec(),
   ]);
 

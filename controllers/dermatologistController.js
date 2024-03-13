@@ -5,53 +5,53 @@ const { v4: uuidv4 } = require('uuid');
 const Dermatologist = require('../models/dermatologistModel');
 const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
-const{uploadMixOfImages }=require('../middleware/uploadImageMiddleware');
-
+const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 
 // Upload single image
-exports.uploadDermatologistImage = uploadMixOfImages([{
-  name: 'profilePic',
-  maxCount: 1,
-},
-{
-  name: 'license',
-  maxCount: 20,
-},
+exports.uploadDermatologistImage = uploadMixOfImages([
+  {
+    name: 'profilePic',
+    maxCount: 1,
+  },
+  {
+    name: 'license',
+    maxCount: 20,
+  },
 ]);
 
 exports.resizeDermatologistImage = asyncHandler(async (req, res, next) => {
   ///1)image processing for profile Name
   if (req.files.profilePic) {
-      const filename = `dermatologist-${uuidv4()}-${Date.now()}.jpeg`
-      await sharp(req.files.profilePic[0].buffer)
-          .resize(320, 320)
-          .toFormat("jpeg")
-          .jpeg({ quality: 95 })
-          .toFile(`uploads/dermatologists/${filename}`);
-      // save image into our database
-      req.body.profilePic = filename;
+    const filename = `dermatologist-${uuidv4()}-${Date.now()}.jpeg`;
+    await sharp(req.files.profilePic[0].buffer)
+      .resize(320, 320)
+      .toFormat('jpeg')
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/dermatologists/${filename}`);
+    // save image into our database
+    req.body.profilePic = filename;
   }
   ///2)image processing for images
   if (req.files.license) {
-      req.body.license = [];
-      await Promise.all(req.files.license.map(async (img, index) => {
-          const filename = `dermatologist-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`
-          await sharp(img.buffer)
-              .resize(500, 500)
-              .toFormat("jpeg")
-              .jpeg({ quality: 95 })
-              .toFile(`uploads/dermatologists/${filename}`);
-          // save image into our database
-          req.body.license.push(filename);
-      })
-      );
-     
+    req.body.license = [];
+    await Promise.all(
+      req.files.license.map(async (img, index) => {
+        const filename = `dermatologist-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+        await sharp(img.buffer)
+          .resize(500, 500)
+          .toFormat('jpeg')
+          .jpeg({ quality: 95 })
+          .toFile(`uploads/dermatologists/${filename}`);
+        // save image into our database
+        req.body.license.push(filename);
+      }),
+    );
   }
   next();
 });
 
-exports.getDermatologists = factory.getAll(Dermatologist,'Schedules reviews');
-exports.getDermatologist = factory.getOne(Dermatologist,'Schedules reviews');
+exports.getDermatologists = factory.getAll(Dermatologist, 'Schedules reviews');
+exports.getDermatologist = factory.getOne(Dermatologist, 'Schedules reviews');
 exports.createDermatologist = factory.createOne(Dermatologist);
 exports.updateDermatologist = asyncHandler(async (req, res, next) => {
   const document = await Dermatologist.findByIdAndUpdate(

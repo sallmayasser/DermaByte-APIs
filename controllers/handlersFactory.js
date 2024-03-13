@@ -58,11 +58,32 @@ exports.updateOne = (Model) =>
       res.status(200).json({ data: document });
     });
     
-exports.createOne = (Model) =>
+// exports.createOne = (Model, populationOpt) =>
+//   asyncHandler(async (req, res) => {
+
+//     let newDoc = await Model.create(req.body);
+//         if (populationOpt) {
+//           // Populate the specified fields
+//           newDoc = await newDoc.populate(populationOpt).execPopulate();
+//         }
+//     res.status(201).json({ data: newDoc });
+//   });
+exports.createOne = (Model, populationOpt) =>
   asyncHandler(async (req, res) => {
-    const newDoc = await Model.create(req.body);
-    res.status(201).json({ data: newDoc });
+    let newDoc = await Model.create(req.body);
+
+    // Check if population option is provided
+    if (populationOpt) {
+      // Populate the specified fields
+      newDoc = await newDoc.populate(populationOpt).execPopulate();
+    }
+
+    // Convert the document to JSON with virtuals
+    const responseData = newDoc.toJSON({ virtuals: true });
+console.log(newDoc)
+    res.status(201).json({ data: responseData });
   });
+
 
 exports.getOne = (Model, populationOpt) =>
   asyncHandler(async (req, res, next) => {
