@@ -80,7 +80,6 @@ exports.createOne = (Model, populationOpt) =>
 
     // Convert the document to JSON with virtuals
     const responseData = newDoc.toJSON({ virtuals: true });
-console.log(newDoc)
     res.status(201).json({ data: responseData });
   });
 

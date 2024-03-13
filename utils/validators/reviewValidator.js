@@ -18,7 +18,6 @@ exports.createReviewValidator = [
       // Check if logged patient create review before
       Review.findOne({ patient: req.user._id, dermatologist: req.body.dermatologist }).then(
         (review) => {
-          console.log(review);
           if (review) {
             return Promise.reject(
               new Error('You already created a review before')
@@ -35,7 +34,6 @@ exports.createReviewValidator = [
       // Check if logged patient create review before 
       Review.findOne({ patient: req.user._id, lab: req.body.lab }).then(
         (review) => {
-          console.log(review);
           if (review) {
             return Promise.reject(
               new Error('You already created a review before')
@@ -62,9 +60,6 @@ exports.updateReviewValidator = [
         if (!review) {
           return Promise.reject(new Error(`There is no review with id ${val}`));
         }
-        console.log(review.patient._id)
-        console .log(req.user)
-        console .log(req.user._id)
         if (review.patient._id.toString() !== req.user._id.toString()) {
           return Promise.reject(
             new Error(`Your are not allowed to perform this action`)
@@ -88,9 +83,6 @@ exports.deleteReviewValidator = [
               new Error(`There is no review with id ${val}`)
             );
           }
-          console.log(review.patient._id)
-          console .log(req.user)
-          console .log(req.user._id)
           if (review.patient._id.toString() !== req.user._id.toString()) {
             return Promise.reject(
               new Error(`Your are not allowed to perform this action`)

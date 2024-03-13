@@ -28,9 +28,9 @@ router
     authController.protect,
     authController.allowedTo('lab'),
     getLoggedUserData,
-    setLabIdToBody,
     uploadTestResultImages,
     resizeTestResultImages,
+    setLabIdToBody,
     createResultValidator,
     createResult,
   );
