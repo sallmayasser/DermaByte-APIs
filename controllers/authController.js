@@ -15,12 +15,12 @@ const AdminModel = require('../models/AdminModel');
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
 
-const signup = async (Model, req, res,populationOpt) => {
+const signup = async (Model, req, res, populationOpt) => {
   // 1- Create user
   let user = await Model.create(req.body);
   if (populationOpt) {
     // Populate the specified fields
-    user = await user.populate(populationOpt)
+    user = await user.populate(populationOpt);
   }
 
   // Convert the document to JSON with virtuals
@@ -43,10 +43,10 @@ exports.checkRole = (req, res, next) => {
         signup(Dermatologists, req, res, 'Schedules reviews');
         break;
       case 'lab':
-        signup(Labs, req, res, 'Schedules reviews');
+        signup(Labs, req, res, 'Services reviews');
         break;
       default:
-       return next(new ApiError('this role is incorrect ', 401));
+        return next(new ApiError('this role is incorrect ', 401));
     }
   } catch (error) {
     console.log(error);
@@ -75,7 +75,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findOne({ email }).exec(),
     Dermatologists.findOne({ email }).populate('Schedules reviews').exec(),
-    Labs.findOne({ email }).populate('reviews').exec(),
+    Labs.findOne({ email }).populate('Services reviews').exec(),
     Admins.findOne({ email }).exec(),
   ]);
 
@@ -110,7 +110,6 @@ exports.login = asyncHandler(async (req, res, next) => {
     // Neither patient nor dermatologist found, or password incorrect
     return next(new ApiError('Incorrect email or password', 401));
   }
- 
 });
 
 // @desc   make sure the user is logged in
@@ -131,10 +130,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
       ),
     );
   }
-console.log(token);
+  console.log(token);
   // 2) Verify token (no change happens, expired token)
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-// console.log(decoded);
+  // console.log(decoded);
   //3) Check if user exists
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findById(decoded.userId),
@@ -170,7 +169,6 @@ console.log(token);
       }
     }
     req.user = currentUser;
-    
   } else {
     return next(
       new ApiError(
