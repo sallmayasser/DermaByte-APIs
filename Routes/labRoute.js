@@ -8,15 +8,13 @@ const {
   updateLoggedlabValidator,
 } = require('../utils/validators/labValidator');
 const {
-  uploadLabImage,
-  resizeLabImage,
   getLabs,
-  createLab,
   getLab,
   updateLab,
   deleteLab,
   updateLoggedLabData,
 } = require('../controllers/labController');
+
 const {
   createFilterObj,
   changeUserPassword,

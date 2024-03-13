@@ -6,9 +6,8 @@ const {
   changedermatologistPasswordValidator,
   updateLoggedDermatologistValidator,
 } = require('../utils/validators/dermatologistValidator');
+const { resizeImage, uploadImage } = require('../controllers/imageController');
 const {
-  uploadDermatologistImage,
-  resizeDermatologistImage,
   getDermatologists,
   getDermatologist,
   updateDermatologist,
@@ -18,9 +17,7 @@ const {
 const {
   getAllReservations,
 } = require('../controllers/doctorReservationController');
-const {
-  getReviews,
-} = require('../controllers/reviewController');
+const { getReviews } = require('../controllers/reviewController');
 const {
   createFilterObj,
   changeUserPassword,
@@ -51,8 +48,8 @@ router.put(
 router.put(
   '/updateMe',
   authController.allowedTo('dermatologist'),
-  uploadDermatologistImage,
-  resizeDermatologistImage,
+  uploadImage,
+  resizeImage,
   updateLoggedDermatologistValidator,
   updateLoggedDermatologistData,
 );
@@ -96,7 +93,7 @@ router.route('/schedules').get(
   },
   authController.protect,
   authController.allowedTo('dermatologist'),
-  getSchedules
+  getSchedules,
 );
 
 //  admin
@@ -117,8 +114,8 @@ router
   .put(
     authController.protect,
     authController.allowedTo('admin'),
-    uploadDermatologistImage,
-    resizeDermatologistImage,
+    uploadImage,
+    resizeImage,
     updateDermatologistValidator,
     updateDermatologist,
   )

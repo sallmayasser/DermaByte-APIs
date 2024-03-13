@@ -53,17 +53,6 @@ exports.checkRole = (req, res, next) => {
   }
 };
 
-// exports.signup = (Model) =>
-//   asyncHandler(async (req, res) => {
-//     console.log("sign up ")
-//     // 1- Create user
-//     const user = await Model.create(req.body);
-//     // 2- Generate token
-//     const token = createToken(user._id);
-
-//     res.status(201).json({ data: user, token });
-//   });
-
 // @desc    Login
 // @route   GET /api/v1/auth/login
 // @access  Public
@@ -130,10 +119,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
       ),
     );
   }
-  console.log(token);
   // 2) Verify token (no change happens, expired token)
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  // console.log(decoded);
+  
   //3) Check if user exists
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findById(decoded.userId),
@@ -178,7 +166,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     );
   }
   next();
-  // console.log(req.user)
+ 
 });
 
 // // @desc    Authorization (User Permissions)
@@ -296,7 +284,6 @@ exports.verifyPassResetCode = asyncHandler(async (req, res, next) => {
 
   const user = patient || dermatologist || lab || admin;
 
-  console.log(user);
   if (!user) {
     return next(new ApiError('Reset code invalid or expired'));
   }
