@@ -22,16 +22,28 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
-router.use(authController.protect, authController.allowedTo('admin'));
+router.use(authController.protect);
 
-router.route('/').get((req, res, next) => {
-  createFilterObj(req, res, next, 'lab');
-}, getTestServices);
+router.route('/').get(
+  authController.allowedTo('admin'),
+  (req, res, next) => {
+    createFilterObj(req, res, next, 'lab');
+  },
+  getTestServices,
+);
 router
   .route('/:id')
   //getTestServiceValidator validation layer  rule call validator
-  .get(getTestServiceValidator, getTestService)
-  .put(updateTestServiceValidator, updateTestService)
+  .get(
+    authController.allowedTo('admin', 'lab'),
+    getTestServiceValidator,
+    getTestService,
+  )
+  .put(
+    authController.allowedTo('admin', 'lab'),
+    updateTestServiceValidator,
+    updateTestService,
+  )
   .delete(
     authController.allowedTo('admin', 'lab'),
     deleteTestServiceValidator,

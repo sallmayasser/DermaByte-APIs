@@ -69,7 +69,7 @@ exports.updateLoggedPatientData = asyncHandler(async (req, res, next) => {
     },
     { new: true },
   );
-  console.log(updatedUser);
+ 
 
   res.status(200).json({ data: updatedUser });
 });

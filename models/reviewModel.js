@@ -51,7 +51,7 @@ const calcAverageRatingsAndQuantity = async function (entityId, entityModel, fie
     },
   ]);
 
-  console.log(result);
+
 
   const updateData = result.length > 0
     ? { ratingsAverage: result[0].avgRatings, ratingsQuantity: result[0].ratingsQuantity }

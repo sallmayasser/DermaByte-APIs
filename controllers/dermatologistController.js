@@ -70,7 +70,8 @@ exports.updateDermatologist = asyncHandler(async (req, res, next) => {
       gender: req.body.gender,
       location: req.body.location,
       sessionCost: req.body.sessionCost,
-      specialization: req.body.specialization,
+      about: req.body.about,
+      educationAndExperience: req.body.educationAndExperience,
     },
     {
       new: true,
@@ -101,11 +102,12 @@ exports.updateLoggedDermatologistData = asyncHandler(async (req, res, next) => {
       gender: req.body.gender,
       location: req.body.location,
       sessionCost: req.body.sessionCost,
-      specialization: req.body.specialization,
+      about: req.body.about,
+      educationAndExperience: req.body.educationAndExperience,
     },
     { new: true },
   );
-  console.log(updatedUser);
+
 
   res.status(200).json({ data: updatedUser });
 });

@@ -6,7 +6,6 @@ exports.createScheduleValidator = [
     check('day').notEmpty().withMessage(' Day is required')
         .custom(async (value, { req }) => {
           const existingDay = await doctorScheduleModel.find({ day: value, dermatologist: req.body.dermatologist });
-          console.log(existingDay);
         if (existingDay.length !== 0) {
             throw new Error('You have already add this day Schedule');
         }

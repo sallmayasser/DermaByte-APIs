@@ -36,6 +36,6 @@ exports.deleteResult = factory.deleteOne(Result);
 exports.setLabIdToBody = (req, res, next) => {
   //nested route {create}
     if (!req.body.lab) req.body.lab = req.params.id;
-    console.log(`lab:${req.body.lab}`);
+    console.log(`lab  :  ${req.body.lab}`);
   next();
 };
