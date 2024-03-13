@@ -50,7 +50,7 @@ const labReservationsSchema = new mongoose.Schema(
 labReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'test',
-    select: 'name cost -lab -_id',
+    select: 'name cost -lab ',
   });
   next();
 });
@@ -58,7 +58,7 @@ labReservationsSchema.pre(/^find/, function (next) {
 labReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
-    select: 'firstName lastName  -_id',
+    select: 'firstName lastName ',
   });
   next();
 });

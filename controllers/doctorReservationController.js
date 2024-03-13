@@ -4,7 +4,6 @@ const asyncHandler = require('express-async-handler');
 const handlers = require('./handlersFactory');
 const Reservation = require('../models/doctorReservationModel');
 const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
-const doctorScheduleModel = require('../models/doctorScheduleModel');
 
 
 exports.uploadUploadedTestImages = uploadMixOfImages([

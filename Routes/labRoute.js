@@ -1,7 +1,6 @@
 const express = require('express');
 const {
   getLabValidator,
-  createLabValidator,
   updateLabValidator,
   deleteLabValidator,
   changelabPasswordValidator,
@@ -33,11 +32,11 @@ const {
   getTestServices,
   setLabIdToBody,
   createTestService,
-  deleteTestService,
+
 } = require('../controllers/testServiceController');
 const {
   createTestServiceValidator,
-  deleteTestServiceValidator,
+
 } = require('../utils/validators/testServiceValidator');
 
 const router = express.Router();

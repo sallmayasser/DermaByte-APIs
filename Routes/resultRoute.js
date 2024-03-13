@@ -42,8 +42,6 @@ router
   .put(
     authController.protect,
     authController.allowedTo('lab'),
-    authController.protect,
-    authController.allowedTo('lab'),
     uploadTestResultImages,
     resizeTestResultImages,
     updateResultValidator,

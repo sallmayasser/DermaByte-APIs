@@ -9,7 +9,7 @@ const Patients = require('../models/patientModel');
 const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
 const Admins = require('../models/AdminModel');
-const AdminModel = require('../models/AdminModel');
+
 
 // @desc    Signup
 // @route   GET /api/v1/auth/signup/{ModelName}
@@ -190,12 +190,6 @@ exports.allowedTo = (...roles) =>
 // // @access  Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // 1) Get user by email
-  // const user = await User.findOne({ email: req.body.email });
-  // if (!user) {
-  //   return next(
-  //     new ApiError(`There is no user with that email ${req.body.email}`, 404),
-  //   );
-  // }
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findOne({ email: req.body.email }),
     Dermatologists.findOne({ email: req.body.email }),

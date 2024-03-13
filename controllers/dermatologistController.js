@@ -1,11 +1,8 @@
 const asyncHandler = require('express-async-handler');
-const sharp = require('sharp');
-const { v4: uuidv4 } = require('uuid');
-
 const Dermatologist = require('../models/dermatologistModel');
 const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
-const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
+
 
 // Upload single image
 

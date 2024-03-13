@@ -1,15 +1,12 @@
 const express = require('express');
 const {
   getTestServiceValidator,
-  createTestServiceValidator,
   updateTestServiceValidator,
   deleteTestServiceValidator,
 } = require('../utils/validators/testServiceValidator');
 
 const {
   getTestServices,
-  setLabIdToBody,
-  createTestService,
   getTestService,
   updateTestService,
   deleteTestService,
@@ -17,7 +14,6 @@ const {
 const authController = require('../controllers/authController');
 const {
   createFilterObj,
-  getLoggedUserData,
 } = require('../controllers/handlersFactory');
 
 const router = express.Router({ mergeParams: true });
