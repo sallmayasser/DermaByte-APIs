@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 ///1)create schema
 const resultsSchema = new mongoose.Schema(
   {
-    testName: {
+    testName: [{
       type: String,
       required: [true, 'test name is required'],
-    },
+    }],
     testResult: {
       type: [String],
       required: [true, 'test result is required'],
