@@ -19,6 +19,7 @@ const dermatologistsSchema = new mongoose.Schema(
     gender: {
       type: String,
       required: [true, 'gender required'],
+      enum:['male','female']
     },
 
     mobile: {
