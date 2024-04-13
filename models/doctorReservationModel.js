@@ -27,6 +27,9 @@ const doctorReservationsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Scans',
     },
+    meetingUrl: {
+      type: String,
+    },
     slug: {
       type: String,
       lowercase: true,
