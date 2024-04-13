@@ -51,8 +51,10 @@ const client_ID = process.env.Client_ID;
 //   }
 // };
 
-exports.createMeeting = (topic, duration, DateTime) =>
-  expressAsyncHandler(async (req, res, next) => {
+
+
+exports.createMeeting = expressAsyncHandler(
+  async (topic, duration, DateTime) => {
     try {
       const authResponse = await axios.post(
         `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${account_id}`,
@@ -67,7 +69,7 @@ exports.createMeeting = (topic, duration, DateTime) =>
 
       if (authResponse.status !== 200) {
         console.log('Unable to get access token');
-        next();
+
         return;
       }
 
@@ -101,7 +103,7 @@ exports.createMeeting = (topic, duration, DateTime) =>
 
       if (meetingResponse.status !== 201) {
         console.log('Unable to generate meeting link');
-        next();
+
         return;
       }
 
@@ -120,17 +122,11 @@ exports.createMeeting = (topic, duration, DateTime) =>
         message: 'Success',
         status: 1,
       };
-      if (new Date(response_data.start_time) > Date.now()) {
-        console.log(`Waiting for Reservation time ${response_data.start_time}`);
-        next();
-      } else {
-        res.locals.meeting = content;
-        next();
-        return content;
-      }
+      return content;
     } catch (error) {
       console.error(error);
-      next();
+
       return error;
     }
-  });
+  },
+);

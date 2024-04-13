@@ -1,6 +1,7 @@
 const { check } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
 const doctorReservationModel = require('../../models/doctorReservationModel');
+const ApiError = require('../apiError');
 
 exports.createReservationValidator = [
   check('date').notEmpty().withMessage('reservation date is required'),
