@@ -28,7 +28,7 @@ const {
 const report = require('../controllers/reportController');
 const Dermatologist = require('../models/dermatologistModel');
 const authController = require('../controllers/authController');
-const { getSchedules } = require('../controllers/scheduleController');
+const { getSchedules, getFreeTimes, setDermatologistIdToBody } = require('../controllers/scheduleController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -94,6 +94,13 @@ router.route('/schedules').get(
   authController.protect,
   authController.allowedTo('dermatologist'),
   getSchedules,
+);
+router.route('/myFreeTime').get(
+  getLoggedUserData,
+  setDermatologistIdToBody,
+  authController.protect,
+  authController.allowedTo('dermatologist'),
+  getFreeTimes,
 );
 
 //  admin
