@@ -51,12 +51,12 @@ const doctorScheduleSchema = new mongoose.Schema(
 
 doctorScheduleSchema.pre('save', function (next) {
   // Adjust the timestamps by adding 2 hours in milliseconds
-  if (this.startTime) {
-    this.startTime = new Date(this.startTime.getTime() + 2 * 60 * 60 * 1000);
-  }
-  if (this.endTime) {
-    this.endTime = new Date(this.endTime.getTime() + 2 * 60 * 60 * 1000);
-  }
+  // if (this.startTime) {
+  //   this.startTime = new Date(this.startTime.getTime() + 2 * 60 * 60 * 1000);
+  // }
+  // if (this.endTime) {
+  //   this.endTime = new Date(this.endTime.getTime() + 2 * 60 * 60 * 1000);
+  // }
   if (this.createdAt) {
     this.createdAt = new Date(this.createdAt.getTime() + 2 * 60 * 60 * 1000);
   }
