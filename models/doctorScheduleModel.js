@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const doctorScheduleSchema = new mongoose.Schema(
   {
     day: {
-      type: String,
+      type: Date,
       required: [true, 'Day is required'],
     },
     startTime: {

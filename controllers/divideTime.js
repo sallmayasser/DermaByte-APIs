@@ -44,8 +44,8 @@ exports.divideTimeRange = (reserved, schedule, currentDate) => {
           }
           startDate.setMinutes(startDate.getMinutes() + +time.sessionTime);
         }
-
-        intervals.push({ day: `${time.day} ${day}`, freeTime: times });
+        intervals.push({ day:  new Date(startDate) , freeTime: times });
+   
       }
     });
   }
