@@ -146,7 +146,7 @@ const createReservation = (async (session) => {
 const createLabReservation = (async (session) => {
 
     const date = session.metadata.date
-    const test = JSON.parse(session.metadata.testArrary)
+    const test = JSON.parse(session.metadata.testArray)
     const patient = session.metadata.pid
     const lab = session.client_reference_id
 
