@@ -78,7 +78,12 @@ exports.createDermatologistValidator = [
     .withMessage('session price must not be empty')
     .isNumeric()
     .withMessage('cost must be numeric'),
-
+    check('gender').custom((gender, { req }) => {
+      if (req.gender === 'male' || req.gender === "female") {
+         throw new Error('please enter male or female');
+       }
+       return true;
+     }),
   // validatorMiddleware,
 ];
 

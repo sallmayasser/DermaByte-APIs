@@ -25,7 +25,7 @@ const PatientsSchema = new mongoose.Schema(
       min: [1, 'age  must be above or equal 1'],
       max: [99, 'age must be below or equal 99'],
     },
-    mobile: {
+    phone: {
       type: String,
       minlength: [11, 'incorrect mobile number'],
       maxlength: [12, 'incorrect mobile number '],

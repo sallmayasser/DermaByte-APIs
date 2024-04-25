@@ -50,14 +50,14 @@ const doctorReservationsSchema = new mongoose.Schema(
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
-    select: 'firstName lastName ',
+    select: 'firstName lastName email',
   });
   next();
 });
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',
-    select: 'firstName lastName ',
+    select: 'firstName lastName sessionCost',
   });
   next();
 });

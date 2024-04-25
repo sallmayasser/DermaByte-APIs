@@ -93,7 +93,13 @@ exports.createPatientValidator = [
     .isMobilePhone(['ar-EG', 'ar-SA'])
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
-  // validatorMiddleware,
+  
+  check('gender').custom((gender, { req }) => {
+    if (req.gender === 'male' || req.gender === "female") {
+       throw new Error('please enter male or female');
+     }
+     return true;
+   }),
 ];
 
 exports.updatePatientValidator = [

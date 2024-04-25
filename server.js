@@ -10,6 +10,8 @@ const dbConnection = require('./Configs/Database');
 
 dotenv.config({ path: 'config.env' });
 
+const { webhookCheckout } = require('./controllers/paymentController');
+
 //routes
 const dermatologistRoute = require('./Routes/dermatologistRoute');
 const labRoute = require('./Routes/labRoute');
@@ -24,7 +26,9 @@ const requestedTestsRoute = require('./Routes/requestedTestRoutes');
 const authRoute = require('./Routes/authRoute');
 const adminRoute = require('./Routes/adminRoute');
 const scheduleRoute = require('./Routes/scheduleRoute');
-const reviewRoute =require('./Routes/reviewRoute');
+const reviewRoute = require('./Routes/reviewRoute');
+const bookingRoute = require('./Routes/paymentRoute');
+
 // connect with db
 dbConnection();
 
@@ -34,6 +38,10 @@ const app = express();
 /////middleware
 app.use(cors());
 app.use(compression());
+//checkout webhook 
+app.post('webhook-checkout', express.raw({ type: 'application/json' }),
+  webhookCheckout)
+
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'uploads')));
@@ -60,6 +68,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/admin', adminRoute);
 app.use('/api/v1/schedules', scheduleRoute);
 app.use('/api/v1/reviews', reviewRoute);
+app.use('/api/v1/bookings', bookingRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });

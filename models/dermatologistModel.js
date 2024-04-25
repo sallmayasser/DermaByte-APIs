@@ -22,7 +22,7 @@ const dermatologistsSchema = new mongoose.Schema(
       enum:['male','female']
     },
 
-    mobile: {
+    phone: {
       type: String,
       min: [11, 'incorrect mobile number'],
       max: [11, 'incorrect mobile number '],
