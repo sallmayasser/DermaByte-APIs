@@ -10,6 +10,7 @@ const doctorScheduleModel = require('../models/doctorScheduleModel');
 const patientModel = require('../models/patientModel');
 const Reservation = require('../models/doctorReservationModel');
 const labReservationModel = require('../models/labReservationModel');
+const testServiceModel = require('../models/testServiceModel');
 
 // @desc    Get checkout session from stripe and send it as response
 // @route   GET /api/v1/orders/checkout-session/reservationId
@@ -56,7 +57,54 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
 });
+exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
+    // 1) Get reservation details based on reservationId
 
+    const { date, lab, test, patient } = req.body;
+
+// Using Promise.all with map
+const promises = test.map(async (id) => {
+    return await testServiceModel.findById(id).select('cost');
+});
+
+const carts = await Promise.all(promises);
+let totalPrice=0
+for (let i = 0; i < carts.length; i++) {
+    totalPrice+= carts[i].cost
+}
+const testArray = JSON.stringify(test)
+    const patientName = await patientModel.findById(patient).select('firstName');
+    const patientid = await patientModel.findById(patient).select('id');
+    const patientEmail = await patientModel.findById(patient).select('email');
+    const pid = patientid.id
+    // 2) Get price from reservation details
+    
+    // 3) Create stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+            {
+                price_data: {
+                    currency: 'egp',
+                    product_data: {
+                        name: patientName.firstName,
+                    },
+                    unit_amount: totalPrice * 100,
+                },
+                quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `${req.protocol}://${req.get('host')}/api/v1/patients/laboratory-reservation`,
+        cancel_url: `${req.protocol}://${req.get('host')}/api/v1/labs`,
+        customer_email: patientEmail.email,
+        client_reference_id: lab,
+        metadata: { date, lab, testArray, pid }
+    });
+
+    // 4) Send session as response
+    res.status(200).json({ status: 'success', session });
+});
 
 const createReservation = (async (session) => {
 
@@ -102,7 +150,7 @@ const createReservation = (async (session) => {
 const createLabReservation = (async (session) => {
 
     const date = session.metadata.date
-    const test = session.metadata.test
+    const test = JSON.parse(session.metadata.test)
     const patient = session.metadata.pid
     const lab = session.client_reference_id
 

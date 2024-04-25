@@ -1,5 +1,5 @@
 const express = require('express');
-const { checkoutSession } = require('../controllers/paymentController');
+const { checkoutSession, checkoutSessionLab } = require('../controllers/paymentController');
 const authController = require('../controllers/authController');
 const functions = require('../controllers/doctorReservationController');
 const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
@@ -23,7 +23,7 @@ router.get('/checkout-session/lab',
     authController.allowedTo('patient'),
     getLoggedUserData,
     functions.setPatientIdToBody,
-    checkoutSession,
+    checkoutSessionLab,
 
 );
 module.exports = router;
