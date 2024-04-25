@@ -39,7 +39,7 @@ const app = express();
 app.use(cors());
 app.use(compression());
 //checkout webhook 
-app.post('webhook-checkout', express.raw({ type: 'application/json' }),
+app.post('/webhook-checkout', express.raw({ type: 'application/json' }),
   webhookCheckout)
 
 app.use(express.json());
