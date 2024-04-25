@@ -7,7 +7,11 @@ const router = express.Router();
 router.get('/checkout-session',
     authController.protect,
     authController.allowedTo('patient'),
-    checkoutSession
+    getLoggedUserData,
+    functions.uploadUploadedTestImages,
+    functions.resizeUploadedTestImages,
+    functions.setPatientIdToBody,
+    checkoutSession,
 );
 
 module.exports = router;

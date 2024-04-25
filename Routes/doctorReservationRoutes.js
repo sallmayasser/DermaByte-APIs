@@ -1,5 +1,6 @@
 const express = require('express');
 const functions = require('../controllers/doctorReservationController');
+const {createReservation}= require('../controllers/paymentController');
 const validators = require('../utils/validators/ReservationsValidator');
 
 const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
@@ -9,17 +10,17 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(
-    authController.protect,
-    authController.allowedTo('patient'),
-    getLoggedUserData,
-    functions.uploadUploadedTestImages,
-    functions.resizeUploadedTestImages,
-    functions.setPatientIdToBody,
-    validators.createReservationValidator,
-    functions.createReservation,
+  // .post(
+  //   authController.protect,
+  //   authController.allowedTo('patient'),
+  //   getLoggedUserData,
+  //   functions.uploadUploadedTestImages,
+  //   functions.resizeUploadedTestImages,
+  //   functions.setPatientIdToBody,
+  //   validators.createReservationValidator,
+  //   createReservation,
  
-  )
+  // )
   .get(
     authController.protect,
     authController.allowedTo('admin'),
