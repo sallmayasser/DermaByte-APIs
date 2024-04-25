@@ -27,7 +27,7 @@ const authRoute = require('./Routes/authRoute');
 const adminRoute = require('./Routes/adminRoute');
 const scheduleRoute = require('./Routes/scheduleRoute');
 const reviewRoute = require('./Routes/reviewRoute');
-
+const paymentRoute = require('./Routes/paymentRoute');
 
 // connect with db
 dbConnection();
@@ -39,7 +39,7 @@ const app = express();
 app.use(cors());
 app.use(compression());
 //checkout webhook 
-app.post('/webhook-checkout', express.raw({ type: 'application/json' }),
+app.post('webhook-checkout', express.raw({ type: 'application/json' }),
   webhookCheckout)
 
 app.use(express.json());
@@ -68,7 +68,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/admin', adminRoute);
 app.use('/api/v1/schedules', scheduleRoute);
 app.use('/api/v1/reviews', reviewRoute);
-
+app.use('/api/v1/bookings', paymentRoute);
 app.all('*', (req, res, next) => {
   next(new ApiError(`can't find this route:${req.originalUrl}`, 400));
 });
