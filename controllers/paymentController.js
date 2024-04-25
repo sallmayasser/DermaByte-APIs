@@ -18,17 +18,17 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
     const { date, dermatologist, scan, uploadedTest, patient,reviewed } = req.body;
 
-    const patientid = req.user._id
+    // const patientid = req.user._id
 
     const Cost = await Dermatologist.findById(dermatologist).select('sessionCost');
     const patientName = await patientModel.findById(patient).select('firstName');
+    const patientid = await patientModel.findById(patient).select('id');
     const patientEmail = await patientModel.findById(patient).select('email');
-
+    const pid=patientid.id
 
     // 2) Get price from reservation details
     const totalPrice = Cost.sessionCost;
-    console.log(patientid)
-    console.log(patient+"body")
+    
     // 3) Create stripe checkout session
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -49,7 +49,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
         cancel_url: `${req.protocol}://${req.get('host')}/dermatologists`,
         customer_email: patientEmail.email,
         client_reference_id: dermatologist,
-        metadata: { date, patient, scan, uploadedTest,reviewed }
+        metadata: {date,scan,uploadedTest,reviewed,pid }
     });
 
     // 4) Send session as response
@@ -62,7 +62,7 @@ const createReservation = (async (session, res) => {
     const date = session.metadata.date
     const uploadedTest = session.metadata.uploadedTest
     // const reviewed =session.metadata.reviewed
-    const patient = session.metadata.patient
+    const patient = session.metadata.pid
     const scan = session.metadata.scan
     const dermatologist = session.client_reference_id
     const reviewed = false
