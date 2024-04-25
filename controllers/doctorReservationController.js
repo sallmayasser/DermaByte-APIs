@@ -38,36 +38,36 @@ exports.updateReservation = handlers.updateOne(Reservation);
 
 exports.deleteReservation = handlers.deleteOne(Reservation);
 
-exports.createReservation = asyncHandler(async (req, res) => {
-  const { date, dermatologist, scan, uploadedTest, patient, reviewed } =
-    req.body;
+// exports.createReservation = asyncHandler(async (req, res) => {
+//   const { date, dermatologist, scan, uploadedTest, patient, reviewed } =
+//     req.body;
 
-  const durations = await doctorScheduleModel
-    .find({
-      dermatologist: req.body.dermatologist,
-    })
-    .select('sessionTime');
-  const duration = durations.map((time) => time.sessionTime);
+//   const durations = await doctorScheduleModel
+//     .find({
+//       dermatologist: req.body.dermatologist,
+//     })
+//     .select('sessionTime');
+//   const duration = durations.map((time) => time.sessionTime);
 
-  const meeting = await createMeeting(
-    'My Consultation',
-    duration[0],
-    req.body.date,
-  );
+//   const meeting = await createMeeting(
+//     'My Consultation',
+//     duration[0],
+//     req.body.date,
+//   );
 
-  const newDoc = await Reservation.create({
-    date: date,
-    dermatologist: dermatologist,
-    patient: patient,
-    scan: scan,
-    uploadedTest: uploadedTest,
-    meetingUrl: meeting.meeting_url,
-    reviewed: reviewed,
-  });
-  // Convert the document to JSON with virtuals
-  const responseData = newDoc.toJSON({ virtuals: true });
-  res.status(201).json({ data: responseData });
-});
+//   const newDoc = await Reservation.create({
+//     date: date,
+//     dermatologist: dermatologist,
+//     patient: patient,
+//     scan: scan,
+//     uploadedTest: uploadedTest,
+//     meetingUrl: meeting.meeting_url,
+//     reviewed: reviewed,
+//   });
+//   // Convert the document to JSON with virtuals
+//   const responseData = newDoc.toJSON({ virtuals: true });
+//   res.status(201).json({ data: responseData });
+// });
 // Nested route
 // GET /api/v1/patients/:patientId/Dermatologist-reservation
 exports.createFilterObj = (req, res, next) => {

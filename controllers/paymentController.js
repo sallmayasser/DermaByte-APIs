@@ -5,7 +5,8 @@ const ApiError = require('../utils/apiError');
 
 const Dermatologist = require('../models/dermatologistModel');
 // const { createReservation } = require("./doctorReservationController")
-
+const { createMeeting } = require('./meetingController');
+const doctorScheduleModel = require('../models/doctorScheduleModel');
 const patientModel = require('../models/patientModel');
 
 // @desc    Get checkout session from stripe and send it as response
@@ -71,10 +72,8 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
 // };
 
-exports.createReservation = asyncHandler(async (session, res) => {
-    // const { date, dermatologist, scan, uploadedTest, patient, reviewed } 
-
-
+const createReservation =(async (session, res) => {
+   
     const date = session.metadata.date
     // const uploadedTest =session.metadata.uploadedTest
     // const reviewed =session.metadata.reviewed
@@ -82,7 +81,7 @@ exports.createReservation = asyncHandler(async (session, res) => {
     const scan = session.metadata.scan
     const dermatologist = session.client_reference_id
 
-    console.logdate
+    console.log(date)
     console.log(patient)
     console.log(scan)
     console.log(dermatologist)
@@ -128,11 +127,9 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
             process.env.STRIPE_WEBHOOK_SECRET
         );
     } catch (err) {
-        console.log("erorrrrrrr");
         return res.status(400).send(`Webhook Error: ${err.message}`);
         
     }
-    console.log("enter condition")
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
         console.log("enter condition")
