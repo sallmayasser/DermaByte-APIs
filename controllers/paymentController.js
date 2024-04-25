@@ -4,7 +4,7 @@ const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
 
 const Dermatologist = require('../models/dermatologistModel');
-const {createReservation}=require("./doctorReservationController")
+const { createReservation } = require("./doctorReservationController")
 
 const patientModel = require('../models/patientModel');
 
@@ -22,7 +22,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     const patientName = await patientModel.findById(patient).select('firstName');
     const patientEmail = await patientModel.findById(patient).select('email');
 
-   
+
     // 2) Get price from reservation details
     const totalPrice = Cost.sessionCost;
 
@@ -46,7 +46,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
         cancel_url: `${req.protocol}://${req.get('host')}/dermatologists`,
         customer_email: patientEmail.email,
         client_reference_id: dermatologist,
-        metadata:{date,patient,scan}
+        metadata: { date, patient, scan }
     });
 
     // 4) Send session as response
@@ -71,45 +71,48 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
 // };
 
-exports.createReservation = asyncHandler(async (session,res) => {
+exports.createReservation = asyncHandler(async (session, res) => {
     // const { date, dermatologist, scan, uploadedTest, patient, reviewed } 
-  
-  
-    const date =session.metadata.date
+
+
+    const date = session.metadata.date
     // const uploadedTest =session.metadata.uploadedTest
     // const reviewed =session.metadata.reviewed
-    const patient =session.metadata.patient
-    const scan =session.metadata.scan
-    const dermatologist =session.client_reference_id
+    const patient = session.metadata.patient
+    const scan = session.metadata.scan
+    const dermatologist = session.client_reference_id
 
+    console.logdate
+    console.log(patient)
+    console.log(scan)
+    console.log(dermatologist)
 
-    
     const durations = await doctorScheduleModel
-      .find({
-        dermatologist: dermatologist,
-      })
-      .select('sessionTime');
+        .find({
+            dermatologist: dermatologist,
+        })
+        .select('sessionTime');
     const duration = durations.map((time) => time.sessionTime);
-  
+
     const meeting = await createMeeting(
-      'My Consultation',
-      duration[0],
-      date,
+        'My Consultation',
+        duration[0],
+        date,
     );
-  
+
     const newDoc = await Reservation.create({
-      date: date,
-      dermatologist: dermatologist,
-      patient: patient,
-      scan: scan,
-      uploadedTest: uploadedTest,
-      meetingUrl: meeting.meeting_url,
-      reviewed: reviewed,
+        date: date,
+        dermatologist: dermatologist,
+        patient: patient,
+        scan: scan,
+        uploadedTest: uploadedTest,
+        meetingUrl: meeting.meeting_url,
+        reviewed: reviewed,
     });
     // Convert the document to JSON with virtuals
     const responseData = newDoc.toJSON({ virtuals: true });
     res.status(201).json({ data: responseData });
-  });
+});
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
 // @access  Protected/User
