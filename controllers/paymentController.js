@@ -18,7 +18,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
     const { date, dermatologist, scan, uploadedTest, patient,reviewed } = req.body;
 
-    // const patient = req.user._id
+    const patientid = req.user._id
 
     const Cost = await Dermatologist.findById(dermatologist).select('sessionCost');
     const patientName = await patientModel.findById(patient).select('firstName');
@@ -27,7 +27,8 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
     // 2) Get price from reservation details
     const totalPrice = Cost.sessionCost;
-
+    console.log(patientid)
+    console.log(patient+"body")
     // 3) Create stripe checkout session
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
