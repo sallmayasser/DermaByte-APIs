@@ -45,8 +45,8 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
             },
         ],
         mode: 'payment',
-        success_url: `${req.protocol}://${req.get('host')}/`,
-        cancel_url: `${req.protocol}://${req.get('host')}/dermatologists`,
+        success_url: `${req.protocol}://${req.get('host')}/api/v1/patients/Patient-reservation`,
+        cancel_url: `${req.protocol}://${req.get('host')}/api/v1/dermatologists`,
         customer_email: patientEmail.email,
         client_reference_id: dermatologist,
         metadata: {date,scan,uploadedTest,reviewed,pid }
