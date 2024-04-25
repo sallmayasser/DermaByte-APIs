@@ -8,6 +8,7 @@ const Dermatologist = require('../models/dermatologistModel');
 const { createMeeting } = require('./meetingController');
 const doctorScheduleModel = require('../models/doctorScheduleModel');
 const patientModel = require('../models/patientModel');
+const Reservation = require('../models/doctorReservationModel');
 
 // @desc    Get checkout session from stripe and send it as response
 // @route   GET /api/v1/orders/checkout-session/reservationId
@@ -15,9 +16,9 @@ const patientModel = require('../models/patientModel');
 exports.checkoutSession = asyncHandler(async (req, res, next) => {
     // 1) Get reservation details based on reservationId
 
-    const { date, dermatologist, scan,uploadedTest } = req.body;
+    const { date, dermatologist, scan,uploadedTest ,patient} = req.body;
 
-    const patient = req.user._id
+    // const patient = req.user._id
 
     const Cost = await Dermatologist.findById(dermatologist).select('sessionCost');
     const patientName = await patientModel.findById(patient).select('firstName');
