@@ -91,7 +91,7 @@ const testArray = JSON.stringify(test)
                     },
                     unit_amount: totalPrice * 100,
                 },
-                quantity: 1,
+                quantity: test.length,
             },
         ],
         mode: 'payment',
@@ -100,9 +100,9 @@ const testArray = JSON.stringify(test)
         customer_email: patientEmail.email,
         client_reference_id: lab,
         metadata: { date, lab, testArray, pid }
+        
     });
-//    console.log( req.body.dermatologist)
-//    console.log(!req.body.dermatologist)
+   
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
 });
@@ -147,6 +147,7 @@ const createLabReservation = (async (session) => {
 
     const date = session.metadata.date
     const test = JSON.parse(session.metadata.test)
+    console.log(test +"parse")
     const patient = session.metadata.pid
     const lab = session.client_reference_id
 
@@ -157,7 +158,6 @@ const createLabReservation = (async (session) => {
         test: test,
 
     });
-
     console.log(test +"dah el test")
 });
 // @desc    This webhook will run when stripe payment success paid
