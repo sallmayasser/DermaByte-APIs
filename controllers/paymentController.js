@@ -146,8 +146,7 @@ const createReservation = (async (session) => {
 const createLabReservation = (async (session) => {
 
     const date = session.metadata.date
-    const test = session.metadata.test
-    console.log(test +"parse")
+    const test = JSON.parse(session.metadata.testArrary)
     const patient = session.metadata.pid
     const lab = session.client_reference_id
 
@@ -159,7 +158,6 @@ const createLabReservation = (async (session) => {
 
     });
     
-    console.log(test +"dah el test")
 });
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
