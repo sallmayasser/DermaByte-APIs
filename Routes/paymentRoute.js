@@ -3,6 +3,7 @@ const { checkoutSession } = require('../controllers/paymentController');
 const authController = require('../controllers/authController');
 const functions = require('../controllers/doctorReservationController');
 const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
+const validators = require('../utils/validators/ReservationsValidator');
 const router = express.Router();
 
 router.get('/checkout-session',
@@ -12,7 +13,9 @@ router.get('/checkout-session',
     functions.uploadUploadedTestImages,
     functions.resizeUploadedTestImages,
     functions.setPatientIdToBody,
+    validators.createReservationValidator,
     checkoutSession,
+
 );
 
 module.exports = router;

@@ -9,6 +9,7 @@ const { createMeeting } = require('./meetingController');
 const doctorScheduleModel = require('../models/doctorScheduleModel');
 const patientModel = require('../models/patientModel');
 const Reservation = require('../models/doctorReservationModel');
+const labReservationModel = require('../models/labReservationModel');
 
 // @desc    Get checkout session from stripe and send it as response
 // @route   GET /api/v1/orders/checkout-session/reservationId
@@ -16,7 +17,7 @@ const Reservation = require('../models/doctorReservationModel');
 exports.checkoutSession = asyncHandler(async (req, res, next) => {
     // 1) Get reservation details based on reservationId
 
-    const { date, dermatologist, scan, uploadedTest, patient,reviewed } = req.body;
+    const { date, dermatologist, scan, uploadedTest, patient, reviewed } = req.body;
 
     // const patientid = req.user._id
 
@@ -24,11 +25,11 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     const patientName = await patientModel.findById(patient).select('firstName');
     const patientid = await patientModel.findById(patient).select('id');
     const patientEmail = await patientModel.findById(patient).select('email');
-    const pid=patientid.id
+    const pid = patientid.id
 
     // 2) Get price from reservation details
     const totalPrice = Cost.sessionCost;
-    
+
     // 3) Create stripe checkout session
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -49,7 +50,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
         cancel_url: `${req.protocol}://${req.get('host')}/api/v1/dermatologists`,
         customer_email: patientEmail.email,
         client_reference_id: dermatologist,
-        metadata: {date,scan,uploadedTest,reviewed,pid }
+        metadata: { date, scan, uploadedTest, reviewed, pid }
     });
 
     // 4) Send session as response
@@ -98,6 +99,22 @@ const createReservation = (async (session) => {
     // const responseData = newDoc.toJSON({ virtuals: true });
     // res.status(201).json({ data: responseData });
 });
+const createLabReservation = (async (session) => {
+
+    const date = session.metadata.date
+    const test = session.metadata.test
+    const patient = session.metadata.pid
+    const lab = session.client_reference_id
+
+    const newDoc = await labReservationModel.create({
+        date: date,
+        lab: lab,
+        patient: patient,
+        test: test,
+
+    });
+
+});
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
 // @access  Protected/User
@@ -118,8 +135,15 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     }
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
-        console.log("enter condition")
-        createReservation(event.data.object);
+        if (req.body.dermatologist != undefined) {
+            createReservation(event.data.object);
+            console.log(req.body.dermatologist)
+        }
+        else {
+            createLabReservation(event.data.object)
+            console.log(req.body.lab)
+        }
+
 
     }
 
