@@ -91,7 +91,7 @@ const testArray = JSON.stringify(test)
                     },
                     unit_amount: totalPrice * 100,
                 },
-                quantity: test.length,
+                quantity: 1
             },
         ],
         mode: 'payment',
@@ -180,18 +180,8 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     }
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
-        if (!req.body.dermatologist) {
-            createLabReservation(event.data.object);
-            console.log(req.body.lab)
-        }
-        else {
-            createReservation(event.data.object)
-            console.log(req.body.dermatologist)
-        }
-
+        createLabReservation(event.data.object);
 
     }
-
-
     res.status(200).json({ received: true });
 });
