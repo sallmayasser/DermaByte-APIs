@@ -56,7 +56,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
-    console.log(!req.body.dermatologist)
+   
 });
 exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
     // 1) Get reservation details based on reservationId
@@ -106,6 +106,7 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
+   
 });
 
 const createReservation = (async (session) => {
@@ -181,7 +182,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     }
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
-        if (!req.body.dermatologist) {
+        if (req.body.dermatologist!==undefined) {
             createReservation(event.data.object);
         }
         else {
