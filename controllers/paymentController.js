@@ -56,29 +56,30 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
+    console.log(!req.body.dermatologist)
 });
 exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
     // 1) Get reservation details based on reservationId
 
     const { date, lab, test, patient } = req.body;
 
-// Using Promise.all with map
-const promises = test.map(async (id) => {
-    return await testServiceModel.findById(id).select('cost');
-});
+    // Using Promise.all with map
+    const promises = test.map(async (id) => {
+        return await testServiceModel.findById(id).select('cost');
+    });
 
-const carts = await Promise.all(promises);
-let totalPrice=0
-for (let i = 0; i < carts.length; i++) {
-    totalPrice+= carts[i].cost
-}
-const testArray = JSON.stringify(test)
+    const carts = await Promise.all(promises);
+    let totalPrice = 0
+    for (let i = 0; i < carts.length; i++) {
+        totalPrice += carts[i].cost
+    }
+    const testArray = JSON.stringify(test)
     const patientName = await patientModel.findById(patient).select('firstName');
     const patientid = await patientModel.findById(patient).select('id');
     const patientEmail = await patientModel.findById(patient).select('email');
     const pid = patientid.id
     // 2) Get price from reservation details
-    
+
     // 3) Create stripe checkout session
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -100,9 +101,9 @@ const testArray = JSON.stringify(test)
         customer_email: patientEmail.email,
         client_reference_id: lab,
         metadata: { date, lab, testArray, pid }
-        
+
     });
-   
+
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
 });
@@ -144,7 +145,8 @@ const createReservation = (async (session) => {
     // res.status(201).json({ data: responseData });
 });
 const createLabReservation = (async (session) => {
-const testArray=session.metadata.testArray
+
+    const testArray = session.metadata.testArray
     const date = session.metadata.date
     const test = JSON.parse(testArray)
     const patient = session.metadata.pid
@@ -157,7 +159,7 @@ const testArray=session.metadata.testArray
         test: test,
 
     });
-    
+
 });
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
@@ -180,12 +182,10 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
         if (!req.body.dermatologist) {
-            createLabReservation(event.data.object);
-            console.log(req.body.lab)
+            createReservation(event.data.object);
         }
         else {
-            createReservation(event.data.object)
-            console.log(req.body.dermatologist)
+            createLabReservation(event.data.object)
         }
 
     }
