@@ -16,7 +16,7 @@ const Reservation = require('../models/doctorReservationModel');
 exports.checkoutSession = asyncHandler(async (req, res, next) => {
     // 1) Get reservation details based on reservationId
 
-    const { date, dermatologist, scan,uploadedTest ,patient} = req.body;
+    const { date, dermatologist, scan, uploadedTest, patient,reviewed } = req.body;
 
     // const patient = req.user._id
 
@@ -48,7 +48,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
         cancel_url: `${req.protocol}://${req.get('host')}/dermatologists`,
         customer_email: patientEmail.email,
         client_reference_id: dermatologist,
-        metadata: { date, patient, scan ,uploadedTest}
+        metadata: { date, patient, scan, uploadedTest,reviewed }
     });
 
     // 4) Send session as response
@@ -56,31 +56,15 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 });
 
 
-// const createBooking = async (session) => {
-//     const reservationId = session.client_reference_id;
-//     const reservationPrice = session.amount_total / 100;
-//     const patient = await Patient.findOne({ email: session.customer_email });
-//     // const reservation = await DoctorReservation.findById(reservationId);
+const createReservation = (async (session, res) => {
 
-//     // 1) Create booking with default paymentMethodType card
-//     const booking = await Booking.create({
-//         reservation: reservationId,
-//         patient: patient._id,
-//         Price: reservationPrice,
-//         isPaid: true,
-//         paidAt: Date.now(),
-//     });
-
-// };
-
-const createReservation =(async (session, res) => {
-   
     const date = session.metadata.date
-    const uploadedTest =session.metadata.uploadedTest
+    const uploadedTest = session.metadata.uploadedTest
     // const reviewed =session.metadata.reviewed
     const patient = session.metadata.patient
     const scan = session.metadata.scan
     const dermatologist = session.client_reference_id
+    const reviewed = false
 
     console.log(date)
     console.log(patient)
@@ -129,7 +113,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
         );
     } catch (err) {
         return res.status(400).send(`Webhook Error: ${err.message}`);
-        
+
     }
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
