@@ -144,9 +144,9 @@ const createReservation = (async (session) => {
     // res.status(201).json({ data: responseData });
 });
 const createLabReservation = (async (session) => {
-
+const testArray=session.metadata.testArray
     const date = session.metadata.date
-    const test = JSON.parse(session.metadata.testArray)
+    const test = JSON.parse(testArray)
     const patient = session.metadata.pid
     const lab = session.client_reference_id
 
