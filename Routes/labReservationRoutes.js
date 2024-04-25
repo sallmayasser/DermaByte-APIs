@@ -8,12 +8,12 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .post(authController.protect, authController.allowedTo("patient"),
-    getLoggedUserData,
-    functions.setPatientIdToBody,
-    functions.createReservation,
-    validators.createReservationValidator,
-  )
+  // .post(authController.protect, authController.allowedTo("patient"),
+  //   getLoggedUserData,
+  //   functions.setPatientIdToBody,
+  //   functions.createReservation,
+  //   validators.createReservationValidator,
+  // )
   .get(authController.protect,authController.allowedTo("admin"),functions.getAllReservations);
 
 router

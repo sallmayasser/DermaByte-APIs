@@ -13,7 +13,7 @@ router.get('/checkout-session',
     functions.uploadUploadedTestImages,
     functions.resizeUploadedTestImages,
     functions.setPatientIdToBody,
-    validators.createReservationValidator,
+    // validators.createReservationValidator,
     checkoutSession,
 
 );
