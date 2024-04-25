@@ -128,8 +128,11 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
             process.env.STRIPE_WEBHOOK_SECRET
         );
     } catch (err) {
+        console.log("erorrrrrrr");
         return res.status(400).send(`Webhook Error: ${err.message}`);
+        
     }
+    console.log("enter condition")
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
         console.log("enter condition")
