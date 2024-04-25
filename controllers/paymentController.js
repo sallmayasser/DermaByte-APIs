@@ -15,7 +15,7 @@ const patientModel = require('../models/patientModel');
 exports.checkoutSession = asyncHandler(async (req, res, next) => {
     // 1) Get reservation details based on reservationId
 
-    const { date, dermatologist, scan } = req.body;
+    const { date, dermatologist, scan,uploadedTest } = req.body;
 
     const patient = req.user._id
 
@@ -47,7 +47,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
         cancel_url: `${req.protocol}://${req.get('host')}/dermatologists`,
         customer_email: patientEmail.email,
         client_reference_id: dermatologist,
-        metadata: { date, patient, scan }
+        metadata: { date, patient, scan ,uploadedTest}
     });
 
     // 4) Send session as response
@@ -75,7 +75,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 const createReservation =(async (session, res) => {
    
     const date = session.metadata.date
-    // const uploadedTest =session.metadata.uploadedTest
+    const uploadedTest =session.metadata.uploadedTest
     // const reviewed =session.metadata.reviewed
     const patient = session.metadata.patient
     const scan = session.metadata.scan
