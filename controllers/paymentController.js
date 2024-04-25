@@ -57,7 +57,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 });
 
 
-const createReservation = (async (session, res) => {
+const createReservation = (async (session) => {
 
     const date = session.metadata.date
     const uploadedTest = session.metadata.uploadedTest
@@ -95,8 +95,8 @@ const createReservation = (async (session, res) => {
         reviewed: reviewed,
     });
     // Convert the document to JSON with virtuals
-    const responseData = newDoc.toJSON({ virtuals: true });
-    res.status(201).json({ data: responseData });
+    // const responseData = newDoc.toJSON({ virtuals: true });
+    // res.status(201).json({ data: responseData });
 });
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
