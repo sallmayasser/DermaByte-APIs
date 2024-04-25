@@ -101,7 +101,8 @@ const testArray = JSON.stringify(test)
         client_reference_id: lab,
         metadata: { date, lab, testArray, pid }
     });
-
+//    console.log( req.body.dermatologist)
+//    console.log(!req.body.dermatologist)
     // 4) Send session as response
     res.status(200).json({ status: 'success', session });
 });
@@ -110,16 +111,11 @@ const createReservation = (async (session) => {
 
     const date = session.metadata.date
     const uploadedTest = session.metadata.uploadedTest
-    // const reviewed =session.metadata.reviewed
     const patient = session.metadata.pid
     const scan = session.metadata.scan
     const dermatologist = session.client_reference_id
     const reviewed = false
 
-    console.log(date)
-    console.log(patient)
-    console.log(scan)
-    console.log(dermatologist)
 
     const durations = await doctorScheduleModel
         .find({
@@ -162,6 +158,7 @@ const createLabReservation = (async (session) => {
 
     });
 
+    console.log(test +"dah el test")
 });
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
@@ -183,13 +180,13 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     }
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
-        if (req.body.dermatologist != undefined) {
-            createReservation(event.data.object);
-            console.log(req.body.dermatologist)
+        if (!req.body.dermatologist) {
+            createLabReservation(event.data.object);
+            console.log(req.body.lab)
         }
         else {
-            createLabReservation(event.data.object)
-            console.log(req.body.lab)
+            createReservation(event.data.object)
+            console.log(req.body.dermatologist)
         }
 
 
