@@ -146,7 +146,7 @@ const createReservation = (async (session) => {
 const createLabReservation = (async (session) => {
 
     const date = session.metadata.date
-    const test = JSON.parse(session.metadata.test)
+    const test = session.metadata.test
     console.log(test +"parse")
     const patient = session.metadata.pid
     const lab = session.client_reference_id
@@ -158,6 +158,7 @@ const createLabReservation = (async (session) => {
         test: test,
 
     });
+    
     console.log(test +"dah el test")
 });
 // @desc    This webhook will run when stripe payment success paid
@@ -180,7 +181,14 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     }
     if (event.type === 'checkout.session.completed') {
         //  Create reservation
-        createLabReservation(event.data.object);
+        if (!req.body.dermatologist) {
+            createLabReservation(event.data.object);
+            console.log(req.body.lab)
+        }
+        else {
+            createReservation(event.data.object)
+            console.log(req.body.dermatologist)
+        }
 
     }
     res.status(200).json({ received: true });
