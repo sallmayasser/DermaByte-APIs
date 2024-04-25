@@ -4,7 +4,7 @@ const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
 
 const Dermatologist = require('../models/dermatologistModel');
-const { createReservation } = require("./doctorReservationController")
+// const { createReservation } = require("./doctorReservationController")
 
 const patientModel = require('../models/patientModel');
 
