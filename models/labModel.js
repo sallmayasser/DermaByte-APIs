@@ -13,7 +13,7 @@ const labsSchema = new mongoose.Schema(
       type: String,
       
     },
-    mobile: {
+    phone: {
       type: String,
       min: [11, 'incorrect mobile number'],
     },
