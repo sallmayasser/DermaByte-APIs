@@ -193,6 +193,7 @@ exports.webhookCheckoutDoctor = asyncHandler(async (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed') {
+    console.log ("doctor web hook, reservtaion ")
     createReservation(event.data.object);
   }
 
