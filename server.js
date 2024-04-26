@@ -10,7 +10,10 @@ const dbConnection = require('./Configs/Database');
 
 dotenv.config({ path: 'config.env' });
 
-const { webhookCheckout, webhookCheckoutDoctor } = require('./controllers/paymentController');
+const {
+  webhookCheckout,
+  webhookCheckoutDoctor,
+} = require('./controllers/paymentController');
 
 //routes
 const dermatologistRoute = require('./Routes/dermatologistRoute');
@@ -38,13 +41,11 @@ const app = express();
 /////middleware
 app.use(cors());
 app.use(compression());
-//checkout webhook 
-app.post('/webhook-checkout', express.raw({ type: 'application/json' }),
-  webhookCheckout)
+//checkout webhook
 app.post(
-  '/webhook-checkout-doctor',
+  '/webhook-checkout',
   express.raw({ type: 'application/json' }),
-  webhookCheckoutDoctor,
+  webhookCheckout,
 );
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
@@ -93,5 +94,3 @@ const { PORT } = process.env;
 const server = app.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
 });
-
-
