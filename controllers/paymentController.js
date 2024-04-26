@@ -174,8 +174,8 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     if (req.body.dermatologist) {
       console.log('d5l al if');
       createReservation(event.data.object);
-    } else {
-         console.log('d5l al else');
+    }else if (req.body.lab) {
+      console.log('d5l al else');
       createLabReservation(event.data.object);
     }
   }
