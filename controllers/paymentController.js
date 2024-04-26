@@ -169,15 +169,23 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-  if (event.type === 'checkout.session.completed') {
-    //  Create reservation
-    if (req.body.dermatologist) {
-      console.log('d5l al if');
-      createReservation(event.data.object);
-    }else if (req.body.lab) {
-      console.log('d5l al else');
-      createLabReservation(event.data.object);
-    }
+
+  console.log('Dermatologist:', req.body.dermatologist);
+  console.log(
+    'Is Dermatologist defined?',
+    req.body.dermatologist !== undefined,
+  );
+
+  if (req.body.dermatologist !== undefined) {
+    console.log('Entering if condition');
+    createReservation(event.data.object);
+  } else if (req.body.lab) {
+    console.log('Entering else if condition');
+    createLabReservation(event.data.object);
+  } else {
+    console.log('Entering else condition');
   }
+
   res.status(200).json({ received: true });
 });
+
