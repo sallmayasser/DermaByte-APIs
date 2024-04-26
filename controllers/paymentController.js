@@ -55,7 +55,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     client_reference_id: dermatologist,
     metadata: { date, scan, uploadedTest, reviewed, pid },
   });
-
+ console.log(req.body.dermatologist !== undefined);
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
 });
@@ -171,7 +171,8 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   }
   if (event.type === 'checkout.session.completed') {
     //  Create reservation
-    if (req.body.dermatologist !== undefined) {
+    if (typeof req.body.dermatologist !== 'undefined') {
+      console.log('d5l al if');
       createReservation(event.data.object);
     } else {
       createLabReservation(event.data.object);
