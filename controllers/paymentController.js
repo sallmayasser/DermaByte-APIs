@@ -55,7 +55,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     client_reference_id: dermatologist,
     metadata: { date, scan, uploadedTest, reviewed, pid },
   });
- console.log(req.body.dermatologist !== undefined);
+  console.log(req.body.dermatologist !== undefined);
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
 });
@@ -157,7 +157,7 @@ const createLabReservation = async (session) => {
 // @access  Protected/User
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   const sig = req.headers['stripe-signature'];
-
+  const D = req.body.dermatologist;
   let event;
 
   try {
@@ -170,20 +170,16 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  console.log('Dermatologist:', req.body.dermatologist);
-  console.log(
-    'Is Dermatologist defined?',
-    req.body.dermatologist !== undefined,
-  );
-if (event.type === 'checkout.session.completed') {
-  // Determine if it's a dermatologist reservation or lab reservation
-  if (req.body.dermatologist !== undefined) {
-    // Call createReservation function for dermatologist reservation
-    await createReservation(event.data.object);
-  } else {
-    // Call createLabReservation function for lab reservation
-    await createLabReservation(event.data.object);
+  console.log('Dermatologist:', D);
+  console.log('Is Dermatologist defined?', D !== undefined);
+  if (event.type === 'checkout.session.completed') {
+    // Determine if it's a dermatologist reservation or lab reservation
+    if (D !== undefined) {
+      // Call createReservation function for dermatologist reservation
+      await createReservation(event.data.object);
+    } else {
+      // Call createLabReservation function for lab reservation
+      await createLabReservation(event.data.object);
+    }
   }
-}
 });
-
