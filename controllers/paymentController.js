@@ -155,18 +155,21 @@ const createLabReservation = async (session) => {
 // @route   POST /webhook-checkout
 // @access  Protected/User
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
-  try {
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET,
-    );
-  } catch (err) {
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-  if (event.type === 'checkout.session.completed') {
+    const sig = req.headers['stripe-signature'];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            process.env.STRIPE_WEBHOOK_SECRET
+        );
+    } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+
+    }
+    if (event.type === 'checkout.session.completed') {
     // Determine if it's a dermatologist reservation or lab reservation
     if (event.data.object.metadata.scan !== undefined) {
       // Call createReservation function for dermatologist reservation
@@ -174,6 +177,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     } else {
       // Call createLabReservation function for lab reservation
       await createLabReservation(event.data.object);
+      }
     }
-  }
+    res.status(200).json({ received: true });
 });

@@ -12,7 +12,6 @@ dotenv.config({ path: 'config.env' });
 
 const {
   webhookCheckout,
-  webhookCheckoutDoctor,
 } = require('./controllers/paymentController');
 
 //routes
