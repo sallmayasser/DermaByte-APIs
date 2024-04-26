@@ -158,24 +158,27 @@ const createLabReservation = async (session) => {
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   const sig = req.headers['stripe-signature'];
   let event;
-let D
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET,
     );
-     D = req.body.dermatologist;
-    console.log (req)
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  console.log('Dermatologist:', D);
-  console.log('Is Dermatologist defined?', D !== undefined);
+  console.log(
+    'scan:',
+    event.data.object.metadata.scan,
+  );
+  console.log(
+    'Is .scan defined?',
+    event.data.object.metadata.scan !== undefined,
+  );
   if (event.type === 'checkout.session.completed') {
     // Determine if it's a dermatologist reservation or lab reservation
-    if (D !== undefined) {
+    if (event.data.object.metadata.scan !== undefined) {
       // Call createReservation function for dermatologist reservation
       await createReservation(event.data.object);
     } else {
