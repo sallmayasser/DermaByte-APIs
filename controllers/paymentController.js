@@ -171,10 +171,11 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   }
   if (event.type === 'checkout.session.completed') {
     //  Create reservation
-    if (typeof req.body.dermatologist !== 'undefined') {
+    if (req.body.dermatologist) {
       console.log('d5l al if');
       createReservation(event.data.object);
     } else {
+         console.log('d5l al else');
       createLabReservation(event.data.object);
     }
   }
