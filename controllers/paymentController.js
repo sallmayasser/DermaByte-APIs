@@ -55,7 +55,6 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     client_reference_id: dermatologist,
     metadata: { date, scan, uploadedTest, reviewed, pid },
   });
-  console.log(req.body.dermatologist !== undefined);
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
 });
@@ -167,15 +166,6 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-
-  console.log(
-    'scan:',
-    event.data.object.metadata.scan,
-  );
-  console.log(
-    'Is .scan defined?',
-    event.data.object.metadata.scan !== undefined,
-  );
   if (event.type === 'checkout.session.completed') {
     // Determine if it's a dermatologist reservation or lab reservation
     if (event.data.object.metadata.scan !== undefined) {

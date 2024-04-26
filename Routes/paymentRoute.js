@@ -31,6 +31,7 @@ router.get(
   authController.allowedTo('patient'),
   getLoggedUserData,
   functions.setPatientIdToBody,
+  validators.createLabReservationValidator,
   checkoutSessionLab,
 );
 module.exports = router;
