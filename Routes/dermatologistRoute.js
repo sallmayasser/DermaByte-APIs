@@ -13,6 +13,7 @@ const {
   updateDermatologist,
   deleteDermatologist,
   updateLoggedDermatologistData,
+  setDermatologistToBody,
 } = require('../controllers/dermatologistController');
 const {
   getAllReservations,
@@ -28,7 +29,7 @@ const {
 const report = require('../controllers/reportController');
 const Dermatologist = require('../models/dermatologistModel');
 const authController = require('../controllers/authController');
-const { getSchedules, getFreeTimes, setDermatologistIdToBody } = require('../controllers/scheduleController');
+const { getSchedules, getFreeTimes, setDermatologistIdToBody,  } = require('../controllers/scheduleController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -49,6 +50,7 @@ router.put(
   '/updateMe',
   authController.allowedTo('dermatologist'),
   uploadImage,
+  setDermatologistToBody,
   resizeImage,
   updateLoggedDermatologistValidator,
   updateLoggedDermatologistData,

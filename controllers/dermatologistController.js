@@ -68,3 +68,9 @@ exports.updateLoggedDermatologistData = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ data: updatedUser });
 });
+
+exports.setDermatologistToBody = (req, res, next) => {
+  //nested route {create}
+  if (!req.body.role) req.body.role = 'dermatologist';
+  next();
+};

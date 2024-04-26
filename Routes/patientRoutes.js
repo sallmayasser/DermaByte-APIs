@@ -37,6 +37,7 @@ router.put(
   '/updateMe',
   authController.allowedTo('patient'),
   uploadImage,
+  functions.setPatientToBody,
   resizeImage,
   validators.updateLoggedPatientValidator,
   functions.updateLoggedPatientData,

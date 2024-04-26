@@ -73,3 +73,8 @@ exports.updateLoggedPatientData = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ data: updatedUser });
 });
+exports.setPatientToBody = (req, res, next) => {
+  //nested route {create}
+  if (!req.body.role) req.body.role = 'patient';
+  next();
+};

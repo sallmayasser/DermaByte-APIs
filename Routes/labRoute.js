@@ -12,6 +12,7 @@ const {
   updateLab,
   deleteLab,
   updateLoggedLabData,
+  setLabToBody,
 } = require('../controllers/labController');
 
 const {
@@ -32,15 +33,11 @@ const {
   getTestServices,
   setLabIdToBody,
   createTestService,
-
 } = require('../controllers/testServiceController');
 const {
   createTestServiceValidator,
-
 } = require('../utils/validators/testServiceValidator');
-const {
-  getReviews,
-} = require('../controllers/reviewController');
+const { getReviews } = require('../controllers/reviewController');
 
 const router = express.Router();
 
@@ -61,6 +58,7 @@ router.put(
   '/updateMe',
   authController.allowedTo('lab'),
   uploadImage,
+  setLabToBody,
   resizeImage,
   updateLoggedlabValidator,
   updateLoggedLabData,
@@ -107,14 +105,12 @@ router
     getTestServices,
   )
   .post(
-
     authController.allowedTo('lab'),
     getLoggedUserData,
     setLabIdToBody,
     createTestServiceValidator,
     createTestService,
-  )
-  
+  );
 
 // admin routes
 router
