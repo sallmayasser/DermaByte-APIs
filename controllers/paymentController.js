@@ -55,7 +55,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     client_reference_id: dermatologist,
     metadata: { date, scan, uploadedTest, reviewed, pid },
   });
- console.log(req.body.dermatologist !== undefined);
+  console.log(req.body.dermatologist !== undefined);
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
 });
@@ -170,20 +170,31 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  console.log('Dermatologist:', req.body.dermatologist);
-  console.log(
-    'Is Dermatologist defined?',
-    req.body.dermatologist !== undefined,
-  );
-if (event.type === 'checkout.session.completed') {
-  // Determine if it's a dermatologist reservation or lab reservation
-  if (req.body.dermatologist !== undefined) {
-    // Call createReservation function for dermatologist reservation
-    await createReservation(event.data.object);
-  } else {
-    // Call createLabReservation function for lab reservation
-    await createLabReservation(event.data.object);
+  if (event.type === 'checkout.session.completed') {
+    createLabReservation(event.data.object);
   }
-}
+
+  res.status(200).json({ received: true });
 });
 
+exports.webhookCheckoutDoctor = asyncHandler(async (req, res, next) => {
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET_DOCTOR,
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    createReservation(event.data.object);
+  }
+
+  res.status(200).json({ received: true });
+});

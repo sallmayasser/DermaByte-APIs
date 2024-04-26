@@ -10,7 +10,7 @@ const dbConnection = require('./Configs/Database');
 
 dotenv.config({ path: 'config.env' });
 
-const { webhookCheckout } = require('./controllers/paymentController');
+const { webhookCheckout, webhookCheckoutDoctor } = require('./controllers/paymentController');
 
 //routes
 const dermatologistRoute = require('./Routes/dermatologistRoute');
@@ -41,7 +41,11 @@ app.use(compression());
 //checkout webhook 
 app.post('/webhook-checkout', express.raw({ type: 'application/json' }),
   webhookCheckout)
-
+app.post(
+  '/webhook-checkout-doctor',
+  express.raw({ type: 'application/json' }),
+  webhookCheckoutDoctor,
+);
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'uploads')));
