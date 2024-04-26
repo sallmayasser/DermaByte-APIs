@@ -55,6 +55,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
+  console.log(req.body.dermatologist !== undefined);
 });
 exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
   // 1) Get reservation details based on reservationId
@@ -68,7 +69,7 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 
   const carts = await Promise.all(promises);
   let totalPrice = 0;
-  for (let i = 0; i < carts.length; i+=1) {
+  for (let i = 0; i < carts.length; i += 1) {
     totalPrice += carts[i].cost;
   }
   const testArray = JSON.stringify(test);
@@ -106,10 +107,10 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 });
 
 const createReservation = async (session) => {
-  const {date} = session.metadata;
-  const {uploadedTest} = session.metadata;
+  const { date } = session.metadata;
+  const { uploadedTest } = session.metadata;
   const patient = session.metadata.pid;
-  const {scan} = session.metadata;
+  const { scan } = session.metadata;
   const dermatologist = session.client_reference_id;
   const reviewed = false;
 
@@ -136,8 +137,8 @@ const createReservation = async (session) => {
   // res.status(201).json({ data: responseData });
 };
 const createLabReservation = async (session) => {
-  const {testArray} = session.metadata;
-  const {date} = session.metadata;
+  const { testArray } = session.metadata;
+  const { date } = session.metadata;
   const test = JSON.parse(testArray);
   const patient = session.metadata.pid;
   const lab = session.client_reference_id;
@@ -169,8 +170,10 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   if (event.type === 'checkout.session.completed') {
     //  Create reservation
     if (req.body.dermatologist !== undefined) {
+      console.log('d5l al if ');
       createReservation(event.data.object);
     } else {
+      console.log('d5l al else ');
       createLabReservation(event.data.object);
     }
   }
