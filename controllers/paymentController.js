@@ -175,18 +175,15 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     'Is Dermatologist defined?',
     req.body.dermatologist !== undefined,
   );
-    console.log(
-      'req.body',
-      req.body,
-    );
-
+if (event.type === 'checkout.session.completed') {
+  // Determine if it's a dermatologist reservation or lab reservation
   if (req.body.dermatologist !== undefined) {
-    console.log('Entering if condition');
-    createReservation(event.data.object);
-  } else  {
-    console.log('Entering else if condition');
-    createLabReservation(event.data.object);
-  } 
-  res.status(200).json({ received: true });
+    // Call createReservation function for dermatologist reservation
+    await createReservation(event.data.object);
+  } else {
+    // Call createLabReservation function for lab reservation
+    await createLabReservation(event.data.object);
+  }
+}
 });
 
