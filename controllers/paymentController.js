@@ -157,15 +157,16 @@ const createLabReservation = async (session) => {
 // @access  Protected/User
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   const sig = req.headers['stripe-signature'];
-  const D = req.body.dermatologist;
   let event;
-
+let D
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET,
     );
+     D = req.body.dermatologist;
+    console.log (req)
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
