@@ -8,6 +8,9 @@ const testServiceModel = require('../../models/testServiceModel');
 
 exports.createReservationValidator = [
   check('date').notEmpty().withMessage('reservation date is required'),
+  check('dermatologist')
+    .notEmpty()
+    .withMessage('dermatologist is required'),
   check('scan').custom(async (value, { req }) => {
     const existingReservation = await doctorReservationModel.find({
       scan: value,
