@@ -4,6 +4,7 @@ const { check, body } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
 const Dermatologist = require('../../models/dermatologistModel');
 
+
 exports.createDermatologistValidator = [
   check('firstName')
     .isLength({ min: 2 })
@@ -47,7 +48,9 @@ exports.createDermatologistValidator = [
     .custom((val) =>
       Dermatologist.findOne({ email: val }).then((dermatologist) => {
         if (dermatologist) {
-          return Promise.reject(new Error('E-mail already in dermatologist'));
+          return Promise.reject(
+            new Error('E-mail already in dermatologist', 400),
+          );
         }
       }),
     ),
@@ -58,7 +61,7 @@ exports.createDermatologistValidator = [
     .withMessage('Password must be at least 6 characters')
     .custom((password, { req }) => {
       if (password !== req.body.passwordConfirm) {
-        throw new Error('Password Confirmation incorrect');
+        throw new Error('Password Confirmation incorrect', 400);
       }
       return true;
     }),
@@ -78,12 +81,18 @@ exports.createDermatologistValidator = [
     .withMessage('session price must not be empty')
     .isNumeric()
     .withMessage('cost must be numeric'),
-    check('gender').custom((gender, { req }) => {
-      if (req.gender === 'male' || req.gender === "female") {
-         throw new Error('please enter male or female');
-       }
-       return true;
-     }),
+
+  check('gender')
+    .notEmpty()
+    .withMessage('gender required')
+    .custom((gender, { req }) => {
+      const lowercaseVal = gender.toLowerCase();
+      if (lowercaseVal !== 'male' && lowercaseVal !== 'female') {
+        throw new Error('Please enter male or female');
+      }
+      return true;
+    }),
+
   // validatorMiddleware,
 ];
 
@@ -155,7 +164,6 @@ exports.changedermatologistPasswordValidator = [
   validatorMiddleware,
 ];
 exports.updateLoggedDermatologistValidator = [
-
   check('email')
     .optional()
     .isEmail()

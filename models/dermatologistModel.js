@@ -19,7 +19,8 @@ const dermatologistsSchema = new mongoose.Schema(
     gender: {
       type: String,
       required: [true, 'gender required'],
-      enum:['male','female']
+      enum: ['male', 'female'],
+      lowercase: true,
     },
 
     phone: {
@@ -87,7 +88,7 @@ const dermatologistsSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "dermatologist",
+      default: 'dermatologist',
     },
     ratingsAverage: {
       type: Number,

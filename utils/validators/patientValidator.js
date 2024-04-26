@@ -10,7 +10,6 @@ exports.getPatientValidator = [
 ];
 
 exports.createPatientValidator = [
-  
   check('firstName')
     .notEmpty()
     .withMessage('Patient required')
@@ -93,15 +92,18 @@ exports.createPatientValidator = [
     .isMobilePhone(['ar-EG', 'ar-SA'])
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
+  check('gender')
+    .notEmpty()
+    .withMessage('gender required')
+    .custom((gender, { req }) => {
+      const lowercaseVal = gender.toLowerCase();
+      if (lowercaseVal !== 'male' && lowercaseVal!=='female') {
+        throw new Error('Please enter male or female');
+      }
+      return true;
+    }),
   
-  check('gender').custom((gender, { req }) => {
-    if (req.gender === 'male' || req.gender === "female") {
-       throw new Error('please enter male or female');
-     }
-     return true;
-   }),
 ];
-
 exports.updatePatientValidator = [
   check('id').isMongoId().withMessage('Invalid Patient id format'),
   body('firstName')

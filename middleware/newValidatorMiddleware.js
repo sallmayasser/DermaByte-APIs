@@ -25,8 +25,13 @@ const validateMiddleware = async (req, res, next) => {
   if (errors.isEmpty()) {
     return next();
   }
-
-  res.status(400).json({ errors: errors.array() });
+  const messages = [];
+  const errorMsgs = errors.errors.map((error) => {
+    const {msg} = error;
+    messages.push(msg);
+    return msg;
+  });
+  res.status(400).json({ errors: errors.array(), message: errorMsgs });
   return null;
 };
 

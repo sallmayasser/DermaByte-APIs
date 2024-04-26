@@ -42,6 +42,7 @@ const PatientsSchema = new mongoose.Schema(
       type: String,
       required: [true, 'gender required'],
       enum: ['male', 'female'],
+      lowercase: true,
     },
     email: {
       type: String,
