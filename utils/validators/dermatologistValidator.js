@@ -38,7 +38,7 @@ exports.createDermatologistValidator = [
 
   check('specialization').optional(),
 
-  check('license').notEmpty(),
+  // check('license').notEmpty(),
 
   check('email')
     .notEmpty()

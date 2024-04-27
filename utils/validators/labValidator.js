@@ -20,7 +20,7 @@ exports.createLabValidator = [
   check('location').optional(),
   check('city').notEmpty().withMessage('city is required'),
   check('country').notEmpty().withMessage('city is required'),
-  check('license').notEmpty(),
+  // check('license').notEmpty(),
   check('email')
     .notEmpty()
     .withMessage('Email required')
