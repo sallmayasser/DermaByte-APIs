@@ -126,29 +126,6 @@ dermatologistsSchema.virtual('reservations', {
     localField: '_id',
     foreignField: 'dermatologist',
   });
-  const setImageURL = (doc) => {
-    if (doc.profilePic) {
-      const imageUrl = `${process.env.BASE_URL}/dermatologists/${doc.profilePic}`;
-      doc.profilePic = imageUrl;
-    }
-    if (doc.license) {
-      const imagesList = [];
-      doc.license.forEach((image) => {
-        const imageUrl = `${process.env.BASE_URL}/dermatologists/${image}`;
-        imagesList.push(imageUrl);
-      });
-      doc.license = imagesList;
-    }
-  };
-// findOne, findAll and update
-dermatologistsSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-// create
-dermatologistsSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
-
 dermatologistsSchema.virtual('Schedules', {
   ref: 'DoctorSchedule',
   localField: '_id',

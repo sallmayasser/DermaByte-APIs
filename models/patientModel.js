@@ -101,20 +101,6 @@ PatientsSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
-const setImageURL = (doc) => {
-  if (doc.profilePic){
-    const imageUrl = `${process.env.BASE_URL}/patients/${doc.profilePic}`;
-    doc.profilePic = imageUrl;
-  }
-};
-// findOne, findAll and update
-PatientsSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
 
-// create
-PatientsSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
 ///2)create model
 module.exports = mongoose.model("Patient", PatientsSchema);
