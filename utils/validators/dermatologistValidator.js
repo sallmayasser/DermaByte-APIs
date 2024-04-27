@@ -76,11 +76,6 @@ exports.createDermatologistValidator = [
     .withMessage('Invalid phone number only accepted Egy and SA Phone numbers'),
 
   check('profilePic').optional(),
-  check('sessionCost')
-    .notEmpty()
-    .withMessage('session price must not be empty')
-    .isNumeric()
-    .withMessage('cost must be numeric'),
 
   check('gender')
     .notEmpty()

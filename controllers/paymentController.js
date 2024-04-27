@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const moment = require('moment');
 const asyncHandler = require('express-async-handler');
 const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
@@ -17,22 +18,37 @@ const testServiceModel = require('../models/testServiceModel');
 // @access  Protected/patient
 exports.checkoutSession = asyncHandler(async (req, res, next) => {
   // 1) Get reservation details based on reservationId
-
+  const weekdays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
   const { date, dermatologist, scan, uploadedTest, patient, reviewed } =
     req.body;
 
-  // const patientid = req.user._id
-
-  const Cost =
-    await Dermatologist.findById(dermatologist).select('sessionCost');
   const patientName = await patientModel.findById(patient).select('firstName');
   const patientid = await patientModel.findById(patient).select('id');
   const patientEmail = await patientModel.findById(patient).select('email');
   const pid = patientid.id;
-
-  // 2) Get price from reservation details
-  const totalPrice = Cost.sessionCost;
-
+  const dayindex = moment([
+    moment(date).year(),
+    moment(date).month(),
+    moment(date).date(),
+  ]).day();
+  const dayName = weekdays[dayindex];
+  // 2) Get price of reserved date from schedule details
+  const Costs = await doctorScheduleModel
+    .find({
+      dermatologist: req.body.dermatologist,
+      dayName: dayName,
+    })
+    .select('sessionCost');
+  const Cost = Costs.map((price) => price.sessionCost)[0];
+  console.log(Cost);
   // 3) Create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
@@ -43,7 +59,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
           product_data: {
             name: patientName.firstName,
           },
-          unit_amount: totalPrice * 100,
+          unit_amount: Cost * 100,
         },
         quantity: 1,
       },
@@ -155,21 +171,20 @@ const createLabReservation = async (session) => {
 // @route   POST /webhook-checkout
 // @access  Protected/User
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
-    const sig = req.headers['stripe-signature'];
+  const sig = req.headers['stripe-signature'];
 
-    let event;
+  let event;
 
-    try {
-        event = stripe.webhooks.constructEvent(
-            req.body,
-            sig,
-            process.env.STRIPE_WEBHOOK_SECRET
-        );
-    } catch (err) {
-        return res.status(400).send(`Webhook Error: ${err.message}`);
-
-    }
-    if (event.type === 'checkout.session.completed') {
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET,
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  if (event.type === 'checkout.session.completed') {
     // Determine if it's a dermatologist reservation or lab reservation
     if (event.data.object.metadata.scan !== undefined) {
       // Call createReservation function for dermatologist reservation
@@ -177,7 +192,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     } else {
       // Call createLabReservation function for lab reservation
       await createLabReservation(event.data.object);
-      }
     }
-    res.status(200).json({ received: true });
+  }
+  res.status(200).json({ received: true });
 });

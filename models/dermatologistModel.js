@@ -69,10 +69,10 @@ const dermatologistsSchema = new mongoose.Schema(
     profilePic: {
       type: String,
     },
-    sessionCost: {
-      type: Number,
-      required: [true, 'Session cost is required'],
-    },
+    // sessionCost: {
+    //   type: Number,
+    //   required: [true, 'Session cost is required'],
+    // },
 
     state: {
       type: Boolean,

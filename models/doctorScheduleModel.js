@@ -8,6 +8,9 @@ const doctorScheduleSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'Day is required'],
     },
+    dayName: {
+      type:String
+    },
     startTime: {
       type: Date,
       required: [true, 'start time is required'],
@@ -19,6 +22,10 @@ const doctorScheduleSchema = new mongoose.Schema(
     sessionTime: {
       type: String,
       required: [true, 'session time is required'],
+    },
+    sessionCost: {
+      type: String,
+      required: [true, 'Session cost is required'],
     },
     // freetime: {
     //   type: [],
@@ -38,17 +45,19 @@ const doctorScheduleSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
-// doctorScheduleSchema.pre('save', async function (next) {
-//   // Calculate free time intervals using divideTimeRange function
-//   const timeIntervals = divideTimeRange(
-//     this.startTime,
-//     this.endTime,
-//     this.sessionTime,
-//   );
-//   this.freetime = timeIntervals;
-//   next();
-// });
-
+doctorScheduleSchema.pre('save', function (next) {
+  const weekdays = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  this.dayName = weekdays[this.day.getDay()];
+  next();
+});
 doctorScheduleSchema.pre('save', function (next) {
   // Adjust the timestamps by adding 2 hours in milliseconds
   // if (this.startTime) {
