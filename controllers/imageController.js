@@ -1,5 +1,4 @@
 const asyncHandler = require('express-async-handler');
-const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const {
   getStorage,
@@ -75,16 +74,8 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
            );
 
            const downloadURL = await getDownloadURL(snapshot.ref);
-
-           // save the download URL to the license array
            req.body.license.push(downloadURL);
-          // await sharp(img.buffer)
-          //   .resize(600, 600)
-          //   .toFormat('jpeg')
-          //   .jpeg({ quality: 95 })
-          //   .toFile(`uploads/${req.body.role}s/${filename}`);
-          // // save image into our database
-          // req.body.license.push(filename);
+      
         }),
       );
     }
