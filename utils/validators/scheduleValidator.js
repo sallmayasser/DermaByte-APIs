@@ -1,4 +1,5 @@
 const { check } = require('express-validator');
+const moment = require('moment');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
 const doctorScheduleModel = require('../../models/doctorScheduleModel');
 
@@ -7,12 +8,39 @@ exports.createScheduleValidator = [
     .notEmpty()
     .withMessage(' Day is required')
     .custom(async (value, { req }) => {
+      const weekdays = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+      ];
+      const dayindex = moment([
+        moment(value).year(),
+        moment(value).month(),
+        moment(value).date(),
+      ]).day();
+      const dayName = weekdays[dayindex];
+      const enteredMonth = moment(value).month();
+
       const existingDay = await doctorScheduleModel.find({
-        day: value,
+        dayName: dayName,
         dermatologist: req.body.dermatologist,
-      });
-      if (existingDay.length !== 0) {
-        throw new Error('You have already add this day Schedule');
+      })
+      const foundDay = existingDay.map((monthindex) => monthindex.dayName);
+      const foundMonth = existingDay.map((monthindex) => monthindex.day);
+      const isFoundMonth = foundMonth.some(
+        (x) => moment(x).month() === enteredMonth,
+      );
+      const isFoundDay = foundDay.some(
+        (x) => x === dayName,
+      );
+      if (isFoundDay && isFoundMonth) {
+        throw new Error(
+          'You have already add this day Schedule for the Same month',
+        );
       }
       return true; // Return true if the validation passes
     }),

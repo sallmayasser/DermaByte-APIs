@@ -54,13 +54,13 @@ doctorReservationsSchema.pre(/^find/, function (next) {
   });
   next();
 });
-// doctorReservationsSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'dermatologist',
-//     select: 'firstName lastName ',
-//   });
-//   next();
-// });
+doctorReservationsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'dermatologist',
+    select: 'firstName lastName ',
+  });
+  next();
+});
 
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
