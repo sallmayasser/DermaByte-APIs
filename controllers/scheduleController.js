@@ -27,10 +27,16 @@ exports.getFreeTimes = asyncHandler(async (req, res, next) => {
     })
     .select('date');
   const reservedSessions = dermatologist.map((reservation) => reservation.date);
- 
+
   const currentMonth = moment();
+  const nextMonth = moment().add(1, 'month').startOf('month');
   // const freeTime = divideTimeRange(reservedSessions, schedules,moment('2024-02-01T10:00:00.000Z'));
   const freeTime = divideTimeRange(reservedSessions, schedules, currentMonth);
-
-  res.status(201).json({ data: freeTime });
+  const freeTimeNextMonth = divideTimeRange(
+    reservedSessions,
+    schedules,
+    nextMonth,
+  );
+  const allFreeTimes = [...freeTime, ...freeTimeNextMonth];
+  res.status(201).json({ data: allFreeTimes });
 });

@@ -8,7 +8,7 @@ exports.divideTimeRange = (reserved, schedule, currentDate) => {
   const intervals = [];
   // const currentDate = moment(); // Represents the current date
   const numDays = daysInMonth(currentDate.year(), currentDate.month());
-  for (let day = moment(Date.now()).date(); day <= numDays; day += 1) {
+  for (let day = moment(currentDate).date(); day <= numDays; day += 1) {
     const year = currentDate.year();
     const monthIndex = currentDate.month();
     const dayOfWeek = moment([year, monthIndex, day]).day();
