@@ -48,7 +48,6 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     })
     .select('sessionCost');
   const Cost = Costs.map((price) => price.sessionCost)[0];
-  console.log(Cost);
   // 3) Create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],

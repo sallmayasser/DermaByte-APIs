@@ -27,21 +27,6 @@ const scansSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
-const setImageURL = (doc) => {
-  if (doc.diseasePhoto){
-    const imageUrl = `${process.env.BASE_URL}/scans/${doc.diseasePhoto}`;
-    doc.diseasePhoto = imageUrl;
-  }
-};
-// findOne, findAll and update
-scansSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-// create
-scansSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
-
 
 ///2)create model
 module.exports = mongoose.model('Scans', scansSchema);

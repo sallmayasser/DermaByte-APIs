@@ -12,7 +12,6 @@ exports.divideTimeRange = (reserved, schedule, currentDate) => {
     const year = currentDate.year();
     const monthIndex = currentDate.month();
     const dayOfWeek = moment([year, monthIndex, day]).day();
-
     schedule.forEach((time) => {
       const momentStartTime = moment(time.startTime);
       // Check if the schedule entry matches the desired day of the week

@@ -26,6 +26,10 @@ exports.uploadImage = uploadMixOfImages([
     name: 'license',
     maxCount: 20,
   },
+  {
+    name: 'diseasePhoto',
+    maxCount: 1,
+  },
 ]);
 
 exports.resizeImage = asyncHandler(async (req, res, next) => {
@@ -41,7 +45,6 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       const metadata = {
         contentType: req.files.profilePic[0].mimetype,
       };
-      console.log(req.files.profilePic[0].mimetype);
       // Upload the file in the bucket storage
       const snapshot = await uploadBytesResumable(
         storageRef,
@@ -50,6 +53,21 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       );
       const downloadURL = await getDownloadURL(snapshot.ref);
       req.body.profilePic = downloadURL;
+    }
+    if (req.files.diseasePhoto) {
+      const filename = `scanphoto-${uuidv4()}-${Date.now()}.jpeg`;
+      const storageRef = ref(storage, `uploads/scans/${filename}`);
+      const metadata = {
+        contentType: req.files.diseasePhoto[0].mimetype,
+      };
+      // Upload the file in the bucket storage
+      const snapshot = await uploadBytesResumable(
+        storageRef,
+        req.files.diseasePhoto[0].buffer,
+        metadata,
+      );
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      req.body.diseasePhoto = downloadURL;
     }
     ///2)image processing for images
     if (req.files.license) {
