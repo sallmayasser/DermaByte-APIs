@@ -21,6 +21,7 @@ router
     setPatientToBody,
     resizeImage,
     functions.setPatientIdToBody,
+    validators.createScanValidator,
     functions.createScan,
   )
   .get(
