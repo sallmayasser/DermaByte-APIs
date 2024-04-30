@@ -27,7 +27,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     'Friday',
     'Saturday',
   ];
-  const { date, dermatologist, scan, uploadedTest, patient, reviewed } =
+  const { date, dermatologist, scan, uploadedTest, patient, reviewed,symptoms } =
     req.body;
 
   const patientName = await patientModel.findById(patient).select('firstName');
@@ -68,7 +68,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     cancel_url: `${req.protocol}://${req.get('host')}/api/v1/dermatologists`,
     customer_email: patientEmail.email,
     client_reference_id: dermatologist,
-    metadata: { date, scan, uploadedTest, reviewed, pid },
+    metadata: { date, scan, uploadedTest, reviewed, pid ,symptoms},
   });
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
@@ -115,7 +115,7 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
     cancel_url: `${req.protocol}://${req.get('host')}/api/v1/labs`,
     customer_email: patientEmail.email,
     client_reference_id: lab,
-    metadata: { date, lab, testArray, pid, symptoms },
+    metadata: { date, lab, testArray, pid, },
   });
 
   // 4) Send session as response
