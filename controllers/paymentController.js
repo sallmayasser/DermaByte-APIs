@@ -115,7 +115,7 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
     cancel_url: `${req.protocol}://${req.get('host')}/api/v1/labs`,
     customer_email: patientEmail.email,
     client_reference_id: lab,
-    metadata: { date, lab, testArray, pid },
+    metadata: { date, lab, testArray, pid, symptoms },
   });
 
   // 4) Send session as response
@@ -129,6 +129,7 @@ const createReservation = async (session) => {
   const scan = session.metadata.scan;
   const dermatologist = session.client_reference_id;
   const reviewed = false;
+  const symptoms = session.metadata.symptoms;
 
   const durations = await doctorScheduleModel
     .find({
@@ -147,6 +148,7 @@ const createReservation = async (session) => {
     uploadedTest: uploadedTest,
     meetingUrl: meeting.meeting_url,
     reviewed: reviewed,
+    symptoms:symptoms
   });
   // Convert the document to JSON with virtuals
   // const responseData = newDoc.toJSON({ virtuals: true });
