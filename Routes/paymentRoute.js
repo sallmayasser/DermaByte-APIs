@@ -6,7 +6,6 @@ const {
 const authController = require('../controllers/authController');
 const functions = require('../controllers/doctorReservationController');
 const {
-  createFilterObj,
   getLoggedUserData,
 } = require('../controllers/handlersFactory');
 const validators = require('../utils/validators/ReservationsValidator');

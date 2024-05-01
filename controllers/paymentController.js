@@ -1,11 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const moment = require('moment');
 const asyncHandler = require('express-async-handler');
-const factory = require('./handlersFactory');
-const ApiError = require('../utils/apiError');
-
-const Dermatologist = require('../models/dermatologistModel');
-// const { createReservation } = require("./doctorReservationController")
 const { createMeeting } = require('./meetingController');
 const doctorScheduleModel = require('../models/doctorScheduleModel');
 const patientModel = require('../models/patientModel');
@@ -86,7 +81,7 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 
   const carts = await Promise.all(promises);
   let totalPrice = 0;
-  for (let i = 0; i < carts.length; i++) {
+  for (let i = 0; i < carts.length; i+=1) {
     totalPrice += carts[i].cost;
   }
   const testArray = JSON.stringify(test);
@@ -124,14 +119,14 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 });
 
 const createReservation = async (session) => {
-  const date = session.metadata.date;
-  const uploadedTest = session.metadata.uploadedTest;
+  const {date} = session.metadata;
+  const {uploadedTest} = session.metadata;
   const patient = session.metadata.pid;
-  const scan = session.metadata.scan;
-  const dayName = session.metadata.dayName;
+  const {scan} = session.metadata;
+  const {dayName} = session.metadata;
   const dermatologist = session.client_reference_id;
   const reviewed = false;
-  const symptoms = session.metadata.symptoms;
+  const {symptoms} = session.metadata;
 
   const durations = await doctorScheduleModel
     .find({
@@ -142,7 +137,7 @@ const createReservation = async (session) => {
 
   const meeting = await createMeeting('My Consultation', duration[0], date);
 
-  const newDoc = await Reservation.create({
+  await Reservation.create({
     date: date,
     dermatologist: dermatologist,
     patient: patient,
@@ -153,18 +148,16 @@ const createReservation = async (session) => {
     dayName: dayName,
     symptoms:symptoms
   });
-  // Convert the document to JSON with virtuals
-  // const responseData = newDoc.toJSON({ virtuals: true });
-  // res.status(201).json({ data: responseData });
+
 };
 const createLabReservation = async (session) => {
-  const testArray = session.metadata.testArray;
-  const date = session.metadata.date;
+  const {testArray} = session.metadata;
+  const {date} = session.metadata;
   const test = JSON.parse(testArray);
   const patient = session.metadata.pid;
   const lab = session.client_reference_id;
 
-  const newDoc = await labReservationModel.create({
+    await labReservationModel.create({
     date: date,
     lab: lab,
     patient: patient,

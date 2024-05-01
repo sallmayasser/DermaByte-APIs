@@ -1,9 +1,7 @@
 const express = require('express');
 const functions = require('../controllers/doctorReservationController');
-const {createReservation}= require('../controllers/paymentController');
 const validators = require('../utils/validators/ReservationsValidator');
-
-const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
+const { createFilterObj } = require('../controllers/handlersFactory');
 const authController = require('../controllers/authController');
 const { uploadImage, resizeImage } = require('../controllers/imageController');
 

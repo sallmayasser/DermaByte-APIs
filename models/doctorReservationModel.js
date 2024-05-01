@@ -66,7 +66,7 @@ doctorReservationsSchema.pre(/^find/, function (next) {
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',
-    select: 'firstName lastName ',
+    select: 'firstName lastName profilePic',
   });
   next();
 });
@@ -78,5 +78,10 @@ doctorReservationsSchema.pre(/^find/, function (next) {
   });
   next();
 });
-
+doctorReservationsSchema.virtual('Report', {
+  ref: 'Report',
+  localField: 'dermatologist',
+  foreignField: 'dermatologist',
+  options: { select: '_id' },
+});
 module.exports = mongoose.model('DoctorReservation', doctorReservationsSchema);

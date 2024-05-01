@@ -1,7 +1,5 @@
-
 const { check } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
-const Report = require('../../models/reportModel')
 
 exports.createReportValidator = [
     check('scan')

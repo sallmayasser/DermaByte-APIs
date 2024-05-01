@@ -58,7 +58,7 @@ labReservationsSchema.pre(/^find/, function (next) {
 labReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
-    select: 'firstName lastName ',
+    select: 'firstName lastName profilePic age',
   });
   next();
 });

@@ -1,9 +1,9 @@
 const handlers = require('./handlersFactory');
 const Reservation = require('../models/doctorReservationModel');
 
-exports.getAllReservations = handlers.getAll(Reservation);
+exports.getAllReservations = handlers.getAll(Reservation, "Report");
 
-exports.getReservation = handlers.getOne(Reservation);
+exports.getReservation = handlers.getOne(Reservation, 'Report');
 
 exports.updateReservation = handlers.updateOne(Reservation);
 
