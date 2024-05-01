@@ -35,6 +35,10 @@ const doctorReservationsSchema = new mongoose.Schema(
     meetingUrl: {
       type: String,
     },
+    symptoms: {
+      type: String,
+      default: null,
+    },
     slug: {
       type: String,
       lowercase: true,

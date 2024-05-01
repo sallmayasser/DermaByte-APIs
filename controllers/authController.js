@@ -22,7 +22,7 @@ const signup = async (Model, req, res, populationOpt) => {
     Labs.findOne({ email }).exec(),
     Admins.findOne({ email }).exec(),
   ]);
-  if (!patient || !dermatologist || !lab || !admin) {
+  if (!patient && !dermatologist && !lab && !admin) {
     // 1- Create user
     let user = await Model.create(req.body);
     if (populationOpt) {
