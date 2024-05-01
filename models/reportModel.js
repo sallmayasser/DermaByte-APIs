@@ -34,11 +34,16 @@ const reportsSchema = new mongoose.Schema(
         testName: [{ type: String }],
         requestedAt: {
           type: Date,
-          default: Date.now() ,
+          default: Date.now() + 2 * 60 * 60 * 1000,
         },
       },
     ],
-  
+    testResult: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Result',
+      },
+    ],
     slug: {
       type: String,
       lowercase: true,
@@ -58,7 +63,19 @@ reportsSchema.pre(/^find/, function (next) {
   });
   next();
 });
-
+reportsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'testResult',
+    select: ' testName testResult ',
+  });
+  next();
+});
+reportsSchema.virtual('Result', {
+  ref: 'Result',
+  localField: 'lab',
+  foreignField: 'lab',
+  options: { select: 'testResult' },
+});
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
@@ -73,7 +90,6 @@ reportsSchema.pre(/^find/, function (next) {
   });
   next();
 });
-
 
 ///2)create model
 module.exports = mongoose.model('Report', reportsSchema);
