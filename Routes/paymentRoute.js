@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const {
   checkoutSession,
   checkoutSessionLab,
@@ -36,4 +37,12 @@ router.get(
   validators.createLabReservationValidator,
   checkoutSessionLab,
 );
+router.get('/payment-successfully', (req, res) => {
+ const filePath = path.join(__dirname, '../utils/success.html');
+  res.sendFile(filePath);
+});
+router.get('/payment-rejected', (req, res) => {
+  const filePath = path.join(__dirname, '../utils/cancel.html');
+  res.sendFile(filePath);
+});
 module.exports = router;

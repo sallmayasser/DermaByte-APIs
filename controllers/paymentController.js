@@ -60,11 +60,11 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
       },
     ],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/api/v1/patients/Patient-reservation`,
-    cancel_url: `${req.protocol}://${req.get('host')}/api/v1/dermatologists`,
+    success_url: `${req.protocol}://${req.get('host')}/api/v1/bookings/payment-successfully`,
+    cancel_url: `${req.protocol}://${req.get('host')}/api/v1/bookings/payment-rejected`,
     customer_email: patientEmail.email,
     client_reference_id: dermatologist,
-    metadata: { date, scan, uploadedTest, reviewed, pid, dayName ,symptoms},
+    metadata: { date, scan, uploadedTest, reviewed, pid, dayName, symptoms },
   });
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
@@ -107,11 +107,11 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
       },
     ],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/api/v1/patients/laboratory-reservation`,
-    cancel_url: `${req.protocol}://${req.get('host')}/api/v1/labs`,
+    success_url: `${req.protocol}://${req.get('host')}/api/v1/bookings/payment-successfully`,
+    cancel_url: `${req.protocol}://${req.get('host')}/api/v1/bookings/payment-rejected`,
     customer_email: patientEmail.email,
     client_reference_id: lab,
-    metadata: { date, lab, testArray, pid, },
+    metadata: { date, lab, testArray, pid },
   });
 
   // 4) Send session as response
