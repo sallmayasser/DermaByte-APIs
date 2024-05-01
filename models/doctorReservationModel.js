@@ -6,6 +6,9 @@ const doctorReservationsSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'reservation date is required'],
     },
+    dayName: {
+      type: String,
+    },
     uploadedTest: {
       type: [String],
       default: null,
@@ -23,10 +26,12 @@ const doctorReservationsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Dermatologist',
     },
-    scan: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Scans',
-    },
+    scan: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Scans',
+      },
+    ],
     meetingUrl: {
       type: String,
     },
@@ -67,39 +72,6 @@ doctorReservationsSchema.pre(/^find/, function (next) {
     path: 'scan',
     select: 'diseasePhoto diseaseName ',
   });
-  next();
-});
-const setImageURL = (doc) => {
-  if (doc.uploadedTest) {
-    const imagesList = [];
-    doc.uploadedTest.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/reservations/${image}`;
-      imagesList.push(imageUrl);
-    });
-    doc.uploadedTest = imagesList;
-  }
-};
-// findOne, findAll and update
-doctorReservationsSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
-// create
-doctorReservationsSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
-
-doctorReservationsSchema.pre('save', function (next) {
-  // Adjust the timestamps by adding 2 hours in milliseconds
-  // if (this.date) {
-  //   this.date = new Date(this.date.getTime() + 2 * 60 * 60 * 1000);
-  // }
-  if (this.createdAt) {
-    this.createdAt = new Date(this.createdAt.getTime() + 2 * 60 * 60 * 1000);
-  }
-  if (this.updatedAt) {
-    this.updatedAt = new Date(this.updatedAt.getTime() + 2 * 60 * 60 * 1000);
-  }
   next();
 });
 

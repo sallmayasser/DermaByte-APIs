@@ -13,6 +13,7 @@ const {
   updateReport,
   deleteReport,
   appendReport,
+  deleteRequestedTest,
 } = require('../controllers/reportController');
 const authController = require('../controllers/authController');
 
@@ -27,5 +28,8 @@ router
   .get(authController.protect,getReportValidator, getReport)
   .put(authController.protect,authController.allowedTo("dermatologist","patient"),updateReportValidator, updateReport)
   .delete(authController.protect,authController.allowedTo("admin"),deleteReportValidator, deleteReport);
-router.route('/:id/test').put( authController.protect,authController.allowedTo("dermatologist"),updateReportValidator, appendReport);
+router.route('/:id/test').put(authController.protect, authController.allowedTo("dermatologist"), updateReportValidator, appendReport);
+router
+  .route('/:reportId/tests/:testId')
+  .delete(authController.protect, authController.allowedTo('dermatologist'),deleteRequestedTest);
 module.exports = router;

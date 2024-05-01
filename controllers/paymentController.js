@@ -40,6 +40,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     moment(date).date(),
   ]).day();
   const dayName = weekdays[dayindex];
+  req.body.dayName = dayName;
   // 2) Get price of reserved date from schedule details
   const Costs = await doctorScheduleModel
     .find({
@@ -68,7 +69,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     cancel_url: `${req.protocol}://${req.get('host')}/api/v1/dermatologists`,
     customer_email: patientEmail.email,
     client_reference_id: dermatologist,
-    metadata: { date, scan, uploadedTest, reviewed, pid },
+    metadata: { date, scan, uploadedTest, reviewed, pid, dayName },
   });
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
@@ -127,6 +128,7 @@ const createReservation = async (session) => {
   const uploadedTest = session.metadata.uploadedTest;
   const patient = session.metadata.pid;
   const scan = session.metadata.scan;
+  const dayName = session.metadata.dayName;
   const dermatologist = session.client_reference_id;
   const reviewed = false;
 
@@ -147,6 +149,7 @@ const createReservation = async (session) => {
     uploadedTest: uploadedTest,
     meetingUrl: meeting.meeting_url,
     reviewed: reviewed,
+    dayName: dayName,
   });
   // Convert the document to JSON with virtuals
   // const responseData = newDoc.toJSON({ virtuals: true });

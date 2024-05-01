@@ -30,6 +30,10 @@ exports.uploadImage = uploadMixOfImages([
     name: 'diseasePhoto',
     maxCount: 1,
   },
+  {
+    name: 'uploadedTest',
+    maxCount: 30,
+  },
 ]);
 
 exports.resizeImage = asyncHandler(async (req, res, next) => {
@@ -54,6 +58,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       const downloadURL = await getDownloadURL(snapshot.ref);
       req.body.profilePic = downloadURL;
     }
+
     if (req.files.diseasePhoto) {
       const filename = `scanphoto-${uuidv4()}-${Date.now()}.jpeg`;
       const storageRef = ref(storage, `uploads/scans/${filename}`);
@@ -75,25 +80,47 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       await Promise.all(
         req.files.license.map(async (img, index) => {
           const filename = `${req.body.role}-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
-           const storageRef = ref(
-             storage,
-             `uploads/${req.body.role}s/${filename}`,
-           );
+          const storageRef = ref(
+            storage,
+            `uploads/${req.body.role}s/${filename}`,
+          );
 
-           const metadata = {
-             contentType: img.mimetype,
-           };
+          const metadata = {
+            contentType: img.mimetype,
+          };
 
-           // Upload the file in the bucket storage
-           const snapshot = await uploadBytesResumable(
-             storageRef,
-             img.buffer,
-             metadata,
-           );
+          // Upload the file in the bucket storage
+          const snapshot = await uploadBytesResumable(
+            storageRef,
+            img.buffer,
+            metadata,
+          );
 
-           const downloadURL = await getDownloadURL(snapshot.ref);
-           req.body.license.push(downloadURL);
-      
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          req.body.license.push(downloadURL);
+        }),
+      );
+    }
+    //2)image processing for images
+    if (req.files.uploadedTest) {
+      req.body.uploadedTest = [];
+      await Promise.all(
+        req.files.uploadedTest.map(async (img, index) => {
+          const imageName = `reservation-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+          const storageRef = ref(storage, `uploads/reservations/${imageName}`);
+
+          const metadata = {
+            contentType: img.mimetype,
+          };
+
+          // Upload the file in the bucket storage
+          const snapshot = await uploadBytesResumable(
+            storageRef,
+            img.buffer,
+            metadata,
+          );
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          req.body.uploadedTest.push(downloadURL);
         }),
       );
     }

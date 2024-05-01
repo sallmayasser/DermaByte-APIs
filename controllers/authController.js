@@ -10,25 +10,35 @@ const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
 const Admins = require('../models/AdminModel');
 
-
 // @desc    Signup
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
 
 const signup = async (Model, req, res, populationOpt) => {
-  // 1- Create user
-  let user = await Model.create(req.body);
-  if (populationOpt) {
-    // Populate the specified fields
-    user = await user.populate(populationOpt);
+  const { email } = req.body;
+  const [patient, dermatologist, lab, admin] = await Promise.all([
+    Patients.findOne({ email }).exec(),
+    Dermatologists.findOne({ email }).exec(),
+    Labs.findOne({ email }).exec(),
+    Admins.findOne({ email }).exec(),
+  ]);
+  if (!patient || !dermatologist || !lab || !admin) {
+    // 1- Create user
+    let user = await Model.create(req.body);
+    if (populationOpt) {
+      // Populate the specified fields
+      user = await user.populate(populationOpt);
+    }
+
+    // Convert the document to JSON with virtuals
+    const responseData = user.toJSON({ virtuals: true });
+    // 2- Generate token
+    const token = createToken(user._id);
+
+    res.status(201).json({ data: responseData, token });
+  } else {
+    return new ApiError('this email is already exsit for other role ', 400);
   }
-
-  // Convert the document to JSON with virtuals
-  const responseData = user.toJSON({ virtuals: true });
-  // 2- Generate token
-  const token = createToken(user._id);
-
-  res.status(201).json({ data: responseData, token });
 };
 
 exports.checkRole = (req, res, next) => {
@@ -122,7 +132,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   // 2) Verify token (no change happens, expired token)
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  
+
   //3) Check if user exists
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findById(decoded.userId),
@@ -167,7 +177,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
     );
   }
   next();
- 
 });
 
 // // @desc    Authorization (User Permissions)

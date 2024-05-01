@@ -10,6 +10,8 @@ const {
   getLoggedUserData,
 } = require('../controllers/handlersFactory');
 const validators = require('../utils/validators/ReservationsValidator');
+const { uploadImage, resizeImage } = require('../controllers/imageController');
+const { setPatientToBody } = require("../controllers/patientController")
 
 const router = express.Router();
 
@@ -18,8 +20,9 @@ router.get(
   authController.protect,
   authController.allowedTo('patient'),
   getLoggedUserData,
-  functions.uploadUploadedTestImages,
-  functions.resizeUploadedTestImages,
+  uploadImage,
+  setPatientToBody,
+  resizeImage,
   functions.setPatientIdToBody,
   validators.createReservationValidator,
   checkoutSession,

@@ -5,6 +5,7 @@ const validators = require('../utils/validators/ReservationsValidator');
 
 const { createFilterObj, getLoggedUserData } = require('../controllers/handlersFactory');
 const authController = require('../controllers/authController');
+const { uploadImage, resizeImage } = require('../controllers/imageController');
 
 const router = express.Router({ mergeParams: true });
 
@@ -37,9 +38,9 @@ router
   )
   .put(
     authController.protect,
-    authController.allowedTo('patient'),
-    functions.uploadUploadedTestImages,
-    functions.resizeUploadedTestImages,
+    authController.allowedTo('patient', 'dermatologist'),
+    uploadImage,
+    resizeImage,
     validators.updateReservationValidator,
     functions.updateReservation,
   )
