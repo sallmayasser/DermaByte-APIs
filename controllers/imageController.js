@@ -34,9 +34,14 @@ exports.uploadImage = uploadMixOfImages([
     name: 'uploadedTest',
     maxCount: 30,
   },
+  {
+    name: 'testResult',
+    maxCount: 30,
+  },
 ]);
 
 exports.resizeImage = asyncHandler(async (req, res, next) => {
+  // console.log(req.body.role);
   ///1)image processing for profile Name
   if (
     req.body.role === 'patient' ||
@@ -121,6 +126,28 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
           );
           const downloadURL = await getDownloadURL(snapshot.ref);
           req.body.uploadedTest.push(downloadURL);
+        }),
+      );
+    }
+    if (req.files.testResult) {
+      req.body.testResult = [];
+      await Promise.all(
+        req.files.testResult.map(async (img, index) => {
+          const imageName = `Result-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+          const storageRef = ref(storage, `uploads/Results/${imageName}`);
+
+          const metadata = {
+            contentType: img.mimetype,
+          };
+
+          // Upload the file in the bucket storage
+          const snapshot = await uploadBytesResumable(
+            storageRef,
+            img.buffer,
+            metadata,
+          );
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          req.body.testResult.push(downloadURL);
         }),
       );
     }

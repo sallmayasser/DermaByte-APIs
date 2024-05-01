@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 ///1)create schema
 const resultsSchema = new mongoose.Schema(
   {
-    testName: {
-      type: [String],
-      required: [true, 'test name is required'],
+    reservation: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'LabReservation',
     },
     testResult: {
       type: [String],
@@ -56,25 +56,6 @@ resultsSchema.pre(/^find/, function (next) {
     select: 'photo name  location -_id',
   });
   next();
-});
-const setImageURL = (doc) => {
-  if (doc.testResult) {
-    const imagesList = [];
-    doc.testResult.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/results/${image}`;
-      imagesList.push(imageUrl);
-    });
-    doc.testResult = imagesList;
-  }
-};
-// findOne, findAll and update
-resultsSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
-// create
-resultsSchema.post('save', (doc) => {
-  setImageURL(doc);
 });
 ///2)create model
 module.exports = mongoose.model('Result', resultsSchema);

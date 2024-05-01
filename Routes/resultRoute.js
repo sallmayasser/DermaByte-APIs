@@ -5,10 +5,9 @@ const {
   updateResultValidator,
   deleteResultValidator,
 } = require('../utils/validators/resultValidator');
-
+const { uploadImage, resizeImage } = require('../controllers/imageController');
+const { setLabToBody } = require('../controllers/labController');
 const {
-  uploadTestResultImages,
-  resizeTestResultImages,
   getResults,
   createResult,
   getResult,
@@ -28,8 +27,9 @@ router
     authController.protect,
     authController.allowedTo('lab'),
     getLoggedUserData,
-    uploadTestResultImages,
-    resizeTestResultImages,
+    uploadImage,
+    setLabToBody,
+    resizeImage,
     setLabIdToBody,
     createResultValidator,
     createResult,
@@ -42,8 +42,9 @@ router
   .put(
     authController.protect,
     authController.allowedTo('lab'),
-    uploadTestResultImages,
-    resizeTestResultImages,
+    uploadImage,
+    setLabToBody,
+    resizeImage,
     updateResultValidator,
     updateResult,
   )

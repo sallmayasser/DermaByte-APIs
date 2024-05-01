@@ -4,7 +4,7 @@ const validatorMiddleware = require('../../middleware/validatorMiddleware');
 
 
 exports.createResultValidator = [
-    check('testName')
+    check('reservation')
         .notEmpty()
         .withMessage('test name is required'),
     check('testResult')

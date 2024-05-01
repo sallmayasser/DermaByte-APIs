@@ -107,5 +107,6 @@ exports.updateLoggedLabData = asyncHandler(async (req, res, next) => {
 exports.setLabToBody = (req, res, next) => {
   //nested route {create}
   if (!req.body.role) req.body.role = 'lab';
+    console.log(req.body.role);
   next();
 };

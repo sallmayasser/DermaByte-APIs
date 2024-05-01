@@ -70,6 +70,12 @@ reportsSchema.pre(/^find/, function (next) {
   });
   next();
 });
+reportsSchema.virtual('Result', {
+  ref: 'Result',
+  localField: 'patient',
+  foreignField: 'patient',
+  options: { select: 'testResult' },
+});
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
