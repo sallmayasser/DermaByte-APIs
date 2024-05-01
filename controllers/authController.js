@@ -14,7 +14,7 @@ const Admins = require('../models/AdminModel');
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
 
-const signup = async (Model, req, res, populationOpt) => {
+const signup = async (Model, req, res, next, populationOpt) => {
   const { email } = req.body;
   const [patient, dermatologist, lab, admin] = await Promise.all([
     Patients.findOne({ email }).exec(),
@@ -37,7 +37,7 @@ const signup = async (Model, req, res, populationOpt) => {
 
     res.status(201).json({ data: responseData, token });
   } else {
-    return new ApiError('this email is already exsit for other role ', 400);
+    return next (new ApiError('this email is already exsit for other role ', 400));
   }
 };
 
@@ -47,13 +47,13 @@ exports.checkRole = (req, res, next) => {
   try {
     switch (query) {
       case 'patient':
-        signup(Patients, req, res);
+        signup(Patients, req, res,next );
         break;
       case 'dermatologist':
-        signup(Dermatologists, req, res, 'Schedules reviews');
+        signup(Dermatologists, req, res, next,'Schedules reviews');
         break;
       case 'lab':
-        signup(Labs, req, res, 'Services reviews');
+        signup(Labs, req, res, next, 'Services reviews');
         break;
       default:
         return next(new ApiError('this role is incorrect ', 401));
