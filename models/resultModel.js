@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 ///1)create schema
 const resultsSchema = new mongoose.Schema(
   {
-    reservation: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'LabReservation',
+    testName: {
+      type: String,
+      required: [true, 'test name is required'],
     },
     testResult: {
       type: [String],
@@ -12,24 +12,9 @@ const resultsSchema = new mongoose.Schema(
     },
     testDate: {
       type: Date,
-      default: Date.now() + 2 * 60 * 60 * 1000,
-      //  type: String,
-      // default: () =>
-      //   new Date().toLocaleString('en-US', {
-      //     weekday: 'long',
-      //     year: 'numeric',
-      //     month: 'long',
-      //     day: 'numeric',
-      //     hour: 'numeric',
-      //     minute: 'numeric',
-      //     second: 'numeric',
-      //   }),
+      default: Date.now() ,
+
     },
-    // labReservation: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: 'LabReservation',
-    //   required: [true,"test result must belong to lab result"]
-    // },
     patient: {
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',

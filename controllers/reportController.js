@@ -3,8 +3,8 @@ const Report = require('../models/reportModel');
 const factory = require('./handlersFactory');
 const ApiError = require('../utils/apiError');
 
-exports.getReports = factory.getAll(Report,"Result");
-exports.getReport = factory.getOne(Report, 'ReqTests', 'Result');
+exports.getReports = factory.getAll(Report);
+exports.getReport = factory.getOne(Report);
 exports.createReport = factory.createOne(Report);
 exports.updateReport = factory.updateOne(Report);
 exports.appendReport = factory.AppendOne(Report);
