@@ -133,6 +133,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       req.body.testResult = [];
       await Promise.all(
         req.files.testResult.map(async (img, index) => {
+      
           const imageName = `Result-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
           const storageRef = ref(storage, `uploads/Results/${imageName}`);
 

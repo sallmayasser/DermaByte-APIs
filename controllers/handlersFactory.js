@@ -13,7 +13,7 @@ exports.deleteOne = (Model) =>
       return next(new ApiError(`No document for this id ${id}`, 404));
     }
 
-   // Trigger "remove" event when update document
+    // Trigger "remove" event when update document
     // document.remove();
     res.status(204).json({
       status: 'success',
@@ -23,9 +23,30 @@ exports.deleteOne = (Model) =>
 
 exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-     const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
-       new: true,
-     });
+    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    console.log(req.body);
+    if (!document) {
+      return next(
+        new ApiError(`No document for this id ${req.params.id}`, 404),
+      );
+    }
+    // Trigger "save" event when update document
+    document.save();
+    res.status(200).json({ data: document });
+  });
+
+exports.AppendOne = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    const document = await Model.findByIdAndUpdate(
+      req.params.id,
+      { $push: req.body },
+      {
+        new: false,
+        returnOriginal: true,
+      },
+    );
 
     if (!document) {
       return next(
@@ -37,27 +58,6 @@ exports.updateOne = (Model) =>
     res.status(200).json({ data: document });
   });
 
-  exports.AppendOne = (Model) =>
-    asyncHandler(async (req, res, next) => {
-      const document = await Model.findByIdAndUpdate(
-        req.params.id,
-        { $push: req.body },
-        {
-          new: false,
-          returnOriginal: true,
-        },
-      );
-
-      if (!document) {
-        return next(
-          new ApiError(`No document for this id ${req.params.id}`, 404),
-        );
-      }
-      // Trigger "save" event when update document
-      document.save();
-      res.status(200).json({ data: document });
-    });
-    
 // exports.createOne = (Model, populationOpt) =>
 //   asyncHandler(async (req, res) => {
 
@@ -83,7 +83,6 @@ exports.createOne = (Model, populationOpt) =>
     res.status(201).json({ data: responseData });
   });
 
-
 exports.getOne = (Model, populationOpt) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
@@ -100,13 +99,13 @@ exports.getOne = (Model, populationOpt) =>
     res.status(200).json({ data: document });
   });
 
-exports.getAll = (Model, populationOpt,modelName = '') =>
+exports.getAll = (Model, populationOpt, modelName = '') =>
   asyncHandler(async (req, res) => {
     let filter = {};
     if (req.filterObj) {
       filter = req.filterObj;
     }
-    
+
     // Build query
     const documentsCounts = await Model.countDocuments();
     const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
@@ -115,50 +114,54 @@ exports.getAll = (Model, populationOpt,modelName = '') =>
       .search(modelName)
       .limitFields()
       .sort();
-      if (populationOpt) {
-        apiFeatures.mongooseQuery = apiFeatures.mongooseQuery.populate(populationOpt);
-      }
+    if (populationOpt) {
+      apiFeatures.mongooseQuery =
+        apiFeatures.mongooseQuery.populate(populationOpt);
+    }
     // Execute query
     const { mongooseQuery, paginationResult } = apiFeatures;
     const documents = await mongooseQuery;
-    
+
     res
       .status(200)
       .json({ results: documents.length, paginationResult, data: documents });
   });
 
-  exports.createFilterObj = (req, res, next, filterType) => {
-    let filterObject = {};
-  
-    if (filterType === 'patient') {
-      filterObject = { patient: req.params.id };
-    } else if (filterType === 'dermatologist') {
-      filterObject = { dermatologist: req.params.id };
-    } else if (filterType === 'lab') {
-      filterObject = { lab: req.params.id };
-    }
-    req.filterObj = filterObject;
-     console.log(filterObject)
-    next();
-};
-  
-exports.changeUserPassword =(Model)=> asyncHandler(async (req, res, next) => {
-  const document = await Model.findByIdAndUpdate(
-    req.params.id,
-    {
-      password: await bcrypt.hash(req.body.password, 12),
-      passwordChangedAt: Date.now(),
-    },
-    {
-      new: true,
-    },
-  );
+exports.createFilterObj = (req, res, next, filterType) => {
+  let filterObject = {};
 
-  if (!document) {
-    return next(new ApiError(`No document for this id ${req.params.id}`, 404));
+  if (filterType === 'patient') {
+    filterObject = { patient: req.params.id };
+  } else if (filterType === 'dermatologist') {
+    filterObject = { dermatologist: req.params.id };
+  } else if (filterType === 'lab') {
+    filterObject = { lab: req.params.id };
   }
-  res.status(200).json({ data: document });
-});
+  req.filterObj = filterObject;
+  console.log(filterObject);
+  next();
+};
+
+exports.changeUserPassword = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    const document = await Model.findByIdAndUpdate(
+      req.params.id,
+      {
+        password: await bcrypt.hash(req.body.password, 12),
+        passwordChangedAt: Date.now(),
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!document) {
+      return next(
+        new ApiError(`No document for this id ${req.params.id}`, 404),
+      );
+    }
+    res.status(200).json({ data: document });
+  });
 // @desc    Get Logged user data
 // @route   GET /api/v1/users/getMe
 // @access  Private/Protect
@@ -170,32 +173,32 @@ exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
 // @desc    Update logged user password
 // @route   PUT /api/v1/users/updateMyPassword
 // @access  Private/Protect
-exports.updateLoggedUserPassword = (Model)=>asyncHandler(async (req, res, next) => {
-  // 1) Update user password based user payload (req.user._id)
-  const user = await Model.findByIdAndUpdate(
-    req.user._id,
-    {
-      password: await bcrypt.hash(req.body.password, 12),
-      passwordChangedAt: Date.now(),
-    },
-    {
-      new: true,
-    },
-  );
+exports.updateLoggedUserPassword = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    // 1) Update user password based user payload (req.user._id)
+    const user = await Model.findByIdAndUpdate(
+      req.user._id,
+      {
+        password: await bcrypt.hash(req.body.password, 12),
+        passwordChangedAt: Date.now(),
+      },
+      {
+        new: true,
+      },
+    );
 
-  // 2) Generate token
-  const token = createToken(user._id);
+    // 2) Generate token
+    const token = createToken(user._id);
 
-  res.status(200).json({ data: user, token });
-});
-
-
+    res.status(200).json({ data: user, token });
+  });
 
 // @desc    Deactivate logged user
 // @route   DELETE /api/v1/users/deleteMe
 // @access  Private/Protect
-exports.deleteLoggedUserData =(Model) => asyncHandler(async (req, res, next) => {
-  await Model.findByIdAndUpdate(req.user._id, { active: false });
+exports.deleteLoggedUserData = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    await Model.findByIdAndUpdate(req.user._id, { active: false });
 
-  res.status(204).json({ status: 'Success' });
-});
+    res.status(204).json({ status: 'Success' });
+  });
