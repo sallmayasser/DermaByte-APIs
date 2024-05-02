@@ -22,13 +22,14 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     'Friday',
     'Saturday',
   ];
-  const { date, dermatologist, scan, uploadedTest, patient, reviewed,symptoms } =
+  const { date, dermatologist, scan, patient, reviewed,symptoms } =
     req.body;
 
   const patientName = await patientModel.findById(patient).select('firstName');
   const patientid = await patientModel.findById(patient).select('id');
   const patientEmail = await patientModel.findById(patient).select('email');
   const pid = patientid.id;
+  const scanArray= JSON.stringify(scan);
   const dayindex = moment([
     moment(date).year(),
     moment(date).month(),
@@ -64,7 +65,14 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     cancel_url: `${req.protocol}://${req.get('host')}/api/v1/bookings/payment-rejected`,
     customer_email: patientEmail.email,
     client_reference_id: dermatologist,
-    metadata: { date, scan, uploadedTest, reviewed, pid, dayName, symptoms },
+    metadata: {
+      date,
+      scanArray,
+      reviewed,
+      pid,
+      dayName,
+      symptoms,
+    },
   });
   // 4) Send session as response
   res.status(200).json({ status: 'success', session });
@@ -120,9 +128,9 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 
 const createReservation = async (session) => {
   const {date} = session.metadata;
-  const {uploadedTest} = session.metadata;
   const patient = session.metadata.pid;
-  const {scan} = session.metadata;
+  const { scanArray } = session.metadata;
+  const scan = JSON.parse(scanArray);
   const {dayName} = session.metadata;
   const dermatologist = session.client_reference_id;
   const reviewed = false;
@@ -142,7 +150,6 @@ const createReservation = async (session) => {
     dermatologist: dermatologist,
     patient: patient,
     scan: scan,
-    uploadedTest: uploadedTest,
     meetingUrl: meeting.meeting_url,
     reviewed: reviewed,
     dayName: dayName,
@@ -183,7 +190,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   }
   if (event.type === 'checkout.session.completed') {
     // Determine if it's a dermatologist reservation or lab reservation
-    if (event.data.object.metadata.scan !== undefined) {
+    if (event.data.object.metadata.scanArray !== undefined) {
       // Call createReservation function for dermatologist reservation
       await createReservation(event.data.object);
     } else {

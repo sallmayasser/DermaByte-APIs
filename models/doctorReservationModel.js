@@ -19,7 +19,7 @@ const doctorReservationsSchema = new mongoose.Schema(
     },
     completed: {
       type: String,
-      default:false ,
+      default: false,
     },
 
     patient: {
@@ -30,12 +30,13 @@ const doctorReservationsSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Dermatologist',
     },
-    scan: 
+    scan: [
       {
         type: mongoose.Schema.ObjectId,
         ref: 'Scans',
       },
-  
+    ],
+
     meetingUrl: {
       type: String,
     },

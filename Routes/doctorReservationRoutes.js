@@ -38,9 +38,9 @@ router
   .put(
     authController.protect,
     authController.allowedTo('patient', 'dermatologist'),
-    uploadImage,
-    setDermatologistToBody,
-    resizeImage,
+    // uploadImage,
+    // setDermatologistToBody,
+    // resizeImage,
     validators.updateReservationValidator,
     functions.updateReservation,
   )
