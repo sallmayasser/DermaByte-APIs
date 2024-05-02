@@ -17,6 +17,10 @@ const doctorReservationsSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    completed: {
+      type: String,
+      default:false ,
+    },
 
     patient: {
       type: mongoose.Schema.ObjectId,
