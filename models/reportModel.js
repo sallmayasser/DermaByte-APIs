@@ -14,7 +14,7 @@ const reportsSchema = new mongoose.Schema(
       },
     ],
     treatmentPlan: {
-      type: String,
+      type: [String],
       default: null,
     },
     diagnoses: {
