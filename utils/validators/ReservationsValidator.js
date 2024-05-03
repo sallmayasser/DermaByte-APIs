@@ -10,24 +10,28 @@ const labReservationModel = require('../../models/labReservationModel');
 exports.createReservationValidator = [
   check('date').notEmpty().withMessage('reservation date is required'),
   check('dermatologist').notEmpty().withMessage('dermatologist is required'),
-  check('scan').custom(async (value, { req }) => {
-    const existingReservation = [];
-    value.forEach(async (scan) => {
-      existingReservation.push(
-        await doctorReservationModel.find({
-          scan: scan,
-          dermatologist: req.body.dermatologist,
-        }),
-      );
-    });
+  // check('scan').custom(async (value, { req }) => {
+  //   // const existingReservation = [];
+  //   // value.forEach(async (scan) => {
+  //   //   existingReservation.push(
+  //   //     await doctorReservationModel.find({
+  //   //       scan: scan,
+  //   //       dermatologist: req.body.dermatologist,
+  //   //     }),
+  //   //   );
+  //   // });
+  //   const existingReservation = await doctorReservationModel.find({
+  //     scan: value,
+  //     dermatologist: req.body.dermatologist,
+  //   });
 
-    if (existingReservation.length !== 0) {
-      throw new Error(
-        'You have already reserve with this dermatologist with same Scan',
-      );
-    }
-    return true; // Return true if the validation passes
-  }),
+  //   if (existingReservation.length !== 0) {
+  //     throw new Error(
+  //       'You have already reserve with this dermatologist with same Scan',
+  //     );
+  //   }
+  //   return true; // Return true if the validation passes
+  // }),
 
   validatorMiddleware,
 ];

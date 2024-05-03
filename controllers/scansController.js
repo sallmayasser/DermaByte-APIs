@@ -20,7 +20,7 @@ exports.getScan = factory.getOne(Scans);
 
 exports.createScan = asyncHandler(async (req, res, next) => {
   const { diseasePhoto } = req.body;
-  console.log(diseasePhoto);
+  // console.log(diseasePhoto);
   try {
     const response = await axios.post(
       'https://dermabytemodel.onrender.com/predict',
