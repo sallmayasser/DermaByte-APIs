@@ -1,7 +1,7 @@
 const express = require('express');
+const formidable = require('formidable');
 const {
   getResultValidator,
-  createResultValidator,
   updateResultValidator,
   deleteResultValidator,
 } = require('../utils/validators/resultValidator');
@@ -9,7 +9,6 @@ const { uploadImage, resizeImage } = require('../controllers/imageController');
 const { setLabToBody } = require('../controllers/labController');
 const {
   getResults,
-  createResult,
   getResult,
   updateResult,
   deleteResult,
@@ -27,12 +26,22 @@ router
     authController.protect,
     authController.allowedTo('lab'),
     getLoggedUserData,
-    uploadImage,
-    setLabToBody,
-    resizeImage,
     setLabIdToBody,
-    createResultValidator,
-    createResult,
+    setLabToBody,
+    (req, res, next) => {
+      const form = new formidable.IncomingForm();
+      form.parse(req, (err, fields, files) => {
+        if (err) {
+          console.error('Error parsing form data:', err);
+          res.status(500).send('Error parsing form data');
+          return;
+        }
+        req.body.patient = fields.patient[0];
+        req.files = { testResult: files };
+        next();
+      });
+    },
+    resizeImage,
   );
 
 router

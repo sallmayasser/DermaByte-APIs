@@ -11,10 +11,16 @@ exports.createReservationValidator = [
   check('date').notEmpty().withMessage('reservation date is required'),
   check('dermatologist').notEmpty().withMessage('dermatologist is required'),
   check('scan').custom(async (value, { req }) => {
-    const existingReservation = await doctorReservationModel.find({
-      scan: value,
-      dermatologist: req.body.dermatologist,
+    const existingReservation = [];
+    value.forEach(async (scan) => {
+      existingReservation.push(
+        await doctorReservationModel.find({
+          scan: scan,
+          dermatologist: req.body.dermatologist,
+        }),
+      );
     });
+
     if (existingReservation.length !== 0) {
       throw new Error(
         'You have already reserve with this dermatologist with same Scan',
@@ -41,10 +47,12 @@ exports.createLabReservationValidator = [
             lab: req.body.lab,
           });
           // eslint-disable-next-line no-await-in-loop
-          const existingReservedTests = await labReservationModel.findOne({
-            test: testId,
-            lab: req.body.lab,
-          }).select("test");
+          const existingReservedTests = await labReservationModel
+            .findOne({
+              test: testId,
+              lab: req.body.lab,
+            })
+            .select('test');
           if (!existingTest) {
             throw new Error(
               'Invalid Test ID or Test does not belong to the lab',

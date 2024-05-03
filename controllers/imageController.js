@@ -1,4 +1,7 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-await-in-loop */
 const asyncHandler = require('express-async-handler');
+const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const {
   getStorage,
@@ -10,6 +13,7 @@ const { initializeApp } = require('firebase/app');
 const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 const ApiError = require('../utils/apiError');
 const config = require('../Configs/firebase');
+const { createResult } = require('./resultController');
 
 // Initialize a firebase application
 initializeApp(config.firebaseConfig);
@@ -19,12 +23,12 @@ const storage = getStorage();
 
 exports.uploadImage = uploadMixOfImages([
   {
-    name: 'profilePic',
-    maxCount: 1,
-  },
-  {
     name: 'license',
     maxCount: 20,
+  },
+  {
+    name: 'profilePic',
+    maxCount: 1,
   },
   {
     name: 'diseasePhoto',
@@ -41,7 +45,6 @@ exports.uploadImage = uploadMixOfImages([
 ]);
 
 exports.resizeImage = asyncHandler(async (req, res, next) => {
-  // console.log(req.body.role);
   ///1)image processing for profile Name
   if (
     req.body.role === 'patient' ||
@@ -130,29 +133,39 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       );
     }
     if (req.files.testResult) {
-      req.body.testResult = [];
-      await Promise.all(
-        req.files.testResult.map(async (img, index) => {
-      
-          const imageName = `Result-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
-          const storageRef = ref(storage, `uploads/Results/${imageName}`);
+      const responses = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for (const key in req.files.testResult) {
+        req.body.testResult = [];
+        // console.log(req.files.testResult)
+        await Promise.all(
+          req.files.testResult[key].map(async (img, index) => {
+            const imageName = `Result-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+            const storageRef = ref(storage, `uploads/Results/${imageName}`);
+            //  const fileBuffer = img.filepath.getBuffer();
+            const buffer = fs.readFileSync(img.filepath);
+            const metadata = {
+              contentType: img.mimetype,
+            };
 
-          const metadata = {
-            contentType: img.mimetype,
-          };
+            // Upload the file in the bucket storage
+            const snapshot = await uploadBytesResumable(
+              storageRef,
+              buffer,
+              metadata,
+            );
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            req.body.testResult.push(downloadURL);
+          }),
+        );
+        req.body.testName = key;
 
-          // Upload the file in the bucket storage
-          const snapshot = await uploadBytesResumable(
-            storageRef,
-            img.buffer,
-            metadata,
-          );
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          req.body.testResult.push(downloadURL);
-        }),
-      );
+        responses.push(await createResult(req, res));
+   
+      }
+      res.status(201).json({ data: responses });
     }
-    next();
+    // next();
   } else {
     return next(new ApiError('incorrect role found ', 401));
   }
