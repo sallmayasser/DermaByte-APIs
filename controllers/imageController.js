@@ -114,8 +114,8 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       req.body.uploadedTest = [];
       await Promise.all(
         req.files.uploadedTest.map(async (img, index) => {
-          const imageName = `reservation-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
-          const storageRef = ref(storage, `uploads/reservations/${imageName}`);
+          const imageName = `uploaded Result-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+          const storageRef = ref(storage, `uploads/Results/${imageName}`);
 
           const metadata = {
             contentType: img.mimetype,
@@ -131,6 +131,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
           req.body.uploadedTest.push(downloadURL);
         }),
       );
+      next();
     }
     if (req.files.testResult) {
       const responses = [];
@@ -161,7 +162,6 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
         req.body.testName = key;
 
         responses.push(await createResult(req, res));
-   
       }
       res.status(201).json({ data: responses });
     }

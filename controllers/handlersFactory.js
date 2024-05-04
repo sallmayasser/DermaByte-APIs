@@ -26,7 +26,6 @@ exports.updateOne = (Model) =>
     const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    console.log(req.body);
     if (!document) {
       return next(
         new ApiError(`No document for this id ${req.params.id}`, 404),

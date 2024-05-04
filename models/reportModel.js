@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 ///1)create schema
 const reportsSchema = new mongoose.Schema(
   {
-    scan: [{
-      type: mongoose.Schema.ObjectId,
-      ref: 'Scans',
-      required: true,
-    }],
+    scan: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Scans',
+        required: true,
+      },
+    ],
     medicine: [
       {
         type: String,
@@ -44,6 +46,10 @@ const reportsSchema = new mongoose.Schema(
         ref: 'Result',
       },
     ],
+    uploadedTest: {
+      type: [String],
+      default: null,
+    },
     slug: {
       type: String,
       lowercase: true,

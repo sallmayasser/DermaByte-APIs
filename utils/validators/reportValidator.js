@@ -2,40 +2,42 @@ const { check } = require('express-validator');
 const validatorMiddleware = require('../../middleware/validatorMiddleware');
 
 exports.createReportValidator = [
-    check('scan')
-        .notEmpty()
-        .withMessage('scan is required'),
-       
-    check('requestedTest')
-        .optional()
-        .isArray()
-        .withMessage('requestedTest should be array of string'),
-    check('result')
-        .optional()
-        .isArray()
-        .withMessage('results should be array of string'),
-    check('patient')
-        .notEmpty()
-        .withMessage('patient is required'),
-    check('dermatologist')
-        .notEmpty()
-        .withMessage('dermatologist is required'),
+  check('scan').notEmpty().withMessage('scan is required'),
 
-    validatorMiddleware,
+  check('requestedTest')
+    .optional()
+    .isArray()
+    .withMessage('requestedTest should be array of string'),
+  check('result')
+    .optional()
+    .isArray()
+    .withMessage('results should be array of string'),
+  check('patient').notEmpty().withMessage('patient is required'),
+  check('dermatologist').notEmpty().withMessage('dermatologist is required'),
+
+  validatorMiddleware,
 ];
 
 exports.getReportValidator = [
-    check('id').isMongoId().withMessage('Invalid ID formate'),
-    validatorMiddleware,
+  check('id').isMongoId().withMessage('Invalid ID formate'),
+  validatorMiddleware,
 ];
 
 exports.updateReportValidator = [
-    check('id').isMongoId().withMessage('Invalid ID formate'),
+  check('id').isMongoId().withMessage('Invalid ID formate'),
 
-    validatorMiddleware,
+  validatorMiddleware,
 ];
 
 exports.deleteReportValidator = [
-    check('id').isMongoId().withMessage('Invalid ID formate'),
-    validatorMiddleware,
+  check('id').isMongoId().withMessage('Invalid ID formate'),
+  validatorMiddleware,
+];
+
+exports.updateUploadedTestValidator = [
+  check('uploadedTest')
+    .notEmpty()
+    .withMessage('Please upload your test results'),
+
+  validatorMiddleware,
 ];
