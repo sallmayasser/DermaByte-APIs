@@ -46,10 +46,6 @@ const reportsSchema = new mongoose.Schema(
         ref: 'Result',
       },
     ],
-    // uploadedTest: {
-    //   type: [String],
-    //   default: null,
-    // },
     uploadedTest: [
       {
         testName: {
@@ -74,7 +70,7 @@ const reportsSchema = new mongoose.Schema(
 reportsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',
-    select: ' firstName lastName ',
+    select: ' firstName lastName profilePic',
   });
   next();
 });
