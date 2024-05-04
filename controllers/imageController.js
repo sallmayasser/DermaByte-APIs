@@ -65,6 +65,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       );
       const downloadURL = await getDownloadURL(snapshot.ref);
       req.body.profilePic = downloadURL;
+      next();
     }
 
     if (req.files.diseasePhoto) {
@@ -81,6 +82,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       );
       const downloadURL = await getDownloadURL(snapshot.ref);
       req.body.diseasePhoto = downloadURL;
+      next();
     }
     ///2)image processing for images
     if (req.files.license) {
@@ -108,6 +110,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
           req.body.license.push(downloadURL);
         }),
       );
+      next();
     }
     //2)image processing for images
     if (req.files.uploadedTest) {
@@ -165,7 +168,9 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       }
       res.status(201).json({ data: responses });
     }
-    // next();
+    else {
+      next();
+    }
   } else {
     return next(new ApiError('incorrect role found ', 401));
   }

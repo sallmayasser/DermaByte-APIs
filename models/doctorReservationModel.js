@@ -42,7 +42,7 @@ const doctorReservationsSchema = new mongoose.Schema(
     },
     symptoms: {
       type: String,
-      default: null,
+      default: 'no symptoms',
     },
     slug: {
       type: String,
