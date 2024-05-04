@@ -46,10 +46,19 @@ const reportsSchema = new mongoose.Schema(
         ref: 'Result',
       },
     ],
-    uploadedTest: {
-      type: [String],
-      default: null,
-    },
+    // uploadedTest: {
+    //   type: [String],
+    //   default: null,
+    // },
+    uploadedTest: [
+      {
+        testName: {
+          type: String,
+          default: null,
+        },
+        testResult: [{ type: String, default: null }],
+      },
+    ],
     slug: {
       type: String,
       lowercase: true,

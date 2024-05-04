@@ -14,7 +14,6 @@ const { uploadMixOfImages } = require('../middleware/uploadImageMiddleware');
 const ApiError = require('../utils/apiError');
 const config = require('../Configs/firebase');
 const { createResult } = require('./resultController');
-
 // Initialize a firebase application
 initializeApp(config.firebaseConfig);
 
@@ -34,10 +33,10 @@ exports.uploadImage = uploadMixOfImages([
     name: 'diseasePhoto',
     maxCount: 1,
   },
-  {
-    name: 'uploadedTest',
-    maxCount: 30,
-  },
+  // {
+  //   name: 'uploadedTest',
+  //   maxCount: 30,
+  // },
   {
     name: 'testResult',
     maxCount: 30,
@@ -113,29 +112,40 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       next();
     }
     //2)image processing for images
-    if (req.files.uploadedTest) {
-      req.body.uploadedTest = [];
-      await Promise.all(
-        req.files.uploadedTest.map(async (img, index) => {
-          const imageName = `uploaded Result-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
-          const storageRef = ref(storage, `uploads/Results/${imageName}`);
+   if (req.files.uploadedTest) {
+     const responses = [];
+     req.body.uploadedTest = []; 
+     // eslint-disable-next-line no-restricted-syntax
+     for (const key in req.files.uploadedTest) {
+       const images = [];
+       await Promise.all(
+         req.files.uploadedTest[key].map(async (img, index) => {
+           const imageName = `uploadedResult-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+           const storageRef = ref(storage, `uploads/Results/${imageName}`);
+           const buffer = fs.readFileSync(img.filepath);
+           const metadata = {
+             contentType: img.mimetype,
+           };
 
-          const metadata = {
-            contentType: img.mimetype,
-          };
+           // Upload the file to the bucket storage
+           const snapshot = await uploadBytesResumable(
+             storageRef,
+             buffer,
+             metadata,
+           );
+           const downloadURL = await getDownloadURL(snapshot.ref);
+           images.push(downloadURL);
+         }),
+       );
 
-          // Upload the file in the bucket storage
-          const snapshot = await uploadBytesResumable(
-            storageRef,
-            img.buffer,
-            metadata,
-          );
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          req.body.uploadedTest.push(downloadURL);
-        }),
-      );
-      next();
-    }
+       const tests = {
+         testName: key,
+         testResult: images,
+       };
+       req.body.uploadedTest.push(tests); 
+     }
+    
+   }
     if (req.files.testResult) {
       const responses = [];
       // eslint-disable-next-line no-restricted-syntax
@@ -167,8 +177,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
         responses.push(await createResult(req, res));
       }
       res.status(201).json({ data: responses });
-    }
-    else {
+    } else {
       next();
     }
   } else {

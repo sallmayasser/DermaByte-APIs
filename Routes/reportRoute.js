@@ -1,4 +1,5 @@
 const express = require('express');
+const formidable = require('formidable');
 const {
   getReportValidator,
   createReportValidator,
@@ -64,15 +65,25 @@ router
     authController.allowedTo('dermatologist'),
     deleteRequestedTest,
   );
-router
-  .route('/:id/uploadTestResult')
-  .put(
-    authController.protect,
-    authController.allowedTo('patient'),
-    uploadImage,
-    setPatientToBody,
-    resizeImage,
-    updateUploadedTestValidator,
-    updateReport,
-  );
+router.route('/:id/uploadTestResult').put(
+  authController.protect,
+  authController.allowedTo('patient'),
+  setPatientToBody,
+  (req, res, next) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        console.error('Error parsing form data:', err);
+        res.status(500).send('Error parsing form data');
+        return;
+      }
+      // req.body.patient = fields.patient[0];
+      req.files = { uploadedTest: files };
+      next();
+    });
+  },
+  resizeImage,
+  updateUploadedTestValidator,
+  updateReport,
+);
 module.exports = router;

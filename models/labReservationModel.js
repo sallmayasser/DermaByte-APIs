@@ -6,19 +6,10 @@ const labReservationsSchema = new mongoose.Schema(
       type: Date,
       default: Date.now() + 2 * 60 * 60 * 1000,
     },
-    // date: {
-    //   type: String,
-    //   default: () =>
-    //     new Date().toLocaleString('en-US', {
-    //       weekday: 'long',
-    //       year: 'numeric',
-    //       month: 'long',
-    //       day: 'numeric',
-    //       hour: 'numeric',
-    //       minute: 'numeric',
-    //       second: 'numeric',
-    //     }),
-    // },
+    completed: {
+      type: String,
+      default: false,
+    },
     patient: {
       type: mongoose.Schema.ObjectId,
       ref: 'Patient',

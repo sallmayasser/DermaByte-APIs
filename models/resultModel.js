@@ -38,7 +38,7 @@ const resultsSchema = new mongoose.Schema(
 resultsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'lab',
-    select: 'photo name  location -_id',
+    select: 'profilePic firstName  -_id',
   });
   next();
 });
