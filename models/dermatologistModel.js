@@ -49,7 +49,7 @@ const dermatologistsSchema = new mongoose.Schema(
     },
     license: {
       type: [String],
-      // required: [true, 'license is required'],
+      required: [true, 'license is required'],
     },
     email: {
       type: String,
