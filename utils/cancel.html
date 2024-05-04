@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="images/dollar.png" type="image/png" sizes="16x16" />
     <title>Payment Incomplete</title>
+    
+
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap"
       rel="stylesheet"
@@ -25,24 +26,6 @@
       padding: 0 10px; /* Added padding for better spacing */
       box-sizing: border-box; /* Ensure padding is included in width */
     }
-
-      .printer-top,
-      .printer-bottom {
-        border: 6px solid #666666;
-        height: 6px;
-        background: #333333;
-        border-radius: 6px;
-      }
-
-      .printer-top {
-        border-bottom: 0;
-      }
-
-      .printer-bottom {
-        border-top: 0;
-        border-radius: 0 0 6px 6px;
-      }
-
     .paper-container {
       position: relative;
       overflow: hidden;
@@ -60,38 +43,24 @@
       margin: 0 auto; /* Center align horizontally */
       padding: 24px; /* Added for better spacing */
       box-sizing: border-box; /* Ensure padding is included in width */
-      animation: print 5000ms cubic-bezier(0.68, -0.55, 0.265, 0.9) forwards;
-      -moz-animation: print 5000ms cubic-bezier(0.68, -0.55, 0.265, 0.9)
-        forwards;
     }
 
     .main-contents {
+      margin-top: 1cm;
       text-align: center; /* Center align contents */
     }
 
-    .success-icon {
-      font-size: 48px;
-      background: #ff6b6b;
-      border-radius: 50%;
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 16px; /* Center align and add bottom margin */
-       margin-bottom: 30px;
-      line-height: 72px; /* Center icon vertically */
-      color: #fff;
-    }
-
-    .success-title {
+    .cancel-title {
       font-size: 22px;
-      color: #666;
+      color: #cd3025;
       font-weight: bold;
       margin-bottom: 16px;
     }
 
-    .success-description {
+    .cancel-description {
       font-size: 15px;
       line-height: 21px;
-      color: #999;
+      color: #0c0b0b;
       margin-bottom: 24px;
     }
 
@@ -104,108 +73,28 @@
       font-size: 18px;
       color: #cd3025;
     }
-
-    .jagged-edge {
-      position: relative;
-      height: 20px;
-      width: 100%;
-      margin-top: -1px;
-    }
-
-    .jagged-edge:after {
-      content: '';
-      display: block;
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 20px;
-      background: linear-gradient(
-          45deg,
-          transparent 33.333%,
-          #ffffff 33.333%,
-          #ffffff 66.667%,
-          transparent 66.667%
-        ),
-        linear-gradient(
-          -45deg,
-          transparent 33.333%,
-          #ffffff 33.333%,
-          #ffffff 66.667%,
-          transparent 66.667%
-        );
-      background-size: 16px 40px;
-      background-position: 0 -20px;
-    }
-
-    @keyframes print {
-      0% {
-        transform: translateY(-90%);
-      }
-      100% {
-        transform: translateY(0%);
-      }
-    }
-
-    @-webkit-keyframes print {
-      0% {
-        -webkit-transform: translateY(-90%);
-      }
-      100% {
-        -webkit-transform: translateY(0%);
-      }
-    }
-
-    @-moz-keyframes print {
-      0% {
-        -moz-transform: translateY(-90%);
-      }
-      100% {
-        -moz-transform: translateY(0%);
-      }
-    }
-
-    @-ms-keyframes print {
-      0% {
-        -ms-transform: translateY(-90%);
-      }
-      100% {
-        -ms-transform: translateY(0%);
-      }
-    }
-          /* Media queries for responsiveness */
-      @media only screen and (max-width: 400px) {
-        .container {
-          max-width: 300px;
-        }
-      }
-
-      @media only screen and (max-width: 320px) {
-        .container {
-          max-width: 250px;
-        }
-      }
   </style>
 
   <body>
     <div class="container">
-      <div class="printer-top"></div>
-
       <div class="paper-container">
-        <div class="printer-bottom"></div>
-
         <div class="paper">
           <div class="main-contents">
-            <div class="success-icon">&#10006;</div>
-            <div class="success-title">Payment Incomplete</div>
-            <div class="success-description">
-              The payment process was not completed successfully. Please try
-              again later.
+            <div class="cancel-icon">
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/dermabyte-gp-2024.appspot.com/o/icons%2F%E2%80%94Pngtree%E2%80%94payment%20failure%20flat%20icon_3700197.png?alt=media&token=f6be1480-823a-49e3-a950-a019467feeac"
+                alt="Payment cancel Icon"
+                style="width: 200px; height: 200px; border-radius: 50%"
+              />
+            </div>
+            <div class="cancel-title">Payment Incomplete</div>
+            <div class="cancel-description">
+              The payment process was not completed . Please try again later.
             </div>
             <div class="order-details">
               <div class="complement">Thank You!</div>
             </div>
           </div>
-          <div class="jagged-edge"></div>
         </div>
       </div>
     </div>
