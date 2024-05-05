@@ -6,6 +6,7 @@ const {
   verifyPassResetCode,
   resetPassword,
   checkRole,
+  logout,
 } = require('../controllers/authController');
 const { resizeImage, uploadImage } = require('../controllers/imageController');
 const validateMiddleware = require('../middleware/newValidatorMiddleware');
@@ -22,11 +23,13 @@ router.post(
   uploadImage,
   resizeImage,
   validateMiddleware,
-  (req, res,next) => { checkRole(req , res, next)}
+  (req, res, next) => {
+    checkRole(req, res, next);
+  },
 );
 
 router.post('/login', loginValidator, login);
-
+router.get('/logout', logout);
 router.post('/forgotPassword', forgotPassword);
 router.post('/verifyResetCode', verifyPassResetCode);
 router.put('/resetPassword', resetPassword);

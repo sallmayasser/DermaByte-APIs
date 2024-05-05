@@ -10,6 +10,7 @@ const Dermatologists = require('../models/dermatologistModel');
 const Labs = require('../models/labModel');
 const Admins = require('../models/AdminModel');
 
+const invalidatedTokens = new Set();
 // @desc    Signup
 // @route   GET /api/v1/auth/signup/{ModelName}
 // @access  Public
@@ -37,7 +38,9 @@ const signup = async (Model, req, res, next, populationOpt) => {
 
     res.status(201).json({ data: responseData, token });
   } else {
-    return next (new ApiError('this email is already exsit for other role ', 400));
+    return next(
+      new ApiError('this email is already exsit for other role ', 400),
+    );
   }
 };
 
@@ -47,10 +50,10 @@ exports.checkRole = (req, res, next) => {
   try {
     switch (query) {
       case 'patient':
-        signup(Patients, req, res,next );
+        signup(Patients, req, res, next);
         break;
       case 'dermatologist':
-        signup(Dermatologists, req, res, next,'Schedules reviews');
+        signup(Dermatologists, req, res, next, 'Schedules reviews');
         break;
       case 'lab':
         signup(Labs, req, res, next, 'Services reviews');
@@ -111,6 +114,17 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.logout = asyncHandler(async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    // Invalidate the token by adding it to the blacklist
+    invalidatedTokens.add(token);
+    res.status(200).json({ message: 'Logout successful' });
+  } catch {
+    return next(new ApiError('Please login first ', 401));
+  }
+});
+
 // @desc   make sure the user is logged in
 exports.protect = asyncHandler(async (req, res, next) => {
   // 1) Check if token exist, if exist get
@@ -121,7 +135,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  if (!token) {
+  if (!token || invalidatedTokens.has(token)) {
     return next(
       new ApiError(
         'You are not login,Please login to get access this route',
