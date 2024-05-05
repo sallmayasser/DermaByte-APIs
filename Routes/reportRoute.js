@@ -27,12 +27,12 @@ const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .get(authController.protect, authController.allowedTo('admin'), getReports)
-  .post(
-    authController.protect,
-    authController.allowedTo('dermatologist', 'patient'),
-    createReportValidator,
-    createReport,
-  );
+  // .post(
+  //   authController.protect,
+  //   authController.allowedTo('dermatologist', 'patient'),
+  //   createReportValidator,
+  //   createReport,
+  // );
 
 router
   .route('/:id')

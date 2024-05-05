@@ -7,7 +7,7 @@ const patientModel = require('../models/patientModel');
 const Reservation = require('../models/doctorReservationModel');
 const labReservationModel = require('../models/labReservationModel');
 const testServiceModel = require('../models/testServiceModel');
-
+const reportModel = require('../models/reportModel');
 // @desc    Get checkout session from stripe and send it as response
 // @route   GET /api/v1/orders/checkout-session/reservationId
 // @access  Protected/patient
@@ -22,14 +22,13 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     'Friday',
     'Saturday',
   ];
-  const { date, dermatologist, scan, patient, reviewed,symptoms } =
-    req.body;
+  const { date, dermatologist, scan, patient, reviewed, symptoms } = req.body;
 
   const patientName = await patientModel.findById(patient).select('firstName');
   const patientid = await patientModel.findById(patient).select('id');
   const patientEmail = await patientModel.findById(patient).select('email');
   const pid = patientid.id;
-  const scanArray= JSON.stringify(scan);
+  const scanArray = JSON.stringify(scan);
   const dayindex = moment([
     moment(date).year(),
     moment(date).month(),
@@ -89,7 +88,7 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 
   const carts = await Promise.all(promises);
   let totalPrice = 0;
-  for (let i = 0; i < carts.length; i+=1) {
+  for (let i = 0; i < carts.length; i += 1) {
     totalPrice += carts[i].cost;
   }
   const testArray = JSON.stringify(test);
@@ -127,14 +126,14 @@ exports.checkoutSessionLab = asyncHandler(async (req, res, next) => {
 });
 
 const createReservation = async (session) => {
-  const {date} = session.metadata;
+  const { date } = session.metadata;
   const patient = session.metadata.pid;
   const { scanArray } = session.metadata;
   const scan = JSON.parse(scanArray);
-  const {dayName} = session.metadata;
+  const { dayName } = session.metadata;
   const dermatologist = session.client_reference_id;
   const reviewed = false;
-  const {symptoms} = session.metadata;
+  const { symptoms } = session.metadata;
 
   const durations = await doctorScheduleModel
     .find({
@@ -153,22 +152,34 @@ const createReservation = async (session) => {
     meetingUrl: meeting.meeting_url,
     reviewed: reviewed,
     dayName: dayName,
-    symptoms:symptoms
+    symptoms: symptoms,
   });
-
 };
 const createLabReservation = async (session) => {
-  const {testArray} = session.metadata;
-  const {date} = session.metadata;
+  const { testArray } = session.metadata;
+  const { date } = session.metadata;
   const test = JSON.parse(testArray);
   const patient = session.metadata.pid;
   const lab = session.client_reference_id;
 
-    await labReservationModel.create({
+  await labReservationModel.create({
     date: date,
     lab: lab,
     patient: patient,
     test: test,
+  });
+};
+
+const createReport = async (session) => {
+  const patient = session.metadata.pid;
+  const dermatologist = session.client_reference_id;
+  const { scanArray } = session.metadata;
+  const scan = JSON.parse(scanArray);
+
+  await reportModel.create({
+    dermatologist: dermatologist,
+    patient: patient,
+    scan: scan,
   });
 };
 // @desc    This webhook will run when stripe payment success paid
@@ -193,6 +204,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     if (event.data.object.metadata.scanArray !== undefined) {
       // Call createReservation function for dermatologist reservation
       await createReservation(event.data.object);
+      await createReport(event.data.object);
     } else {
       // Call createLabReservation function for lab reservation
       await createLabReservation(event.data.object);
