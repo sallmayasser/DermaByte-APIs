@@ -46,6 +46,7 @@ mongoose.connect(process.env.DB_URI, {
 });
 const mongoStore = MongoStore.create({
   mongoUrl: process.env.DB_URI,
+  autoRemove: 'native',
   collectionName: 'sessions',
 });
 
