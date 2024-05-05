@@ -4,15 +4,16 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const jwt = require('jsonwebtoken');
 const ApiError = require('./utils/apiError');
 const globalError = require('./middleware/errorMiddleware');
 const dbConnection = require('./Configs/Database');
 
 dotenv.config({ path: 'config.env' });
 
-const {
-  webhookCheckout,
-} = require('./controllers/paymentController');
+const { webhookCheckout } = require('./controllers/paymentController');
 
 //routes
 const dermatologistRoute = require('./Routes/dermatologistRoute');
@@ -47,8 +48,31 @@ app.post(
   webhookCheckout,
 );
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set secure to true if using HTTPS
+  }),
+);
 app.use(express.static(path.join(__dirname, 'uploads')));
+const authenticateJWT = (req, res, next) => {
+  const token = req.cookies['jwt'];
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        // return res.sendStatus(403); // Forbidden
+        return next(new ApiError('Session ended , Please login again ', 403));
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    next();
+  }
+};
 
 if (process.env.Node_ENV === 'development') {
   app.use(morgan('dev'));
