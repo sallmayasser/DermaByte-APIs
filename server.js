@@ -80,7 +80,19 @@ const authenticateJWT = (req, res, next) => {
         // return res.sendStatus(403); // Forbidden
         return next(new ApiError('Session ended , Please login again ', 403));
       }
-      req.user = user;
+     switch (user.role) {
+       case 'patient':
+         req.patient = user;
+         break;
+       case 'dermatologist':
+         req.dermatologist = user;
+         break;
+       case 'lab':
+         req.lab = user;
+         break;
+       default:
+         break;
+     }
       next();
     });
   } else {
