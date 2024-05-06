@@ -82,6 +82,10 @@ const dermatologistsSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    work: {
+      type: Boolean,
+      default: false,
+    },
     slug: {
       type: String,
       lowercase: true,
