@@ -64,7 +64,6 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       );
       const downloadURL = await getDownloadURL(snapshot.ref);
       req.body.profilePic = downloadURL;
-      next();
     }
 
     if (req.files.diseasePhoto) {
@@ -81,7 +80,6 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
       );
       const downloadURL = await getDownloadURL(snapshot.ref);
       req.body.diseasePhoto = downloadURL;
-      next();
     }
     ///2)image processing for images
     if (req.files.license) {
@@ -109,43 +107,41 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
           req.body.license.push(downloadURL);
         }),
       );
-      next();
     }
     //2)image processing for images
-   if (req.files.uploadedTest) {
-     const responses = [];
-     req.body.uploadedTest = []; 
-     // eslint-disable-next-line no-restricted-syntax
-     for (const key in req.files.uploadedTest) {
-       const images = [];
-       await Promise.all(
-         req.files.uploadedTest[key].map(async (img, index) => {
-           const imageName = `uploadedResult-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
-           const storageRef = ref(storage, `uploads/Results/${imageName}`);
-           const buffer = fs.readFileSync(img.filepath);
-           const metadata = {
-             contentType: img.mimetype,
-           };
+    if (req.files.uploadedTest) {
+      const responses = [];
+      req.body.uploadedTest = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for (const key in req.files.uploadedTest) {
+        const images = [];
+        await Promise.all(
+          req.files.uploadedTest[key].map(async (img, index) => {
+            const imageName = `uploadedResult-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+            const storageRef = ref(storage, `uploads/Results/${imageName}`);
+            const buffer = fs.readFileSync(img.filepath);
+            const metadata = {
+              contentType: img.mimetype,
+            };
 
-           // Upload the file to the bucket storage
-           const snapshot = await uploadBytesResumable(
-             storageRef,
-             buffer,
-             metadata,
-           );
-           const downloadURL = await getDownloadURL(snapshot.ref);
-           images.push(downloadURL);
-         }),
-       );
+            // Upload the file to the bucket storage
+            const snapshot = await uploadBytesResumable(
+              storageRef,
+              buffer,
+              metadata,
+            );
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            images.push(downloadURL);
+          }),
+        );
 
-       const tests = {
-         testName: key,
-         testResult: images,
-       };
-       req.body.uploadedTest.push(tests); 
-     }
-    
-   }
+        const tests = {
+          testName: key,
+          testResult: images,
+        };
+        req.body.uploadedTest.push(tests);
+      }
+    }
     if (req.files.testResult) {
       const responses = [];
       // eslint-disable-next-line no-restricted-syntax

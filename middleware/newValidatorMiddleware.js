@@ -27,10 +27,11 @@ const validateMiddleware = async (req, res, next) => {
   }
   const messages = [];
   const errorMsgs = errors.errors.map((error) => {
-    const {msg} = error;
+    const { msg } = error;
     messages.push(msg);
     return msg;
   });
+  console.log('fffff');
   res.status(400).json({ errors: errors.array(), message: errorMsgs });
   return null;
 };

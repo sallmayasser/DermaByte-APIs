@@ -4,11 +4,6 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const compression = require('compression');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const jwt = require('jsonwebtoken');
-const MongoStore = require('connect-mongo');
-const mongoose = require('mongoose');
 const ApiError = require('./utils/apiError');
 const globalError = require('./middleware/errorMiddleware');
 const dbConnection = require('./Configs/Database');
@@ -39,17 +34,6 @@ dbConnection();
 
 ///express app
 const app = express();
-// Create MongoStore instance
-mongoose.connect(process.env.DB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-const mongoStore = MongoStore.create({
-  mongoUrl: process.env.DB_URI,
-  ttl: 5 * 24 * 60 * 60,
-  autoRemove: 'native',
-  collectionName: 'sessions',
-});
 
 /////middleware
 app.use(cors());
@@ -61,44 +45,7 @@ app.post(
   webhookCheckout,
 );
 app.use(express.json());
-app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET_KEY,
-    resave: false,
-    saveUninitialized: true,
-    store: mongoStore,
-    cookie: { secure: false }, // Set secure to true if using HTTPS
-  }),
-);
 app.use(express.static(path.join(__dirname, 'uploads')));
-const authenticateJWT = (req, res, next) => {
-  const token = req.cookies['jwt'];
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        // return res.sendStatus(403); // Forbidden
-        return next(new ApiError('Session ended , Please login again ', 403));
-      }
-     switch (user.role) {
-       case 'patient':
-         req.patient = user;
-         break;
-       case 'dermatologist':
-         req.dermatologist = user;
-         break;
-       case 'lab':
-         req.lab = user;
-         break;
-       default:
-         break;
-     }
-      next();
-    });
-  } else {
-    next();
-  }
-};
 
 if (process.env.Node_ENV === 'development') {
   app.use(morgan('dev'));
