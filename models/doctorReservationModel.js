@@ -61,6 +61,7 @@ const doctorReservationsSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
+
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'patient',
@@ -77,6 +78,7 @@ doctorReservationsSchema.pre(/^find/, function (next) {
 });
 
 doctorReservationsSchema.pre(/^find/, function (next) {
+
   this.populate({
     path: 'scan',
     select: 'diseasePhoto diseaseName ',
@@ -85,8 +87,12 @@ doctorReservationsSchema.pre(/^find/, function (next) {
 });
 doctorReservationsSchema.virtual('Report', {
   ref: 'Report',
-  localField: 'dermatologist',
-  foreignField: 'dermatologist',
-  options: { select: '_id' },
+  localField: 'scan.0',
+  foreignField: 'scan.0',
+  // options: { select: '_id' },
 });
+
+
+
+
 module.exports = mongoose.model('DoctorReservation', doctorReservationsSchema);
