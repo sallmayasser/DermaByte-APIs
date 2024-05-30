@@ -8,7 +8,8 @@ exports.divideTimeRange = (reserved, schedule, currentDate) => {
   const numDays = daysInMonth(currentDate.year(), currentDate.month());
 
   // Iterate through each day in the current month
-  for (let day = moment(currentDate).date(); day <= numDays; day++) {
+  for (let day = moment(currentDate).date(); day <= numDays; day+=1) {
+
     const year = currentDate.year();
     const monthIndex = currentDate.month();
     const dayOfWeek = moment([year, monthIndex, day]).day();
@@ -35,20 +36,22 @@ exports.divideTimeRange = (reserved, schedule, currentDate) => {
         // Check if the start date is in the future or current time
 
         const times = [];
+        let counter = 0;
         while (startDate < endDate) {
-          if (moment(startDate).isSameOrAfter(moment())) {
+          if (moment(startDate.getTime()).isAfter(moment())) {
             const index = reserved.findIndex(
               (date) => date.getTime() === startDate.getTime(),
             );
             if (index !== -1) {
               reserved.splice(index, 1); // Remove the date from reserved array
+              counter +=1
             } else {
               times.push(new Date(startDate.getTime())); // Push a new Date object to times array
             }
           }
           startDate.setMinutes(startDate.getMinutes() + +time.sessionTime);
         }
-        intervals.push({ day: startDate, freeTime: times });
+        intervals.push({ day: startDate, freeTime: times , numOfRervered: counter });
       }
     });
   }
