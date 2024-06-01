@@ -46,7 +46,7 @@ router
   )
   .delete(
     authController.protect,
-    authController.allowedTo('patient'),
+    authController.allowedTo('patient','dermatologist'),
     validators.deleteReservationValidator,
     createFilterObj,
     functions.deleteReservation,

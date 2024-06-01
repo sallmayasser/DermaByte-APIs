@@ -20,7 +20,7 @@ router
   .route('/:id')
   .get(authController.protect,authController.allowedTo("admin","patient","lab"),validators.getReservationValidator, functions.getReservation)
   .put(authController.protect,authController.allowedTo("patient",'lab'),validators.updateReservationValidator, functions.updateReservation)
-  .delete(authController.protect,authController.allowedTo("patient"),
+  .delete(authController.protect,authController.allowedTo("patient",'lab'),
     validators.deleteReservationValidator,
     createFilterObj,
     functions.deleteReservation,
