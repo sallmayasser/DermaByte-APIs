@@ -44,6 +44,7 @@ router.get(
 router.put(
   '/changeMyPassword',
   authController.allowedTo('dermatologist'),
+  changedermatologistPasswordValidator,
   updateLoggedUserPassword(Dermatologist),
 );
 router.put(

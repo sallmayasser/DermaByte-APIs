@@ -52,6 +52,7 @@ router.get(
 router.put(
   '/changeMyPassword',
   authController.allowedTo('lab'),
+  changelabPasswordValidator,
   updateLoggedUserPassword(lab),
 );
 router.put(

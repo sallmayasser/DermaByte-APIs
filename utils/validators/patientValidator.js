@@ -138,7 +138,6 @@ exports.deletePatientValidator = [
 ];
 
 exports.changePatientPasswordValidator = [
-  check('id').isMongoId().withMessage('Invalid Patient id format'),
   body('currentPassword')
     .notEmpty()
     .withMessage('You must enter your current password'),
@@ -150,7 +149,7 @@ exports.changePatientPasswordValidator = [
     .withMessage('You must enter new password')
     .custom(async (val, { req }) => {
       // 1) Verify current password
-      const patient = await Patient.findById(req.params.id);
+      const patient = await Patient.findById(req.user._id);
       if (!patient) {
         throw new Error('There is no patient for this id');
       }

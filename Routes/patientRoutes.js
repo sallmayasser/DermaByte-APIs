@@ -53,6 +53,7 @@ router.delete(
 router.put(
   '/changeMyPassword',
   authController.allowedTo('patient'),
+  validators.changePatientPasswordValidator,
   updateLoggedUserPassword(patient),
 );
 // nested Routes

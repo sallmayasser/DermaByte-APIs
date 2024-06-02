@@ -123,7 +123,6 @@ exports.deleteDermatologistValidator = [
 ];
 
 exports.changedermatologistPasswordValidator = [
-  check('id').isMongoId().withMessage('Invalid dermatologist id format'),
   body('currentPassword')
     .notEmpty()
     .withMessage('You must enter your current password'),
@@ -135,7 +134,7 @@ exports.changedermatologistPasswordValidator = [
     .withMessage('You must enter new password')
     .custom(async (val, { req }) => {
       // 1) Verify current password
-      const dermatologist = await Dermatologist.findById(req.params.id);
+      const dermatologist = await Dermatologist.findById(req.user._id);
       if (!dermatologist) {
         throw new Error('There is no dermatologist for this id');
       }

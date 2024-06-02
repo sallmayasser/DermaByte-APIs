@@ -92,7 +92,6 @@ exports.deleteLabValidator = [
 ];
 
 exports.changelabPasswordValidator = [
-  check('id').isMongoId().withMessage('Invalid lab id format'),
   body('currentPassword')
     .notEmpty()
     .withMessage('You must enter your current password'),
@@ -104,7 +103,7 @@ exports.changelabPasswordValidator = [
     .withMessage('You must enter new password')
     .custom(async (val, { req }) => {
       // 1) Verify current password
-      const lab = await Lab.findById(req.params.id);
+      const lab = await Lab.findById(req.user._id);
       if (!lab) {
         throw new Error('There is no lab for this id');
       }
