@@ -53,5 +53,12 @@ labReservationsSchema.pre(/^find/, function (next) {
   });
   next();
 });
+labReservationsSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'lab',
+    select: 'firstName  profilePic -id',
+  });
+  next();
+});
 ///2)create model
 module.exports = mongoose.model('LabReservation', labReservationsSchema);
