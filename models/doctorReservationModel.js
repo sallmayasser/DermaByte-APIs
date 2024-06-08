@@ -72,7 +72,7 @@ doctorReservationsSchema.pre(/^find/, function (next) {
 doctorReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'dermatologist',
-    select: 'firstName lastName ',
+    select: 'firstName lastName profilePic',
   });
   next();
 });

@@ -56,7 +56,7 @@ labReservationsSchema.pre(/^find/, function (next) {
 labReservationsSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'lab',
-    select: 'firstName  profilePic ',
+    select: 'firstName  profilePic location',
   });
   next();
 });
