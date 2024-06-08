@@ -54,6 +54,7 @@ exports.createLabReservationValidator = [
             .findOne({
               test: testId,
               lab: req.body.lab,
+              patient: req.user._id,
             })
             .select('test');
           if (!existingTest) {
